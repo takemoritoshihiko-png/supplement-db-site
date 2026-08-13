@@ -48,8 +48,12 @@
     border:1.5px solid var(--line); background:var(--bg); color:var(--ink2); user-select:none;
   }
   .controls button.sortb.on { border-color:var(--g1); background:var(--g1-soft); color:var(--ink); }
-  .controls label.flt { display:inline-flex; align-items:center; gap:6px; }
-  .controls label.flt input { accent-color:var(--g1); }
+  .controls label.flt { display:inline-flex; align-items:center; gap:0; transition:background .12s, border-color .12s; }
+  .controls label.flt:hover { border-color:var(--ink3); }
+  .controls label.flt input { position:absolute; opacity:0; width:0; height:0; pointer-events:none; }
+  .controls label.flt::before { content:""; width:0; overflow:hidden; font-weight:800; transition:width .12s; }
+  .controls label.flt:has(input:checked) { border-color:var(--g1); background:var(--g1-soft); color:var(--g1); }
+  .controls label.flt:has(input:checked)::before { content:"✓"; width:16px; }
   .count { font-size:12px; color:var(--ink3); margin-left:auto; }
 
   main { padding:24px 0 40px; }
@@ -141,7 +145,11 @@
   td.dosec { white-space:nowrap; font-weight:700; }
   td.dosec .fm { display:block; font-size:10.5px; font-weight:400; color:var(--ink3); }
   td.pricec .pk { display:block; font-size:10.5px; color:var(--ink3); font-weight:400; }
-  select.mkr { font-size:12.5px; font-weight:700; padding:7px 12px; border-radius:100px; border:1.5px solid var(--line); background:var(--bg); color:var(--ink2); }
+  select.mkr { font-size:12.5px; font-weight:700; padding:7px 32px 7px 14px; border-radius:100px; border:1.5px solid var(--line); color:var(--ink2); cursor:pointer;
+    appearance:none; -webkit-appearance:none;
+    background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23767a83' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center; }
+  select.mkr:hover { border-color:var(--ink3); }
+  select.mkr.on { border-color:var(--g1); background-color:var(--g1-soft); color:var(--g1); }
   footer { padding:32px 0 60px; border-top:1px solid var(--line); }
   footer .legal { font-size:12.5px; color:var(--ink2); line-height:1.9; }
 </style>
@@ -152,6 +160,7 @@
     <a class="back" href="index.html">← トップへ戻る</a>
     <h1>ビタミンD 商品比較</h1>
     <div class="sub">国内で流通が確認できた30商品を「1日あたり」に揃えて比較します（2026年8月13日調査）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。販売終了・在庫切れ・並行輸入品を含みます（表示で区別）。</div>
+    <div class="sub" style="margin-top:10px"><b style="color:var(--ink)">ビタミンDとは</b> — カルシウムの吸収を助け、骨や歯を健康に保つために必要とされる栄養素です。魚などの食品と日光浴で得られますが、不足すると骨がもろくなりやすいと言われています。日本人の食事からの平均摂取量は、どの年代も国の目安量9.0μg/日に届いていません（令和5年 国民健康・栄養調査）。</div>
     <div class="you">
       <div class="t">あなたの基準で見る（任意）</div>
       <div class="btns" id="youbtns">
@@ -161,6 +170,10 @@
         <button data-k="age" data-v="20">20代</button>
         <button data-k="age" data-v="30">30代</button>
         <button data-k="age" data-v="40">40代</button>
+        <button data-k="age" data-v="50">50代</button>
+        <button data-k="age" data-v="60">60代</button>
+        <button data-k="age" data-v="70">70代</button>
+        <button data-k="age" data-v="80">80代〜</button>
       </div>
       <div class="stat" id="youstat"></div>
     </div>
@@ -182,15 +195,9 @@
 
 <main><div class="wrap">
 <div style="border:1px solid var(--g2-line);background:var(--g2-soft);border-radius:12px;padding:12px 18px;margin-bottom:16px;font-size:13px;color:var(--ink2);line-height:1.8">
-<b style="color:var(--ink)">飲み方の目安（ビタミンD共通・一般に言われていること）</b><br>
-回数: <b style="color:var(--ink)">1日1回にまとめてよい</b>とされています（体内に蓄積される脂溶性のため、分割は不要とされます）。
-タイミング: 脂質と一緒だと吸収されやすいとされるため<b style="color:var(--ink)">食後</b>がすすめられています。朝・夜の優劣は特にないとされ、続けやすい時間で構いません。<br>
-<div style="border-top:1px solid var(--g2-line);margin-top:8px;padding-top:8px">
-<b style="color:var(--ink)">「D3」表示の読み方</b><br>
-ビタミンDには <b style="color:var(--ink)">D3（動物由来。日光を浴びて体内で作られるのと同じ型）</b>と <b style="color:var(--ink)">D2（きのこ等の植物由来）</b>の2種類があります。D3の方が血中のビタミンDを高く保ちやすいと言われており、現在の市販品はほぼD3です。
-当サイトの<span class="b d3" style="margin:0 2px">D3</span>チップは<b style="color:var(--ink)">原材料表示に「ビタミンD3」と明記されている商品</b>を示します。「形態表記なし」はラベルに種類が書かれていない商品で、D3の可能性はありますが表示上は不明のため、当サイトでは推測して断定しません。
-</div>
-<span style="font-size:11.5px;color:var(--ink3)">※商品ごとにメーカーの指定がある場合はそちらが優先です（各行の詳細に「メーカー推奨の飲み方」原文を掲載）。効果を保証するものではありません。</span>
+<b style="color:var(--ink)">飲み方の目安</b> — <b style="color:var(--ink)">1日1回・食後</b>がおすすめとされています（体に蓄積するため分割は不要、脂と一緒だと吸収されやすいため）。時間帯はいつでも構いません。<br>
+<b style="color:var(--ink)">「D3」の読み方</b> — <span class="b d3" style="margin:0 2px">D3</span>＝ラベルに「ビタミンD3」（動物由来。日光で体内に作られるのと同じ型）と明記された商品。市販品はほぼD3です。表記がない商品は「形態表記なし」とし、推測で断定しません。<br>
+<span style="font-size:11.5px;color:var(--ink3)">※メーカーの指定があればそちらが優先（各行の詳細に原文を掲載）。効果を保証するものではありません。</span>
 </div>
 <div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">摂れるビタミンD <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
@@ -214,7 +221,7 @@
 <script>
 (function(){
   var GOAL = 9.0, UL = 100;
-  var DIET = { m:{20:4.7,30:5.7,40:5.5}, f:{20:4.3,30:4.8,40:5.1} };
+  var DIET = { m:{20:4.7,30:5.7,40:5.5,50:6.0,60:7.8,70:8.1,80:8.7}, f:{20:4.3,30:4.8,40:5.1,50:5.1,60:7.0,70:7.8,80:7.4} };
   var state = { sort:"price", dir:1, f:{ onsale:true, d3:false, single:false, k2:false, chew:false },
                 mk:"", you:{ sex:null, age:null }, picked:{}, open:{} };
   try { var sv = JSON.parse(localStorage.getItem("sdb-vd")||"{}"); if(sv.you) state.you=sv.you; if(sv.picked) state.picked=sv.picked; } catch(e){}
@@ -404,7 +411,7 @@
     Object.keys(names).sort().forEach(function(n){
       var o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o);
     });
-    sel.addEventListener("change", function(){ state.mk=sel.value; render(); });
+    sel.addEventListener("change", function(){ state.mk=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
   }
   function renderYou(){
     document.querySelectorAll("#youbtns button").forEach(function(b){
@@ -412,7 +419,7 @@
     });
     var d=dietAvg();
     document.getElementById("youstat").innerHTML = d!=null
-      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・食事からの平均摂取 <b>"+d+"μg/日</b>（令和5年調査）。表の%は商品単体の目安量に対する割合です。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
+      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・食事からの平均摂取 <b>"+d.toFixed(1)+"μg/日</b>（令和5年調査）。表の%は商品単体の目安量に対する割合です。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
       : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
