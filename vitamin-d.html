@@ -301,7 +301,7 @@
       if(v.reg!=null){
         var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
         packs+='<span class="pack">'+seller+v.qty+(v.unit||"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+'</span>';
-      } else { packs+='<span class="pack na">'+seller+v.qty+(v.unit||"")+days+' 価格未取得</span>'; }
+      } else { packs+='<span class="pack na">'+seller+v.qty+(v.unit||"")+days+' '+(v.note||"価格未取得")+'</span>'; }
     });
     if(packs!=="") h+='<div class="how" style="margin-top:10px"><b>すべての容量と価格:</b></div><div class="buyline" style="margin-top:6px">'+packs+'</div>';
     // 3. 飲み方の原文
