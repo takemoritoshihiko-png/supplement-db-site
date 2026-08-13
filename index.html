@@ -147,6 +147,7 @@
     <h1>あなたに「ぴったり」が見つかる。</h1>
     <div class="tagline">データで整える、スマートなサプリ選び</div>
     <p class="lede">情報も商品もあふれるサプリメント売り場で、もう迷う必要はありません。<strong>国の基準データ</strong>と<strong>独自のクリアな比較指標</strong>が、今のあなたにとって「本当に必要な成分」と「最適なアイテム」との心地よい出会いをサポートします。</p>
+    <a class="btn" style="margin-top:26px" href="vitamin-d.html">ビタミンD 30商品の比較を見る →</a>
     <div class="can">
       <div class="c"><div class="n">できること 1</div><h3>今のあなたに必要な栄養素が、ひと目でわかる</h3><p>性別・年齢・ライフステージを選択するだけで、国の基準に基づく「1日の必要量」と、同年代の食事で「満たしてあげたい分」を美しいデータで可視化します。自分を知る楽しさが、ここから始まります。</p></div>
       <div class="c"><div class="n">できること 2</div><h3>もう迷わない！あなたにとっての「最高の一粒」を比較</h3><p>バラバラな単位（1粒/2粒、μg/IUなど）を、「1日あたりの量と価格」に統一。コストパフォーマンスと成分量を同じ基準で比べられるから、納得して賢く選べます。</p></div>
@@ -173,6 +174,7 @@
       <button data-k="age" data-v="60">60代</button>
       <button data-k="age" data-v="70">70代</button>
       <button data-k="age" data-v="80">80代〜</button>
+      <button id="youreset" style="display:none;border-color:var(--g2);color:var(--g2)">リセット</button>
     </div>
     <div class="result" id="res"></div>
     <p class="note"><span class="nt">データの読み方について</span><br>この数値は「日本人の食事摂取基準（2025年版）」と「令和5年 国民健康・栄養調査」に基づき算出しています。同年代の平均値との比較をベースに、ご自身の普段の食生活と照らし合わせて、楽しくご活用ください。ビタミンDの9.0μgは「目安量」で、これを下回っていても不足していると判断することはできません（食事摂取基準・活用編）。鉄の女性は50代まで「月経あり」、60代からは「月経なし」の基準値を表示しています。70代は70〜74歳の基準値です（75歳以上はやや低い区分になる栄養素があります）。妊娠中・授乳中の基準データは現在整備中です。</p>
@@ -250,13 +252,25 @@
     fe: { m:{20:7.4,30:7.4,40:7.5,50:7.7,60:8.4,70:8.8,80:8.3}, f:{20:6.5,30:6.2,40:6.6,50:7.1,60:7.6,70:8.1,80:7.5} }
   };
   var state = { sex:null, age:null };
+  try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex) state.sex=sy.sex; if(sy.age) state.age=sy.age; } catch(e){}
   var sel = document.getElementById("sel"), res = document.getElementById("res");
+  function syncBtns(){
+    sel.querySelectorAll("button[data-k]").forEach(function(x){ x.classList.toggle("on", state[x.dataset.k]===x.dataset.v); });
+    document.getElementById("youreset").style.display=(state.sex||state.age)?"":"none";
+  }
+  document.getElementById("youreset").addEventListener("click", function(){
+    state.sex=null; state.age=null;
+    try{ localStorage.setItem("sdb-you","{}"); }catch(e){}
+    syncBtns(); res.classList.remove("show");
+  });
   sel.addEventListener("click", function(e){
     var b = e.target.closest("button"); if(!b || b.disabled || !b.dataset.k) return;
     state[b.dataset.k] = b.dataset.v;
-    sel.querySelectorAll('button[data-k="'+b.dataset.k+'"]').forEach(function(x){ x.classList.toggle("on", x===b); });
+    try { localStorage.setItem("sdb-you", JSON.stringify({sex:state.sex, age:state.age})); } catch(e){}
+    syncBtns();
     render();
   });
+  if(state.sex||state.age){ syncBtns(); render(); }
   function render(){
     if(!state.sex || !state.age) return;
     var html = "";
