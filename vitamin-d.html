@@ -79,6 +79,8 @@
   .pack b { font-size:16px; font-weight:800; }
   .pack .per { font-size:11.5px; color:var(--ink3); margin-left:6px; }
   .pack.na { border-color:var(--line); background:var(--surface); color:var(--ink3); }
+  a.pack { text-decoration:none; color:inherit; display:inline-block; }
+  a.pack:hover { border-color:var(--g1); box-shadow:0 0 0 1px var(--g1); }
   .how { margin-top:10px; font-size:13.5px; color:var(--ink2); }
   .how b { color:var(--ink); font-weight:800; }
   .amt { margin-top:6px; font-size:13px; color:var(--ink2); }
@@ -314,10 +316,13 @@
       if(seen[key]) return; seen[key]=1;
       var days=v.days!=null?"・約"+v.days+"日分":"";
       var seller=v.seller?("["+v.seller.split("(")[0]+"] "):"";
+      var hasUrl = v.url && v.url.indexOf("http")===0;
+      var tagO = hasUrl ? '<a href="'+v.url+'" target="_blank" rel="noopener" class="pack' : '<span class="pack';
+      var tagC = hasUrl ? ' ↗</a>' : '</span>';
       if(v.reg!=null){
         var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
-        packs+='<span class="pack">'+seller+v.qty+(v.unit||"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+'</span>';
-      } else { packs+='<span class="pack na">'+seller+v.qty+(v.unit||"")+days+' '+(v.note||"価格未取得")+'</span>'; }
+        packs+=tagO+'">'+seller+v.qty+(v.unit||"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+(v.note?'<span class="per">'+v.note+'</span>':'')+tagC;
+      } else { packs+=tagO+' na">'+seller+v.qty+(v.unit||"")+days+' '+(v.note||"価格未取得")+tagC; }
     });
     if(packs!=="") h+='<div class="how" style="margin-top:10px"><b>すべての容量と価格:</b></div><div class="buyline" style="margin-top:6px">'+packs+'</div>';
     // 3. 飲み方の原文
