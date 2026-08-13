@@ -101,9 +101,9 @@
   td.packc, th.packh { width:148px; }
   td.dosec { width:76px; }
   td.amtc { width:118px; }
-  td.pricec { width:96px; }
+  td.pricec { width:106px; white-space:nowrap; }
   table.cmp th { position:sticky; top:0; background:var(--surface); font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
-  table.cmp th.num, table.cmp td.num { text-align:right; font-variant-numeric:tabular-nums; }
+  table.cmp th.num, table.cmp td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
   table.cmp th.sortable { cursor:pointer; }
   table.cmp th.sortable.on { color:var(--g1); }
   table.cmp td { padding:14px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
@@ -276,44 +276,47 @@
   }
 
   function detailHtml(p){
+    var h='';
+    // 1. 成分の量つき内訳(行は名前のみのため量はここが正)
+    h+='<div class="how" style="margin-top:0"><b>配合成分の量（1日目安量あたり）:</b> ビタミンD '+fmtAmt(p)
+      +(toArr(p.ings).length?('　'+toArr(p.ings).map(function(g){
+        var v=(g.a1==null)?'量未確認':((g.a1===g.a2?g.a1:g.a1+'〜'+g.a2)+(g.u||''));
+        return g.n+' '+v;
+      }).join('　')):'（ビタミンDのみ）')+'</div>';
+    // 2. すべての容量と価格(行は最安1つのみ)
     var packs="", seen={};
     toArr(p.variants).forEach(function(v){
       if(v.qty==null) return;
       var key=v.qty+"-"+(v.reg==null?"x":v.reg);
       if(seen[key]) return; seen[key]=1;
-      var days=v.days!=null?"（約"+v.days+"日分）":"";
-      var inner=v.qty+(v.unit||"")+days;
+      var days=v.days!=null?"・約"+v.days+"日分":"";
+      var seller=v.seller?("["+v.seller.split("(")[0]+"] "):"";
       if(v.reg!=null){
         var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
-        packs+='<span class="pack">'+inner+' <b>'+v.reg.toLocaleString()+'円</b>'+per+'</span>';
-      } else { packs+='<span class="pack na">'+inner+' 価格未取得</span>'; }
+        packs+='<span class="pack">'+seller+v.qty+(v.unit||"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+'</span>';
+      } else { packs+='<span class="pack na">'+seller+v.qty+(v.unit||"")+days+' 価格未取得</span>'; }
     });
-    if(packs==="") packs='<span class="pack na">容量・価格 未取得</span>';
-    var dose=(p.doseMin!=null)?"1日 "+(p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒"):"未確認";
-    var how='<div class="how">メーカー推奨の飲み方: <b>'+dose+'</b>'+(p.intake&&p.intake.indexOf("未確認")<0?'　<span>「'+p.intake+'」</span>':'')+'</div>';
-    var badges="";
-    badges+=p.d3?'<span class="b d3">D3明記</span>':'<span class="b">形態表記なし</span>';
-    if((p.comp||"").indexOf("単一")>=0) badges+='<span class="b">単一成分</span>'; else badges+='<span class="b">複合（+'+p.others+'成分）</span>';
-    if(p.k2) badges+='<span class="b k2">K2配合</span>';
-    if(p.form&&p.form!=="未確認") badges+='<span class="b">'+p.form+'</span>';
-    if(p.tech&&p.tech.indexOf("未確認")<0&&p.tech!=="") badges+='<span class="b k2">'+p.tech.split("(")[0]+'</span>';
-    if(p.name.indexOf("並行輸入")>=0) badges+='<span class="b">並行輸入品</span>';
-    if((p.legal||"").indexOf("栄養機能食品")>=0) badges+='<span class="b d3">栄養機能食品</span>';
-    else if((p.legal||"").indexOf("未確認")>=0) badges+='<span class="b">食品区分 未確認</span>';
-    if(p.amtMax!=null&&p.amtMax>100) badges+='<span class="b warn">耐容上限(100μg/成人)超え — 摂取量にご注意ください</span>';
-    else if(p.amtMax!=null&&p.amtMax>=100) badges+='<span class="b warn">耐容上限(100μg/成人)ちょうど</span>';
-    if(!isOnSale(p)) badges+='<span class="b end">販売終了・在庫切れ</span>';
-    var ingList='<div class="how" style="margin-top:0"><b>配合成分（1日目安量あたり）:</b> ビタミンD '+fmtAmt(p)
-      +(toArr(p.ings).length?('　'+toArr(p.ings).map(function(g){
-        var v=(g.a1==null)?'量未確認':((g.a1===g.a2?g.a1:g.a1+'〜'+g.a2)+(g.u||''));
-        return g.n+' '+v;
-      }).join('　')):'（ビタミンDのみ）')+'</div>';
-    return ingList+'<div class="buyline" style="margin-top:10px">'+packs+'</div>'+how
-      +'<div class="badges">'+badges+'</div>'
-      +'<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-13</div>';
+    if(packs!=="") h+='<div class="how" style="margin-top:10px"><b>すべての容量と価格:</b></div><div class="buyline" style="margin-top:6px">'+packs+'</div>';
+    // 3. 飲み方の原文
+    if(p.intake) h+='<div class="how"><b>メーカーの飲み方（原文）:</b> 「'+p.intake+'」</div>';
+    // 4. 品質・仕様プロフィール(行に無い情報のみ)
+    var prof=[];
+    if(p.cert) prof.push('製造・認証: '+p.cert);
+    if(p.legal && p.legal.indexOf('未確認')<0) prof.push('食品区分: '+p.legal.split('(')[0]);
+    if(p.tech) prof.push('製剤技術: '+p.tech);
+    if(p.target) prof.push('対象者: '+p.target);
+    if(p.allergen) prof.push('アレルギー物質: '+p.allergen);
+    if(p.animal) prof.push('動物由来原料: '+p.animal);
+    if(prof.length) h+='<div class="how"><b>品質・仕様:</b> '+prof.join('　/　')+'</div>';
+    // 5. 原材料の原文
+    if(p.raw) h+='<div class="how" style="font-size:12px"><b>原材料名（原文）:</b> '+p.raw+'</div>';
+    // 6. 注意書きの原文
+    if(p.caution) h+='<div class="how" style="font-size:12px"><b>パッケージの注意書き（抜粋）:</b> '+p.caution+'</div>';
+    // 7. 出典
+    h+='<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-13</div>';
+    return h;
   }
-
-  function render(){
+    function render(){
     var items=PRODUCTS.slice();
     if(state.f.onsale) items=items.filter(isOnSale);
     if(state.f.d3) items=items.filter(function(p){return p.d3;});
@@ -334,7 +337,7 @@
       if(isChew(p)) tags+='<span class="b">グミ</span>';
       if(p.amtMax!=null&&p.amtMax>100) tags+='<span class="b warn">上限超え注意</span>';
       if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
-      var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").replace("ビタミン",""); }).filter(function(n){return n;});
+      var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].replace("ビタミン","").replace("Vitamin ","").trim(); }).filter(function(n){return n;});
       var ingTxt="";
       if(ingNames.length){
         var shown=ingNames.slice(0,4).join("・");
