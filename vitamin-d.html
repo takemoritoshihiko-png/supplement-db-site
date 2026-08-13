@@ -464,7 +464,7 @@
     if(state.f.onsale) items=items.filter(isOnSale);
     if(state.f.d3) items=items.filter(function(p){return p.d3;});
     if(state.f.single) items=items.filter(function(p){return (p.comp||"").indexOf("単一")>=0;});
-    if(state.f.veg) items=items.filter(function(p){return p.animal && /不使用|なし/.test(p.animal);});
+    if(state.f.veg) items=items.filter(function(p){return p.animal && (/不使用|植物性/.test(p.animal) || /^なし/.test(p.animal));});
     if(state.f.chew) items=items.filter(isChew);
     if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
     if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
