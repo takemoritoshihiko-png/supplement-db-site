@@ -258,8 +258,9 @@
 <span style="font-size:11.5px;color:var(--ink3)">※メーカーの指定があればそちらが優先（各行の詳細に原文を掲載）。効果を保証するものではありません。</span>
 </div>
 </details>
+<div id="ingnote" style="display:none;border:1px solid var(--g1-line);background:var(--g1-soft);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink2)"></div>
 <div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px"><span class="stepn">2</span><b style="color:var(--ink);font-size:13.5px">同じ物差しだから、もう迷わない。</b><br>
-<span style="display:block;margin-top:2px">バラバラな単位（1粒/2粒、μg/IU）は、すべて<b style="color:var(--ink)">「1日あたりの量と価格」</b>に換算済み。列見出しをタップすれば、安い順・多い順に一瞬で並び替わります（もう一度で逆順）。<span style="color:var(--ink3)">※メーカー推奨の1日目安量を飲んだ場合の値です。</span></span></caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">摂れるビタミンD <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<span style="display:block;margin-top:2px">バラバラな単位（1粒/2粒、μg/IU）は、すべて<b style="color:var(--ink)">「1日あたりの量と価格」</b>に換算済み。列見出しをタップすれば、安い順・多い順に一瞬で並び替わります（もう一度で逆順）。<span style="color:var(--ink3)">※メーカー推奨の1日目安量を飲んだ場合の値です。</span></span></caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">摂れるビタミンD</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -321,35 +322,53 @@
   function findP(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
 
   // 栄養素ステータス: 配合成分(ings)から正規化タグを導出(全商品共通のビタミンDは除く)
+  function canonOf(name){
+    var n=(name||"").toLowerCase();
+    if(/k2/.test(n)) return "ビタミンK2";
+    if(/カルシウム|calcium/.test(n)) return "カルシウム";
+    if(/マグネシウム|magnesium/.test(n)) return "マグネシウム";
+    if(/乳酸菌/.test(n)) return "乳酸菌";
+    if(/ビタミンk(?!2)|vitamin k(?!2)/.test(n)) return "ビタミンK";
+    if(/葉酸|folic/.test(n)) return "葉酸";
+    if(/^鉄|iron/.test(n)) return "鉄";
+    if(/ビタミンc|vitamin c/.test(n)) return "ビタミンC";
+    if(/亜鉛|zinc/.test(n)) return "亜鉛";
+    if(/b12/.test(n)) return "ビタミンB12";
+    if(/b1/.test(n)) return "ビタミンB1";
+    if(/b6/.test(n)) return "ビタミンB6";
+    if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) return "オメガ3系オイル";
+    if(/コラーゲン/.test(n)) return "コラーゲン";
+    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
+    if(/カリウム|potassium/.test(n)) return "カリウム";
+    if(/ナトリウム|sodium/.test(n)) return "ナトリウム";
+    if(/メチオニン/.test(n)) return "メチオニン";
+    return (name||"").split("(")[0].split("（")[0].trim();
+  }
   function nutTags(p){
     var set={};
     if(p.k2) set["ビタミンK2"]=1;
-    toArr(p.ings).forEach(function(g){
-      var n=(g.n||"").toLowerCase(), c=null;
-      if(/k2/.test(n)) c="ビタミンK2";
-      else if(/カルシウム|calcium/.test(n)) c="カルシウム";
-      else if(/マグネシウム|magnesium/.test(n)) c="マグネシウム";
-      else if(/乳酸菌/.test(n)) c="乳酸菌";
-      else if(/ビタミンk(?!2)|vitamin k(?!2)/.test(n)) c="ビタミンK";
-      else if(/葉酸|folic/.test(n)) c="葉酸";
-      else if(/^鉄|iron/.test(n)) c="鉄";
-      else if(/ビタミンc|vitamin c/.test(n)) c="ビタミンC";
-      else if(/亜鉛|zinc/.test(n)) c="亜鉛";
-      else if(/b12/.test(n)) c="ビタミンB12";
-      else if(/b1/.test(n)) c="ビタミンB1";
-      else if(/b6/.test(n)) c="ビタミンB6";
-      else if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) c="オメガ3系オイル";
-      else if(/コラーゲン/.test(n)) c="コラーゲン";
-      else if(/ボーンペップ/.test(n)) c="ボーンペップ(卵黄ペプチド)";
-      else if(/カリウム|potassium/.test(n)) c="カリウム";
-      else if(/ナトリウム|sodium/.test(n)) c="ナトリウム";
-      else if(/メチオニン/.test(n)) c="メチオニン";
-      else c=(g.n||"").split("(")[0].split("（")[0].trim();
-      if(c) set[c]=1;
-    });
+    toArr(p.ings).forEach(function(g){ var c=canonOf(g.n); if(c) set[c]=1; });
     return set;
   }
   PRODUCTS.forEach(function(p){ p._nut=nutTags(p); });
+  // 選択栄養素の1日あたり配合量(ingsの正規化値。K2はk2amtフォールバック)
+  function nutAmt(p, tag){
+    var min=0, max=0, unit="", found=false;
+    toArr(p.ings).forEach(function(g){
+      if(canonOf(g.n)!==tag) return;
+      if(g.a1==null&&g.a2==null){ found=true; return; }
+      min+=(g.a1!=null?g.a1:g.a2)||0; max+=(g.a2!=null?g.a2:g.a1)||0; unit=g.u||unit; found=true;
+    });
+    if(tag==="ビタミンK2" && !unit && p.k2amt!=null){ min=p.k2amt; max=p.k2amt; unit="μg"; found=true; }
+    if(!found) return null;
+    if(!unit && min===0 && max===0) return {min:null,max:null,unit:""};
+    return {min:min,max:max,unit:unit};
+  }
+  function fmtNut(na){
+    if(!na||na.min==null) return '<span style="color:var(--ink3);font-size:12px">配合量未取得</span>';
+    var v=(na.min===na.max)?na.min:(na.min+"〜"+na.max);
+    return '<b>'+v+na.unit+'</b>';
+  }
 
   function renderSum(){
     var bar=document.getElementById("sumbar");
@@ -437,9 +456,23 @@
     if(state.f.chew) items=items.filter(isChew);
     if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
     if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
-    items.forEach(function(p){ p._bp=bestPrice(p); });
+    items.forEach(function(p){ p._bp=bestPrice(p); p._na=state.ing?nutAmt(p,state.ing):null; });
     if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
-    if(state.sort==="amt") items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
+    if(state.sort==="amt"){
+      if(state.ing){
+        items.sort(function(a,b){var x=(a._na&&a._na.max!=null)?a._na.max:-1,y=(b._na&&b._na.max!=null)?b._na.max:-1;return (y-x)*state.dir;});
+      } else {
+        items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
+      }
+    }
+    // 視点の切替: 選択栄養素があれば「摂れる量」列はその栄養素、価格は商品全体であることを明示
+    document.querySelector('th[data-s="amt"] .tl').textContent = state.ing ? ("摂れる"+state.ing) : "摂れるビタミンD";
+    document.querySelector('th[data-s="price"] .tl').textContent = state.ing ? "価格/日(商品全体)" : "価格/日";
+    var inote=document.getElementById("ingnote");
+    if(state.ing){
+      inote.style.display="";
+      inote.innerHTML='「<b>'+state.ing+'</b>」で絞り込み中 — 「摂れる'+state.ing+'」列は各商品の'+state.ing+'の量です。<b>価格/日はビタミンD商品全体の価格</b>で、'+state.ing+'だけの単価ではありません。';
+    } else { inote.style.display="none"; }
     var el=document.getElementById("list"); el.innerHTML="";
     // 客観バッジ: 販売中の全商品の中で価格/日が最安のもの(計算由来のみ・編集コピーは使わない)
     var bestId=null, bestDay=Infinity;
@@ -476,11 +509,21 @@
         : '<span style="color:var(--ink3)">未確認</span>';
       // スマホの2行目用: 飲む量と摂れる量をpackセルに統合表示(PCでは非表示)
       var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+"/日"):"";
-      packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+fmtAmt(p)+'</span>';
-      // ④ D量/日(属性選択時は食事平均+本品%)
-      var amtCell=(p.amtMin!=null)
-        ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
-        : '<span style="color:var(--ink3)">未取得</span>';
+      var amtShort;
+      if(state.ing){
+        var na=p._na;
+        amtShort=state.ing+" "+((na&&na.min!=null)?((na.min===na.max?na.min:na.min+"〜"+na.max)+na.unit):"未取得");
+      } else { amtShort=fmtAmt(p); }
+      packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+amtShort+'</span>';
+      // ④ 摂れる量: 通常はビタミンD、栄養素フィルター時はその栄養素の量に切替
+      var amtCell;
+      if(state.ing){
+        amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
+      } else {
+        amtCell=(p.amtMin!=null)
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
+          : '<span style="color:var(--ink3)">未取得</span>';
+      }
       // ⑤ 価格/日(数字1つ+定期のみ)
       var priceCell = bp
         ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
@@ -490,7 +533,7 @@
         +'<td class="prod"><div class="prodflex"><div class="thumb">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':formShort(p))+'</div><div><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></div></div></td>'
         +'<td class="num packc">'+packCell+'</td>'
         +'<td class="num dosec">'+doseCell+'</td>'
-        +'<td class="num amtc'+(p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
+        +'<td class="num amtc'+(!state.ing&&p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
         +'<td class="num pricec">'+priceCell+'</td>'
         +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
         +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
