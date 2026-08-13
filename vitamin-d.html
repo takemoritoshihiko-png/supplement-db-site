@@ -305,14 +305,16 @@
   function isOnSale(p){ return toArr(p.variants).some(function(v){ return (v.status||"").indexOf("販売中")>=0 || (v.status||"").indexOf("在庫あり")>=0; }); }
   function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
   function mkName(p){ return (p.maker||"").split("(")[0].split("（")[0]; }
-  // 表示用の単位正規化: 「400ソフトジェル」「120ベジカプセル」等は「粒」に統一(剤形は日分の隣に別掲)
-  function dispUnit(u){
+  // 表示用の単位正規化: カプセル/ソフトジェル/錠は「粒」、グミ・チュアブルは「個」に統一(剤形は日分の隣に別掲)
+  function dispUnit(u, p){
     u=u||"";
+    if(p && isChew(p) && /粒|カプセル|錠|個/.test(u)) return "個";
     if(/カプセル|ソフトジェル|ソフトゼル|錠|タブレット|ベジ/.test(u)) return "粒";
     return u;
   }
   function formShort(p){
     var f=p.form||"";
+    if(f.indexOf("未確認")>=0) return "D";
     if(/グミ|チュアブル/.test(f)) return "グミ";
     if(/ソフト/.test(f)) return "ソフト";
     if(/カプセル/.test(f)) return "カプセル";
@@ -506,17 +508,17 @@
       var packCell;
       var fl=formShort(p); fl=(fl==="D")?"":("・"+fl);
       if(bv){
-        packCell=bv.qty+dispUnit(bv.unit)+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+fl+'</span>';
+        packCell=bv.qty+dispUnit(bv.unit,p)+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+fl+'</span>';
       } else {
         var v0=toArr(p.variants)[0];
-        packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit)+'<span class="sub">価格未取得'+fl+'</span>'):'<span style="color:var(--ink3)">未取得</span>';
+        packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit,p)+'<span class="sub">価格未取得'+fl+'</span>'):'<span style="color:var(--ink3)">未取得</span>';
       }
       // ③ 飲む量/日
       var doseCell=(p.doseMin!=null)
-        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒")
+        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)
         : '<span style="color:var(--ink3)">未確認</span>';
       // スマホの2行目用: 飲む量と摂れる量をpackセルに統合表示(PCでは非表示)
-      var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒")+"/日"):"";
+      var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)+"/日"):"";
       var amtShort;
       if(state.ing){
         var na=p._na;
