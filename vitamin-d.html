@@ -130,6 +130,9 @@
   .addb { width:30px; height:30px; border-radius:100px; border:1.5px solid var(--g1); background:var(--bg); color:var(--g1); font-weight:800; font-size:15px; cursor:pointer; line-height:1; }
   .addb.on { background:var(--g1); color:#fff; }
   td.prod .mk2 { font-size:11px; font-weight:800; color:var(--ink); }
+  .prodflex { display:flex; gap:10px; align-items:center; }
+  .thumb { flex:none; width:46px; height:46px; border-radius:10px; border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:var(--ink3); overflow:hidden; text-align:center; line-height:1.2; }
+  .thumb img { width:100%; height:100%; object-fit:contain; background:#fff; }
   td.prod .nm2 { font-size:13.5px; font-weight:700; line-height:1.4; }
   td.amtc b { font-weight:800; font-size:14.5px; }
   td.amtc .pc { font-size:11px; color:var(--ink3); display:block; }
@@ -197,13 +200,15 @@
 <div class="controls">
   <div class="wrap row1">
     <span class="lbl">絞り込み</span>
+    <select class="mkr" id="ingsel"><option value="">ビタミンD（全商品）</option></select>
+    <select class="mkr" id="mksel"><option value="">全メーカー</option></select>
     <label class="flt"><input type="checkbox" data-f="onsale" checked>販売中のみ</label>
+    <span id="dchips">
     <label class="flt"><input type="checkbox" data-f="d3">D3明記のみ</label>
     <label class="flt"><input type="checkbox" data-f="single">単一成分のみ</label>
     <label class="flt"><input type="checkbox" data-f="k2">K2配合</label>
     <label class="flt"><input type="checkbox" data-f="chew">グミ・チュアブル</label>
-    <select class="mkr" id="mksel"><option value="">全メーカー</option></select>
-    <select class="mkr" id="ingsel"><option value="">全成分</option></select>
+    </span>
     <span class="count" id="count"></span>
   </div>
 </div>
@@ -262,6 +267,16 @@
   function isOnSale(p){ return toArr(p.variants).some(function(v){ return (v.status||"").indexOf("販売中")>=0 || (v.status||"").indexOf("在庫あり")>=0; }); }
   function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
   function mkName(p){ return (p.maker||"").split("(")[0].split("（")[0]; }
+  function formShort(p){
+    var f=p.form||"";
+    if(/グミ|チュアブル/.test(f)) return "グミ";
+    if(/ソフト/.test(f)) return "ソフト";
+    if(/カプセル/.test(f)) return "カプセル";
+    if(/錠|タブレット/.test(f)) return "錠剤";
+    if(/液|ドロップ|オイル/.test(f)) return "液体";
+    if(/粉/.test(f)) return "粉末";
+    return "D";
+  }
   function fmtAmt(p){
     if(p.amtMin==null) return "未取得";
     var a=(p.amtMin===p.amtMax)?p.amtMin:(p.amtMin+"〜"+p.amtMax);
@@ -433,7 +448,7 @@
         : '<span style="color:var(--ink3)">—</span>';
       el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
         +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
-        +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></td>'
+        +'<td class="prod"><div class="prodflex"><div class="thumb">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':formShort(p))+'</div><div><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></div></div></td>'
         +'<td class="num packc">'+packCell+'</td>'
         +'<td class="num dosec">'+doseCell+'</td>'
         +'<td class="num amtc'+(p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
@@ -478,7 +493,19 @@
     Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b,"ja"); }).forEach(function(n){
       var o=document.createElement("option"); o.value=n; o.textContent=n+"（"+counts[n]+"件）"; sel.appendChild(o);
     });
-    sel.addEventListener("change", function(){ state.ing=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
+    sel.addEventListener("change", function(){
+      state.ing=sel.value; sel.classList.toggle("on", !!sel.value);
+      // ビタミンD文脈のときだけD専用チェックボックスを表示。他成分では非表示+解除
+      var dOnly = !sel.value;
+      document.getElementById("dchips").style.display = dOnly ? "" : "none";
+      if(!dOnly){
+        ["d3","single","k2","chew"].forEach(function(k){
+          state.f[k]=false;
+          var cb=document.querySelector('.controls input[data-f="'+k+'"]'); if(cb) cb.checked=false;
+        });
+      }
+      render();
+    });
   }
   function renderYou(){
     document.querySelectorAll("#youbtns button").forEach(function(b){
