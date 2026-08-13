@@ -11,6 +11,7 @@
     --line:#E4E6EA; --track:#E9EBEF;
     --g1:#3B5BA5; --g1-soft:#EDF1FA; --g1-line:#C9D5EE;
     --g2:#B65C1F; --g2-soft:#FAF0E7; --g2-line:#EBD3BE;
+    --ok:#2E7D4F; --ok-soft:#E8F4EC;
     --warn:#B3452C; --warn-soft:#FBEEEA;
   }
   @media (prefers-color-scheme: dark) {
@@ -19,20 +20,27 @@
       --line:#2A2D35; --track:#262932;
       --g1:#5E7FD1; --g1-soft:#1D2434; --g1-line:#31405E;
       --g2:#C97B3E; --g2-soft:#2A2018; --g2-line:#4A3521;
+      --ok:#5CAD7F; --ok-soft:#1C2B22;
       --warn:#D96A4E; --warn-soft:#33201B;
     }
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; }
+  body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; padding-bottom:130px; }
   .wrap { max-width:820px; margin:0 auto; padding:0 20px; }
-  header.page { padding:44px 0 26px; border-bottom:1px solid var(--line); }
+  header.page { padding:40px 0 22px; border-bottom:1px solid var(--line); }
   .back { font-size:13px; font-weight:700; color:var(--g1); text-decoration:none; }
   h1 { font-size:clamp(24px,4vw,32px); font-weight:800; line-height:1.5; margin-top:12px; }
   .sub { font-size:13.5px; color:var(--ink2); margin-top:8px; }
-  .basis { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; font-size:12px; color:var(--ink3); }
-  .basis span { background:var(--surface); border:1px solid var(--line); border-radius:100px; padding:3px 12px; }
 
-  .controls { position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--line); padding:14px 0; }
+  .you { margin-top:16px; border:1px solid var(--g1-line); background:var(--g1-soft); border-radius:14px; padding:14px 18px; }
+  .you .t { font-size:12px; font-weight:800; color:var(--g1); letter-spacing:.08em; margin-bottom:8px; }
+  .you .btns { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+  .you button { font-size:12.5px; font-weight:700; padding:6px 14px; border-radius:100px; border:1.5px solid var(--line); background:var(--bg); color:var(--ink2); cursor:pointer; }
+  .you button.on { border-color:var(--g1); background:var(--g1); color:#fff; }
+  .you .stat { font-size:12.5px; color:var(--ink2); margin-top:8px; }
+  .you .stat b { color:var(--ink); }
+
+  .controls { position:sticky; top:0; z-index:10; background:var(--bg); border-bottom:1px solid var(--line); padding:12px 0; }
   .controls .row1 { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
   .controls .lbl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; margin-right:2px; }
   .controls button.sortb, .controls label.flt {
@@ -44,19 +52,24 @@
   .controls label.flt input { accent-color:var(--g1); }
   .count { font-size:12px; color:var(--ink3); margin-left:auto; }
 
-  main { padding:26px 0 60px; }
+  main { padding:24px 0 40px; }
   .card { border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:14px; background:var(--bg); }
-  .card .top { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; }
-  .card .nm { font-size:16px; font-weight:800; line-height:1.5; }
-  .card .mk { font-size:12px; color:var(--ink3); margin-top:2px; }
-  .price { text-align:right; }
-  .price .day { font-size:19px; font-weight:800; font-variant-numeric:tabular-nums; }
-  .price .day small { font-size:11.5px; font-weight:600; color:var(--ink3); }
-  .price .sub2 { font-size:11.5px; color:var(--ink3); }
-  .price .na { font-size:12.5px; color:var(--ink3); }
-  .amt { margin-top:12px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
-  .amt .v { font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; }
-  .amt .x { font-size:12px; color:var(--ink3); }
+  .card.picked { border-color:var(--g1); box-shadow:0 0 0 1.5px var(--g1); }
+  .card .headrow { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+  .card .mk { font-size:12px; font-weight:700; color:var(--ink3); letter-spacing:.04em; }
+  .card .nm { font-size:17.5px; font-weight:800; line-height:1.5; margin-top:2px; }
+  .pickb { flex:none; font-size:12.5px; font-weight:800; padding:8px 16px; border-radius:100px; border:1.5px solid var(--g1); background:var(--bg); color:var(--g1); cursor:pointer; white-space:nowrap; }
+  .pickb.on { background:var(--g1); color:#fff; }
+  .buyline { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .pack { border:1px solid var(--g1-line); background:var(--g1-soft); border-radius:10px; padding:7px 14px; font-size:13.5px; font-variant-numeric:tabular-nums; }
+  .pack b { font-size:16px; font-weight:800; }
+  .pack .per { font-size:11.5px; color:var(--ink3); margin-left:6px; }
+  .pack.na { border-color:var(--line); background:var(--surface); color:var(--ink3); }
+  .how { margin-top:10px; font-size:13.5px; color:var(--ink2); }
+  .how b { color:var(--ink); font-weight:800; }
+  .amt { margin-top:6px; font-size:13px; color:var(--ink2); }
+  .amt b { color:var(--ink); font-weight:800; font-variant-numeric:tabular-nums; }
+  .amt .x { color:var(--ink3); font-size:12px; }
   .badges { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
   .b { font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; border:1px solid var(--line); background:var(--surface); color:var(--ink2); }
   .b.d3 { border-color:var(--g1-line); background:var(--g1-soft); color:var(--g1); }
@@ -65,7 +78,23 @@
   .b.end { border-color:var(--warn); color:var(--warn); background:var(--bg); }
   .meta { font-size:12px; color:var(--ink3); margin-top:10px; }
   .meta a { color:var(--g1); font-weight:700; text-decoration:none; }
-  footer { padding:36px 0 70px; border-top:1px solid var(--line); }
+
+  #sumbar { position:fixed; left:0; right:0; bottom:0; z-index:20; background:var(--bg); border-top:2px solid var(--g1); box-shadow:0 -4px 20px rgba(0,0,0,.08); display:none; }
+  #sumbar.show { display:block; }
+  #sumbar .inner { max-width:820px; margin:0 auto; padding:12px 20px 14px; }
+  #sumbar .l1 { display:flex; flex-wrap:wrap; gap:6px 14px; align-items:baseline; font-size:13px; color:var(--ink2); }
+  #sumbar .l1 b { font-size:15px; color:var(--ink); font-variant-numeric:tabular-nums; }
+  #sumbar .verdict { font-weight:800; }
+  #sumbar .verdict.ok { color:var(--ok); }
+  #sumbar .verdict.warn { color:var(--warn); }
+  #sumbar .bar { position:relative; height:12px; background:var(--track); border-radius:4px; margin-top:8px; }
+  #sumbar .bar .diet { position:absolute; top:0; bottom:0; left:0; background:var(--ink3); opacity:.55; border-radius:4px 0 0 4px; }
+  #sumbar .bar .supp { position:absolute; top:0; bottom:0; background:var(--g1); }
+  #sumbar .bar.over .supp { background:var(--warn); }
+  #sumbar .goalmark { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--ok); }
+  #sumbar .l2 { font-size:11.5px; color:var(--ink3); margin-top:6px; }
+  #sumbar .clear { float:right; font-size:12px; font-weight:700; color:var(--g2); background:none; border:none; cursor:pointer; }
+  footer { padding:32px 0 60px; border-top:1px solid var(--line); }
   footer .legal { font-size:11.5px; color:var(--ink3); line-height:1.9; }
 </style>
 </head>
@@ -75,7 +104,18 @@
     <a class="back" href="index.html">← トップへ戻る</a>
     <h1>ビタミンD 商品比較</h1>
     <div class="sub">国内で買える30商品を「1日あたり」に揃えて比較します（2026年8月13日調査・二重検品済み）。</div>
-    <div class="basis"><span>成人の目安量 9.0μg/日</span><span>耐容上限量 100μg(4,000IU)/日</span><span>1μg = 40IU</span></div>
+    <div class="you">
+      <div class="t">あなたの基準で見る（任意）</div>
+      <div class="btns" id="youbtns">
+        <button data-k="sex" data-v="m">男性</button>
+        <button data-k="sex" data-v="f">女性</button>
+        <span style="width:8px"></span>
+        <button data-k="age" data-v="20">20代</button>
+        <button data-k="age" data-v="30">30代</button>
+        <button data-k="age" data-v="40">40代</button>
+      </div>
+      <div class="stat" id="youstat"></div>
+    </div>
   </div>
 </header>
 
@@ -97,9 +137,18 @@
 
 <main><div class="wrap" id="list"></div></main>
 
+<div id="sumbar">
+  <div class="inner">
+    <button class="clear" id="clearpick">すべて外す</button>
+    <div class="l1" id="sumline"></div>
+    <div class="bar" id="sumbarviz"><div class="diet"></div><div class="supp"></div><div class="goalmark"></div></div>
+    <div class="l2" id="sumnote"></div>
+  </div>
+</div>
+
 <footer>
   <div class="wrap legal">
-    出典：各商品の公式サイト・販売ページ（各カードのリンク先）。価格・仕様は2026年8月13日時点の調査値であり、変動します。「未取得」はその時点で確認できなかったことを示します（推測では埋めていません）。<br>
+    出典：各商品の公式サイト・販売ページ（各カードのリンク先）。価格・仕様は2026年8月13日時点の調査値であり、変動します。「未取得」はその時点で確認できなかったことを示します（推測では埋めていません）。合算表示は選択した商品のビタミンD量と公的統計の平均摂取量に基づく参考値であり、個人の食事内容を反映するものではありません。<br>
     本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
   </div>
 </footer>
@@ -107,17 +156,22 @@
 <script src="data.js"></script>
 <script>
 (function(){
-  var state = { sort:"price", f:{ onsale:true, d3:false, single:false, k2:false, chew:false } };
+  var GOAL = 9.0, UL = 100;
+  var DIET = { m:{20:4.7,30:5.7,40:5.5}, f:{20:4.3,30:4.8,40:5.1} };
+  var state = { sort:"price", f:{ onsale:true, d3:false, single:false, k2:false, chew:false },
+                you:{ sex:null, age:null }, picked:{} };
+  try { var sv = JSON.parse(localStorage.getItem("sdb-vd")||"{}"); if(sv.you) state.you=sv.you; if(sv.picked) state.picked=sv.picked; } catch(e){}
 
+  function save(){ try{ localStorage.setItem("sdb-vd", JSON.stringify({you:state.you, picked:state.picked})); }catch(e){} }
   function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
+  function dietAvg(){ return (state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
   function bestPrice(p){
     var best=null;
     toArr(p.variants).forEach(function(v){
       if(v.reg==null || v.days==null || v.days<=0) return;
-      var d = v.reg/v.days;
-      var ds = (v.sub!=null) ? v.sub/v.days : null;
-      if(best==null || d < best.day) best = { day:d, sub:ds, seller:v.seller, url:v.url };
-      else if(ds!=null && best.sub==null && d===best.day) best.sub = ds;
+      var d=v.reg/v.days, ds=(v.sub!=null)?v.sub/v.days:null;
+      if(best==null || d<best.day) best={day:d,sub:ds};
+      else if(ds!=null && best.sub==null && d===best.day) best.sub=ds;
     });
     return best;
   }
@@ -125,59 +179,138 @@
   function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
   function fmtAmt(p){
     if(p.amtMin==null) return "未取得";
-    var a = (p.amtMin===p.amtMax) ? p.amtMin : (p.amtMin + "〜" + p.amtMax);
-    var iu = (p.amtMax!=null) ? Math.round(p.amtMax*40) : null;
-    return a + "μg" + (iu? "（" + (p.amtMin===p.amtMax? iu : "最大" + iu) + "IU）" : "");
+    var a=(p.amtMin===p.amtMax)?p.amtMin:(p.amtMin+"〜"+p.amtMax);
+    var iu=(p.amtMax!=null)?Math.round(p.amtMax*40):null;
+    return a+"μg"+(iu?"（"+(p.amtMin===p.amtMax?iu:"最大"+iu)+"IU）":"");
   }
-  function render(){
-    var items = PRODUCTS.slice();
-    if(state.f.onsale) items = items.filter(isOnSale);
-    if(state.f.d3) items = items.filter(function(p){ return p.d3; });
-    if(state.f.single) items = items.filter(function(p){ return (p.comp||"").indexOf("単一")>=0; });
-    if(state.f.k2) items = items.filter(function(p){ return p.k2; });
-    if(state.f.chew) items = items.filter(isChew);
-    items.forEach(function(p){ p._bp = bestPrice(p); });
-    if(state.sort==="price") items.sort(function(a,b){ var x=a._bp?a._bp.day:1e9, y=b._bp?b._bp.day:1e9; return x-y; });
-    if(state.sort==="amtHi") items.sort(function(a,b){ return (b.amtMax||0)-(a.amtMax||0); });
-    if(state.sort==="amtLo") items.sort(function(a,b){ return (a.amtMax||1e9)-(b.amtMax||1e9); });
+  function pctText(p){
+    if(p.amtMax==null) return "";
+    var pct=Math.round(p.amtMax/GOAL*100);
+    var mult=Math.round(p.amtMax/GOAL*10)/10;
+    var who=(state.you.sex&&state.you.age)?"あなたの目安量":"成人目安量(9.0μg)";
+    return ' <span class="x">＝'+who+'の<b style="color:var(--ink)">約'+pct+'%</b>（'+mult+'倍）</span>';
+  }
+  function findP(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
 
-    var el = document.getElementById("list"); el.innerHTML = "";
-    items.forEach(function(p){
-      var bp = p._bp;
-      var priceHtml = bp
-        ? '<div class="day">約' + (Math.round(bp.day*10)/10) + '<small>円/日</small></div>'
-          + (bp.sub!=null ? '<div class="sub2">定期 約' + (Math.round(bp.sub*10)/10) + '円/日</div>' : '')
-        : '<div class="na">価格未取得</div>';
-      var badges = "";
-      badges += p.d3 ? '<span class="b d3">D3明記</span>' : '<span class="b">形態表記なし</span>';
-      if((p.comp||"").indexOf("単一")>=0) badges += '<span class="b">単一成分</span>'; else badges += '<span class="b">複合（+' + p.others + '成分）</span>';
-      if(p.k2) badges += '<span class="b k2">K2配合</span>';
-      if(p.form && p.form!=="未確認") badges += '<span class="b">' + p.form + '</span>';
-      if(p.tech && p.tech.indexOf("未確認")<0 && p.tech!=="") badges += '<span class="b k2">' + p.tech.split("(")[0] + '</span>';
-      if(p.amtMax!=null && p.amtMax>100) badges += '<span class="b warn">耐容上限(100μg)超え — 摂取は慎重に</span>';
-      else if(p.amtMax!=null && p.amtMax>=100) badges += '<span class="b warn">耐容上限(100μg)ちょうど</span>';
-      if(!isOnSale(p)) badges += '<span class="b end">販売終了・在庫切れ</span>';
-      var mult = p.amtMax!=null ? Math.round(p.amtMax/9.0*10)/10 : null;
-      el.innerHTML += '<div class="card"><div class="top"><div><div class="nm">' + p.name + '</div><div class="mk">' + p.maker + '</div></div>'
-        + '<div class="price">' + priceHtml + '</div></div>'
-        + '<div class="amt"><span class="v">1日あたり ' + fmtAmt(p) + '</span>'
-        + (mult!=null ? '<span class="x">＝ 成人目安量(9.0μg)の約' + mult + '倍</span>' : '') + '</div>'
-        + '<div class="badges">' + badges + '</div>'
-        + '<div class="meta"><a href="' + p.url + '" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-13</div></div>';
-    });
-    document.getElementById("count").textContent = items.length + "件 / 全" + PRODUCTS.length + "件";
+  function renderSum(){
+    var bar=document.getElementById("sumbar");
+    var ids=Object.keys(state.picked).filter(function(k){return state.picked[k];});
+    if(ids.length===0){ bar.classList.remove("show"); return; }
+    bar.classList.add("show");
+    var sMin=0,sMax=0,otherNote=0;
+    ids.forEach(function(id){ var p=findP(id); if(!p||p.amtMax==null) return; sMin+=p.amtMin; sMax+=p.amtMax; if(p.others>0) otherNote++; });
+    var diet=dietAvg();
+    var totMin=sMin+(diet||0), totMax=sMax+(diet||0);
+    var pctMin=Math.round(totMin/GOAL*100);
+    var over=totMax>UL;
+    var verdict, cls;
+    if(over){ verdict="⚠️ 耐容上限(100μg)を超えます — この組み合わせは摂りすぎに注意"; cls="warn"; }
+    else if(totMin>=GOAL){ verdict="✓ 目安量(9.0μg)を満たします"; cls="ok"; }
+    else { verdict="目安量まであと約"+(Math.round((GOAL-totMin)*10)/10)+"μg"; cls=""; }
+    var dietTxt=(diet!=null)?("食事(平均) "+diet+"μg ＋ "):"";
+    var totTxt=(totMin===totMax)?(Math.round(totMin*10)/10+"μg"):(Math.round(totMin*10)/10+"〜"+Math.round(totMax*10)/10+"μg");
+    document.getElementById("sumline").innerHTML =
+      '選択中 '+ids.length+'品　｜　'+dietTxt+'サプリ合計 '+(sMin===sMax?sMin:sMin+"〜"+sMax)+'μg ＝ <b>1日合計 '+totTxt+'</b>'
+      +'（目安量の約'+pctMin+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
+    var viz=document.getElementById("sumbarviz");
+    var scale=Math.max(UL, totMax);
+    viz.classList.toggle("over", over);
+    viz.querySelector(".diet").style.width=((diet||0)/scale*100)+"%";
+    viz.querySelector(".supp").style.left=((diet||0)/scale*100)+"%";
+    viz.querySelector(".supp").style.width=(sMax/scale*100)+"%";
+    viz.querySelector(".goalmark").style.left=(GOAL/scale*100)+"%";
+    var note = (diet==null?"上の「あなたの基準で見る」で性別・年代を選ぶと、食事の平均摂取分も足して判定します。":"食事分は公的統計の平均値です（あなた自身の食事ではありません）。")
+      + " バーの緑線＝目安量9.0μg・右端＝"+scale+"μg"+(scale===UL?"（耐容上限）":"")+"。"
+      + (otherNote>0?" 選択にはビタミンD以外の配合成分を含む商品があります（他成分の合算は今後対応）。":"");
+    document.getElementById("sumnote").textContent=note;
   }
+
+  function render(){
+    var items=PRODUCTS.slice();
+    if(state.f.onsale) items=items.filter(isOnSale);
+    if(state.f.d3) items=items.filter(function(p){return p.d3;});
+    if(state.f.single) items=items.filter(function(p){return (p.comp||"").indexOf("単一")>=0;});
+    if(state.f.k2) items=items.filter(function(p){return p.k2;});
+    if(state.f.chew) items=items.filter(isChew);
+    items.forEach(function(p){ p._bp=bestPrice(p); });
+    if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return x-y;});
+    if(state.sort==="amtHi") items.sort(function(a,b){return (b.amtMax||0)-(a.amtMax||0);});
+    if(state.sort==="amtLo") items.sort(function(a,b){return (a.amtMax||1e9)-(b.amtMax||1e9);});
+    var el=document.getElementById("list"); el.innerHTML="";
+    items.forEach(function(p){
+      var bp=p._bp;
+      var packs="", seen={};
+      toArr(p.variants).forEach(function(v){
+        if(v.qty==null) return;
+        var key=v.qty+"-"+(v.reg==null?"x":v.reg);
+        if(seen[key]) return; seen[key]=1;
+        var days=v.days!=null?"（約"+v.days+"日分）":"";
+        var inner=v.qty+(v.unit||"")+days;
+        if(v.reg!=null){
+          var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
+          packs+='<span class="pack">'+inner+' <b>'+v.reg.toLocaleString()+'円</b>'+per+'</span>';
+        } else { packs+='<span class="pack na">'+inner+' 価格未取得</span>'; }
+      });
+      if(packs==="") packs='<span class="pack na">容量・価格 未取得</span>';
+      var dose=(p.doseMin!=null)?"1日 "+(p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒"):"未確認";
+      var how='<div class="how">メーカー推奨の飲み方: <b>'+dose+'</b>'+(p.intake&&p.intake.indexOf("未確認")<0?'　<span>「'+p.intake+'」</span>':'')+'</div>';
+      var subTxt=(bp&&bp.sub!=null)?'　定期なら 約'+(Math.round(bp.sub*10)/10)+'円/日':'';
+      var amt='<div class="amt">ビタミンD <b>'+fmtAmt(p)+'</b>/日'+pctText(p)
+        +(bp?'　｜　最安 <b>約'+(Math.round(bp.day*10)/10)+'円/日</b>'+subTxt:'')+'</div>';
+      var badges="";
+      badges+=p.d3?'<span class="b d3">D3明記</span>':'<span class="b">形態表記なし</span>';
+      if((p.comp||"").indexOf("単一")>=0) badges+='<span class="b">単一成分</span>'; else badges+='<span class="b">複合（+'+p.others+'成分）</span>';
+      if(p.k2) badges+='<span class="b k2">K2配合</span>';
+      if(p.form&&p.form!=="未確認") badges+='<span class="b">'+p.form+'</span>';
+      if(p.tech&&p.tech.indexOf("未確認")<0&&p.tech!=="") badges+='<span class="b k2">'+p.tech.split("(")[0]+'</span>';
+      if(p.amtMax!=null&&p.amtMax>100) badges+='<span class="b warn">耐容上限(100μg)超え — 摂取は慎重に</span>';
+      else if(p.amtMax!=null&&p.amtMax>=100) badges+='<span class="b warn">耐容上限(100μg)ちょうど</span>';
+      if(!isOnSale(p)) badges+='<span class="b end">販売終了・在庫切れ</span>';
+      var on=!!state.picked[p.id];
+      el.innerHTML+='<div class="card'+(on?' picked':'')+'" id="c-'+p.id+'">'
+        +'<div class="headrow"><div><div class="mk">'+p.maker+(p.brand&&p.brand!==p.maker?'｜'+p.brand:'')+'</div>'
+        +'<div class="nm">'+p.name+'</div></div>'
+        +'<button class="pickb'+(on?' on':'')+'" data-id="'+p.id+'">'+(on?'✓ リストに入っています':'＋ 飲むリストに入れる')+'</button></div>'
+        +'<div class="buyline">'+packs+'</div>'+how+amt
+        +'<div class="badges">'+badges+'</div>'
+        +'<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-13</div></div>';
+    });
+    document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
+    el.querySelectorAll(".pickb").forEach(function(b){
+      b.addEventListener("click", function(){
+        var id=b.dataset.id;
+        state.picked[id]=!state.picked[id];
+        save(); render();
+      });
+    });
+    renderSum();
+  }
+  function renderYou(){
+    document.querySelectorAll("#youbtns button").forEach(function(b){
+      b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
+    });
+    var d=dietAvg();
+    document.getElementById("youstat").innerHTML = d!=null
+      ? "あなたの目安量 <b>9.0μg/日</b>・同じ属性の平均摂取 <b>"+d+"μg/日</b>（令和5年国民健康・栄養調査）。各商品の%はこの目安量に対する割合です。"
+      : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
+  }
+  document.getElementById("youbtns").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
+    save(); renderYou(); render();
+  });
   document.querySelectorAll(".sortb").forEach(function(b){
     b.addEventListener("click", function(){
-      state.sort = b.dataset.s;
-      document.querySelectorAll(".sortb").forEach(function(x){ x.classList.toggle("on", x===b); });
+      state.sort=b.dataset.s;
+      document.querySelectorAll(".sortb").forEach(function(x){x.classList.toggle("on",x===b);});
       render();
     });
   });
   document.querySelectorAll(".flt input").forEach(function(i){
-    i.addEventListener("change", function(){ state.f[i.dataset.f] = i.checked; render(); });
+    i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
   });
-  render();
+  document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
+  renderYou(); render();
 })();
 </script>
 </body>
