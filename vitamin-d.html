@@ -118,6 +118,8 @@
   td.tagc { white-space:nowrap; }
   td.tagc .b { font-size:10px; padding:2px 8px; }
   td.chev { width:30px; color:var(--ink3); font-weight:800; }
+  .rowchips { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .rowchips .b { font-size:10px; padding:2px 8px; }
   tr.detail { display:none; background:var(--surface); }
   tr.detail.open { display:table-row; }
   tr.detail td { padding:14px 16px 16px 56px; }
@@ -169,7 +171,7 @@
   </div>
 </div>
 
-<main><div class="wrap"><div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:12px;color:var(--ink2);padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名</th><th class="num">飲む量/日</th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th class="num sortable" data-s="amt">ビタミンD量/日 <span class="arr"></span></th><th>特徴</th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<main><div class="wrap"><div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名</th><th class="num">飲む量/日</th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th class="num sortable" data-s="amt">ビタミンD量/日 <span class="arr"></span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -313,8 +315,16 @@
       var priceCell = bp
         ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
         : '<span style="color:var(--ink3)">—</span>';
+      var diet=dietAvg();
+      var pcLine;
+      if(p.amtMin==null){ pcLine=null; }
+      else if(diet!=null){
+        var tot=Math.round((diet+p.amtMin)*10)/10;
+        var pct2=Math.round(tot/GOAL*100);
+        pcLine='食事平均+本品 ≈'+tot+'μg（目安量の'+pct2+'%）';
+      } else { pcLine='目安量9.0μgの約'+pct+'%'; }
       var amtCell = (p.amtMin!=null)
-        ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
+        ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+pcLine+'</span>'
         : '<span style="color:var(--ink3)">未取得</span>';
       var doseCell=(p.doseMin!=null)
         ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0?p.form.split("(")[0]:"")+'</span>'
@@ -324,13 +334,12 @@
       if(bv) packSub='<span class="pk">'+bv.qty+(bv.unit||"")+'・約'+bv.days+'日分 '+bv.reg.toLocaleString()+'円</span>';
       el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
         +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
-        +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div></td>'
+        +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+'</div></td>'
         +'<td class="num dosec">'+doseCell+'</td>'
         +'<td class="num pricec">'+priceCell+packSub+'</td>'
         +'<td class="num amtc'+(p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
-        +'<td class="tagc">'+tags+'</td>'
         +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
-        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
+        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="6">'+detailHtml(p)+'</td></tr>';
     });
     document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
     el.querySelectorAll(".addb").forEach(function(b){
@@ -369,7 +378,7 @@
     });
     var d=dietAvg();
     document.getElementById("youstat").innerHTML = d!=null
-      ? "この属性の目安量 <b>9.0μg/日</b>・平均摂取 <b>"+d+"μg/日</b>（令和5年国民健康・栄養調査）。表の%はこの目安量に対する割合です。"
+      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・平均摂取 <b>"+d+"μg/日</b>（令和5年調査）。表の%は<b>食事平均にその商品を足した場合</b>の目安量に対する割合に切り替わります。"
       : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
