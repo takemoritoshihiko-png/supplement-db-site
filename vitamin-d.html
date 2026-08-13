@@ -203,6 +203,7 @@
     <label class="flt"><input type="checkbox" data-f="k2">K2配合</label>
     <label class="flt"><input type="checkbox" data-f="chew">グミ・チュアブル</label>
     <select class="mkr" id="mksel"><option value="">全メーカー</option></select>
+    <select class="mkr" id="ingsel"><option value="">全成分</option></select>
     <span class="count" id="count"></span>
   </div>
 </div>
@@ -242,7 +243,7 @@
   var GOAL = 9.0, UL = 100;
   var DIET = { m:{20:4.7,30:5.7,40:5.5,50:6.0,60:7.8,70:8.1,80:8.7}, f:{20:4.3,30:4.8,40:5.1,50:5.1,60:7.0,70:7.8,80:7.4} };
   var state = { sort:"price", dir:1, f:{ onsale:true, d3:false, single:false, k2:false, chew:false },
-                mk:"", you:{ sex:null, age:null }, picked:{}, open:{} };
+                mk:"", ing:"", you:{ sex:null, age:null }, picked:{}, open:{} };
   try { var sv = JSON.parse(localStorage.getItem("sdb-vd")||"{}"); if(sv.you) state.you=sv.you; if(sv.picked) state.picked=sv.picked; } catch(e){}
 
   function save(){ try{ localStorage.setItem("sdb-vd", JSON.stringify({you:state.you, picked:state.picked})); }catch(e){} }
@@ -267,6 +268,37 @@
     return a+"μg";
   }
   function findP(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
+
+  // 栄養素ステータス: 配合成分(ings)から正規化タグを導出(全商品共通のビタミンDは除く)
+  function nutTags(p){
+    var set={};
+    if(p.k2) set["ビタミンK2"]=1;
+    toArr(p.ings).forEach(function(g){
+      var n=(g.n||"").toLowerCase(), c=null;
+      if(/k2/.test(n)) c="ビタミンK2";
+      else if(/カルシウム|calcium/.test(n)) c="カルシウム";
+      else if(/マグネシウム|magnesium/.test(n)) c="マグネシウム";
+      else if(/乳酸菌/.test(n)) c="乳酸菌";
+      else if(/ビタミンk(?!2)|vitamin k(?!2)/.test(n)) c="ビタミンK";
+      else if(/葉酸|folic/.test(n)) c="葉酸";
+      else if(/^鉄|iron/.test(n)) c="鉄";
+      else if(/ビタミンc|vitamin c/.test(n)) c="ビタミンC";
+      else if(/亜鉛|zinc/.test(n)) c="亜鉛";
+      else if(/b12/.test(n)) c="ビタミンB12";
+      else if(/b1/.test(n)) c="ビタミンB1";
+      else if(/b6/.test(n)) c="ビタミンB6";
+      else if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) c="オメガ3系オイル";
+      else if(/コラーゲン/.test(n)) c="コラーゲン";
+      else if(/ボーンペップ/.test(n)) c="ボーンペップ(卵黄ペプチド)";
+      else if(/カリウム|potassium/.test(n)) c="カリウム";
+      else if(/ナトリウム|sodium/.test(n)) c="ナトリウム";
+      else if(/メチオニン/.test(n)) c="メチオニン";
+      else c=(g.n||"").split("(")[0].split("（")[0].trim();
+      if(c) set[c]=1;
+    });
+    return set;
+  }
+  PRODUCTS.forEach(function(p){ p._nut=nutTags(p); });
 
   function renderSum(){
     var bar=document.getElementById("sumbar");
@@ -353,6 +385,7 @@
     if(state.f.k2) items=items.filter(function(p){return p.k2;});
     if(state.f.chew) items=items.filter(isChew);
     if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
+    if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
     items.forEach(function(p){ p._bp=bestPrice(p); });
     if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
     if(state.sort==="amt") items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
@@ -439,6 +472,14 @@
     });
     sel.addEventListener("change", function(){ state.mk=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
   }
+  function buildIng(){
+    var sel=document.getElementById("ingsel"), counts={};
+    PRODUCTS.forEach(function(p){ Object.keys(p._nut).forEach(function(n){ counts[n]=(counts[n]||0)+1; }); });
+    Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b,"ja"); }).forEach(function(n){
+      var o=document.createElement("option"); o.value=n; o.textContent=n+"（"+counts[n]+"件）"; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){ state.ing=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
+  }
   function renderYou(){
     document.querySelectorAll("#youbtns button").forEach(function(b){
       b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
@@ -471,7 +512,7 @@
     i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
   });
   document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
-  buildMk(); renderYou(); render();
+  buildMk(); buildIng(); renderYou(); render();
 })();
 </script>
 </body>
