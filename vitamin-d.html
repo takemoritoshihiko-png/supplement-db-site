@@ -280,7 +280,12 @@
     if(p.amtMax!=null&&p.amtMax>100) badges+='<span class="b warn">耐容上限(100μg/成人)超え — 摂取量にご注意ください</span>';
     else if(p.amtMax!=null&&p.amtMax>=100) badges+='<span class="b warn">耐容上限(100μg/成人)ちょうど</span>';
     if(!isOnSale(p)) badges+='<span class="b end">販売終了・在庫切れ</span>';
-    return '<div class="buyline">'+packs+'</div>'+how
+    var ingList='<div class="how" style="margin-top:0"><b>配合成分（1日目安量あたり）:</b> ビタミンD '+fmtAmt(p)
+      +(toArr(p.ings).length?('　'+toArr(p.ings).map(function(g){
+        var v=(g.a1==null)?'量未確認':((g.a1===g.a2?g.a1:g.a1+'〜'+g.a2)+(g.u||''));
+        return g.n+' '+v;
+      }).join('　')):'（ビタミンDのみ）')+'</div>';
+    return ingList+'<div class="buyline" style="margin-top:10px">'+packs+'</div>'+how
       +'<div class="badges">'+badges+'</div>'
       +'<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-13</div>';
   }
@@ -302,8 +307,8 @@
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
       var tags="";
       if(p.d3) tags+='<span class="b d3">D3</span>';
-      if(p.k2) tags+='<span class="b k2">K2</span>';
-      if((p.comp||"").indexOf("複合")>=0) tags+='<span class="b">複合</span>';
+      if(p.k2) tags+='<span class="b k2">K2'+(p.k2amt!=null?' '+p.k2amt+'μg':'')+'</span>';
+      if((p.comp||"").indexOf("複合")>=0) tags+='<span class="b">複合+'+p.others+'</span>';
       if(isChew(p)) tags+='<span class="b">グミ</span>';
       var priceCell = bp
         ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
@@ -338,6 +343,13 @@
     el.querySelectorAll("tr.main").forEach(function(tr){
       tr.addEventListener("click", function(){
         state.open[tr.dataset.id]=!state.open[tr.dataset.id];
+        render();
+      });
+    });
+    el.querySelectorAll("tr.detail").forEach(function(tr){
+      tr.addEventListener("click", function(e){
+        if(e.target.closest("a")) return;
+        state.open[tr.dataset.for]=false;
         render();
       });
     });
