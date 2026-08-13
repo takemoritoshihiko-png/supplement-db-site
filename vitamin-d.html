@@ -118,7 +118,11 @@
   td.tagc { white-space:nowrap; }
   td.tagc .b { font-size:10px; padding:2px 8px; }
   td.chev { width:30px; color:var(--ink3); font-weight:800; }
-  .rowchips { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; }
+  .rowchips { display:flex; flex-wrap:wrap; gap:4px; margin-top:5px; align-items:center; }
+  .ingline { font-size:11px; color:var(--g2); font-weight:700; }
+  td.packc { white-space:nowrap; }
+  td.packc b { font-weight:800; font-size:14.5px; }
+  td.packc .sub { display:block; font-size:10.5px; color:var(--ink3); }
   .rowchips .b { font-size:10px; padding:2px 8px; }
   tr.detail { display:none; background:var(--surface); }
   tr.detail.open { display:table-row; }
@@ -183,7 +187,7 @@
 </div>
 <span style="font-size:11.5px;color:var(--ink3)">※商品ごとにメーカーの指定がある場合はそちらが優先です（各行の詳細に「メーカー推奨の飲み方」原文を掲載）。効果を保証するものではありません。</span>
 </div>
-<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名</th><th class="num">飲む量/日</th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th class="num sortable" data-s="amt">ビタミンD量/日 <span class="arr"></span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">D量/日 <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -319,39 +323,56 @@
     items.forEach(function(p){
       var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
+      // ① 商品セル: チップ+配合成分名を行内表示
       var tags="";
       if(p.d3) tags+='<span class="b d3">D3</span>';
-      if(p.k2) tags+='<span class="b k2">K2'+(p.k2amt!=null?' '+p.k2amt+'μg':'')+'</span>';
-      if((p.comp||"").indexOf("複合")>=0) tags+='<span class="b">複合+'+p.others+'</span>';
       if(isChew(p)) tags+='<span class="b">グミ</span>';
-      var priceCell = bp
-        ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
-        : '<span style="color:var(--ink3)">—</span>';
-      var diet=dietAvg();
-      var pcLine;
+      if(p.amtMax!=null&&p.amtMax>100) tags+='<span class="b warn">上限超え注意</span>';
+      if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
+      var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").replace("ビタミン",""); }).filter(function(n){return n;});
+      var ingTxt="";
+      if(ingNames.length){
+        var shown=ingNames.slice(0,4).join("・");
+        ingTxt='<span class="ingline">＋'+shown+(ingNames.length>4?"・他"+(ingNames.length-4):"")+'</span>';
+      }
+      // ② 内容量・販売価格セル(最安/日のパックを代表に)
+      var bv=null, extra=0;
+      toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null){ if(bv==null||v.reg/v.days<bv.reg/bv.days) bv=v; } });
+      var packCell;
+      if(bv){
+        packCell=bv.qty+(bv.unit||"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+(toArr(p.variants).length>1?'・ほか容量あり':'')+'</span>';
+      } else {
+        var v0=toArr(p.variants)[0];
+        packCell=(v0&&v0.qty!=null)?(v0.qty+(v0.unit||"")+'<span class="sub">価格未取得</span>'):'<span style="color:var(--ink3)">未取得</span>';
+      }
+      // ③ 飲む量/日
+      var doseCell=(p.doseMin!=null)
+        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0&&p.form.indexOf("粒")!==0?p.form.split("(")[0]:"")+'</span>'
+        : '<span style="color:var(--ink3)">未確認</span>';
+      // ④ D量/日(属性選択時は食事平均+本品%)
+      var diet=dietAvg(); var pcLine;
       if(p.amtMin==null){ pcLine=null; }
       else if(diet!=null){
         var tot=Math.round((diet+p.amtMin)*10)/10;
         var pct2=Math.round(tot/GOAL*100);
         pcLine='食事平均+本品 ≈'+tot+'μg（目安量の'+pct2+'%）';
       } else { pcLine='目安量9.0μgの約'+pct+'%'; }
-      var amtCell = (p.amtMin!=null)
+      var amtCell=(p.amtMin!=null)
         ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+pcLine+'</span>'
         : '<span style="color:var(--ink3)">未取得</span>';
-      var doseCell=(p.doseMin!=null)
-        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0?p.form.split("(")[0]:"")+'</span>'
-        : '<span style="color:var(--ink3)">未確認</span>';
-      var packSub="";
-      var bv=null; toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null&&(bv==null||v.reg/v.days<bv.reg/bv.days)) bv=v; });
-      if(bv) packSub='<span class="pk">'+bv.qty+(bv.unit||"")+'・約'+bv.days+'日分 '+bv.reg.toLocaleString()+'円</span>';
+      // ⑤ 価格/日(数字1つ+定期のみ)
+      var priceCell = bp
+        ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
+        : '<span style="color:var(--ink3)">—</span>';
       el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
         +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
-        +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+'</div></td>'
+        +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></td>'
+        +'<td class="num packc">'+packCell+'</td>'
         +'<td class="num dosec">'+doseCell+'</td>'
-        +'<td class="num pricec">'+priceCell+packSub+'</td>'
         +'<td class="num amtc'+(p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
+        +'<td class="num pricec">'+priceCell+'</td>'
         +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
-        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="6">'+detailHtml(p)+'</td></tr>';
+        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
     });
     document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
     el.querySelectorAll(".addb").forEach(function(b){
