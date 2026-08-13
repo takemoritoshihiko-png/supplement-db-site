@@ -29,6 +29,16 @@
   .wrap { max-width:820px; margin:0 auto; padding:0 20px; }
   header.page { padding:40px 0 22px; border-bottom:1px solid var(--line); }
   .back { font-size:13px; font-weight:700; color:var(--g1); text-decoration:none; }
+  .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.16em; color:var(--ink3); margin:14px 0 8px; }
+  header .tagline { font-size:16.5px; font-weight:700; color:var(--g1); margin-top:8px; }
+  .stepn { display:inline-block; background:var(--g1); color:#fff; border-radius:100px; width:20px; height:20px; text-align:center; line-height:20px; font-size:12px; font-weight:800; margin-right:7px; }
+  details.guide { border:1px solid var(--g2-line); background:var(--g2-soft); border-radius:12px; margin-bottom:16px; font-size:13px; color:var(--ink2); line-height:1.8; }
+  details.guide summary { cursor:pointer; padding:12px 18px; font-size:13px; list-style:none; }
+  details.guide summary::-webkit-details-marker { display:none; }
+  details.guide summary::after { content:"開く ▾"; float:right; font-size:11.5px; color:var(--g2); font-weight:700; }
+  details.guide[open] summary::after { content:"閉じる ▴"; }
+  details.guide .gbody { padding:0 18px 12px; border-top:1px solid var(--g2-line); padding-top:10px; }
+  .b.best { border-color:var(--ok); background:var(--ok-soft); color:var(--ok); font-weight:800; }
   h1 { font-size:clamp(24px,4vw,32px); font-weight:800; line-height:1.5; margin-top:12px; }
   .sub { font-size:13.5px; color:var(--ink2); margin-top:8px; }
 
@@ -158,11 +168,13 @@
 <header class="page">
   <div class="wrap">
     <a class="back" href="index.html">← トップへ戻る</a>
-    <h1>ビタミンD 商品比較</h1>
-    <div class="sub">国内で流通が確認できた30商品を「1日あたり」に揃えて比較します（2026年8月13日調査）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。販売終了・在庫切れ・並行輸入品を含みます（表示で区別）。</div>
+    <div class="eyebrow">VITAMIN D ─ 徹底比較</div>
+    <h1>サプリ選びに、理にかなった選択を。</h1>
+    <div class="tagline">30商品のビタミンDを、「1日あたりの量と価格」でフラットに比較。</div>
+    <div class="sub">パッケージの謳い文句や、バラバラな単位に惑わされる必要はもうありません。日本人に不足しがちなビタミンD——国の基準に基づくあなたの目安量と、コストパフォーマンスに優れた一粒を、同じ物差しで見つけられます。</div>
     <div class="sub" style="margin-top:10px"><b style="color:var(--ink)">ビタミンDとは</b> — カルシウムの吸収を助け、骨や歯を健康に保つために必要とされる栄養素です。魚などの食品と日光浴で得られますが、不足すると骨がもろくなりやすいと言われています。日本人の食事からの平均摂取量は、どの年代も国の目安量9.0μg/日に届いていません（令和5年 国民健康・栄養調査）。</div>
     <div class="you">
-      <div class="t">あなたの基準で見る（任意）</div>
+      <div class="t"><span class="stepn">1</span>あなたの「栄養の現在地」を知る（任意）</div>
       <div class="btns" id="youbtns">
         <button data-k="sex" data-v="m">男性</button>
         <button data-k="sex" data-v="f">女性</button>
@@ -194,12 +206,15 @@
 </div>
 
 <main><div class="wrap">
-<div style="border:1px solid var(--g2-line);background:var(--g2-soft);border-radius:12px;padding:12px 18px;margin-bottom:16px;font-size:13px;color:var(--ink2);line-height:1.8">
+<details class="guide">
+<summary><b style="color:var(--ink)">飲み方の目安（1日1回・食後がおすすめとされます）と「D3」表示の読み方</b></summary>
+<div class="gbody">
 <b style="color:var(--ink)">飲み方の目安</b> — <b style="color:var(--ink)">1日1回・食後</b>がおすすめとされています（体に蓄積するため分割は不要、脂と一緒だと吸収されやすいため）。時間帯はいつでも構いません。<br>
 <b style="color:var(--ink)">「D3」の読み方</b> — <span class="b d3" style="margin:0 2px">D3</span>＝ラベルに「ビタミンD3」（動物由来。日光で体内に作られるのと同じ型）と明記された商品。市販品はほぼD3です。表記がない商品は「形態表記なし」とし、推測で断定しません。<br>
 <span style="font-size:11.5px;color:var(--ink3)">※メーカーの指定があればそちらが優先（各行の詳細に原文を掲載）。効果を保証するものではありません。</span>
 </div>
-<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">摂れるビタミンD <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+</details>
+<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px"><span class="stepn">2</span><b style="color:var(--ink);font-size:13px">同じ物差しで、ノイズなく比べる</b> ─ 量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">摂れるビタミンD <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -212,6 +227,7 @@
 
 <footer>
   <div class="wrap legal">
+    <b style="color:var(--ink)">掲載データについて</b>：国内で流通が確認できた30商品を「1日あたり」に揃えて比較しています（2026年8月13日調査）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。販売終了・在庫切れ・並行輸入品を含みます（表示で区別）。<br>
     出典：各商品の公式サイト・販売ページ（各カードのリンク先）。価格・仕様は2026年8月13日時点の調査値であり、変動します。「未取得」「未確認」はその時点で確認できなかったことを示し、推定値には「推定」と付記しています。合算表示は選択した商品のビタミンD量と公的統計の平均摂取量に基づく参考値であり、個人の食事内容を反映するものではありません。<br>
     「耐容上限量」について：耐容上限量は、習慣的に摂取した場合に健康障害のリスクが高まりはじめるとされる量です（日本人の食事摂取基準・成人）。この量を超えたら直ちに健康を害するという意味ではありません。また食品からの摂取分を含めた1日の総量に対する値です。当サイトのバッジは公表されている1日あたり含有量とこの数値を機械的に比較して表示しています。<br>ビタミンK2について：血液を固まりにくくする薬（ワルファリンなど）を服用中の方は、ビタミンKの摂取により薬の効果が弱まることがあります。必ず主治医・薬剤師にご相談ください。<br>本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
   </div>
@@ -335,11 +351,15 @@
     if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
     if(state.sort==="amt") items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
     var el=document.getElementById("list"); el.innerHTML="";
+    // 客観バッジ: 販売中の全商品の中で価格/日が最安のもの(計算由来のみ・編集コピーは使わない)
+    var bestId=null, bestDay=Infinity;
+    PRODUCTS.forEach(function(p){ if(!isOnSale(p)) return; var b=bestPrice(p); if(b&&b.day<bestDay){ bestDay=b.day; bestId=p.id; } });
     items.forEach(function(p){
       var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
       // ① 商品セル: チップ+配合成分名を行内表示
       var tags="";
+      if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
       if(p.d3) tags+='<span class="b d3">D3</span>';
       if(isChew(p)) tags+='<span class="b">グミ</span>';
       if(p.amtMax!=null&&p.amtMax>100) tags+='<span class="b warn">上限超え注意</span>';
@@ -418,8 +438,12 @@
       b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
     });
     var d=dietAvg();
+    var gap = d!=null ? Math.round((GOAL-d)*10)/10 : null;
     document.getElementById("youstat").innerHTML = d!=null
-      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・食事からの平均摂取 <b>"+d.toFixed(1)+"μg/日</b>（令和5年調査）。表の%は商品単体の目安量に対する割合です。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
+      ? (gap>0
+          ? "この属性の食事からの平均摂取は <b>"+d.toFixed(1)+"μg/日</b>（令和5年調査）。目安量 <b>9.0μg/日</b>（成人共通）まで、<b style=\"color:var(--g2)\">あと約"+gap.toFixed(1)+"μg</b> です。"
+          : "この属性の食事からの平均摂取は <b>"+d.toFixed(1)+"μg/日</b>（令和5年調査）で、目安量 9.0μg/日 に達しています。")
+        + "平均はあなた自身の食事ではありません。表の%は商品単体の目安量に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
       : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
