@@ -92,10 +92,10 @@
   #sumbar .bar .supp { position:absolute; top:0; bottom:0; background:var(--g1); }
   #sumbar .bar.over .supp { background:var(--warn); }
   #sumbar .goalmark { position:absolute; top:-3px; bottom:-3px; width:2px; background:var(--ok); }
-  #sumbar .l2 { font-size:11.5px; color:var(--ink3); margin-top:6px; }
+  #sumbar .l2 { font-size:12.5px; color:var(--ink2); margin-top:6px; }
   #sumbar .clear { float:right; font-size:12px; font-weight:700; color:var(--g2); background:none; border:none; cursor:pointer; }
   footer { padding:32px 0 60px; border-top:1px solid var(--line); }
-  footer .legal { font-size:11.5px; color:var(--ink3); line-height:1.9; }
+  footer .legal { font-size:12.5px; color:var(--ink2); line-height:1.9; }
 </style>
 </head>
 <body>
@@ -103,7 +103,7 @@
   <div class="wrap">
     <a class="back" href="index.html">← トップへ戻る</a>
     <h1>ビタミンD 商品比較</h1>
-    <div class="sub">国内で買える30商品を「1日あたり」に揃えて比較します（2026年8月13日調査・二重検品済み）。</div>
+    <div class="sub">国内で流通が確認できた30商品を「1日あたり」に揃えて比較します（2026年8月13日調査）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。販売終了・在庫切れ・並行輸入品を含みます（表示で区別）。</div>
     <div class="you">
       <div class="t">あなたの基準で見る（任意）</div>
       <div class="btns" id="youbtns">
@@ -148,8 +148,8 @@
 
 <footer>
   <div class="wrap legal">
-    出典：各商品の公式サイト・販売ページ（各カードのリンク先）。価格・仕様は2026年8月13日時点の調査値であり、変動します。「未取得」はその時点で確認できなかったことを示します（推測では埋めていません）。合算表示は選択した商品のビタミンD量と公的統計の平均摂取量に基づく参考値であり、個人の食事内容を反映するものではありません。<br>
-    本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
+    出典：各商品の公式サイト・販売ページ（各カードのリンク先）。価格・仕様は2026年8月13日時点の調査値であり、変動します。「未取得」「未確認」はその時点で確認できなかったことを示し、推定値には「推定」と付記しています。合算表示は選択した商品のビタミンD量と公的統計の平均摂取量に基づく参考値であり、個人の食事内容を反映するものではありません。<br>
+    「耐容上限量」について：耐容上限量は、習慣的に摂取した場合に健康障害のリスクが高まりはじめるとされる量です（日本人の食事摂取基準・成人）。この量を超えたら直ちに健康を害するという意味ではありません。また食品からの摂取分を含めた1日の総量に対する値です。当サイトのバッジは公表されている1日あたり含有量とこの数値を機械的に比較して表示しています。<br>ビタミンK2について：血液を固まりにくくする薬（ワルファリンなど）を服用中の方は、ビタミンKの摂取により薬の効果が弱まることがあります。必ず主治医・薬剤師にご相談ください。<br>本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
   </div>
 </footer>
 
@@ -263,8 +263,11 @@
       if(p.k2) badges+='<span class="b k2">K2配合</span>';
       if(p.form&&p.form!=="未確認") badges+='<span class="b">'+p.form+'</span>';
       if(p.tech&&p.tech.indexOf("未確認")<0&&p.tech!=="") badges+='<span class="b k2">'+p.tech.split("(")[0]+'</span>';
-      if(p.amtMax!=null&&p.amtMax>100) badges+='<span class="b warn">耐容上限(100μg)超え — 摂取は慎重に</span>';
-      else if(p.amtMax!=null&&p.amtMax>=100) badges+='<span class="b warn">耐容上限(100μg)ちょうど</span>';
+      if(p.amtMax!=null&&p.amtMax>100) badges+='<span class="b warn">耐容上限(100μg/成人)超え — 摂取量にご注意ください</span>';
+      else if(p.amtMax!=null&&p.amtMax>=100) badges+='<span class="b warn">耐容上限(100μg/成人)ちょうど</span>';
+      if(p.name.indexOf("並行輸入")>=0) badges+='<span class="b">並行輸入品</span>';
+      if((p.legal||"").indexOf("栄養機能食品")>=0) badges+='<span class="b d3">栄養機能食品</span>';
+      else if((p.legal||"").indexOf("未確認")>=0) badges+='<span class="b">食品区分 未確認</span>';
       if(!isOnSale(p)) badges+='<span class="b end">販売終了・在庫切れ</span>';
       var on=!!state.picked[p.id];
       el.innerHTML+='<div class="card'+(on?' picked':'')+'" id="c-'+p.id+'">'
