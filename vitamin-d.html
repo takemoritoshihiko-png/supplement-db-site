@@ -113,16 +113,16 @@
   /* 比較テーブル */
   .tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; }
   table.cmp { width:100%; min-width:640px; border-collapse:collapse; font-size:13.5px; }
-  td.prod { min-width:190px; }
-  td.packc, th.packh { width:148px; }
-  td.dosec { width:76px; }
-  td.amtc { width:118px; }
-  td.pricec { width:106px; white-space:nowrap; }
+  td.prod { min-width:225px; }
+  td.packc, th.packh { width:104px; }
+  td.dosec { width:56px; }
+  td.amtc { width:92px; }
+  td.pricec { width:82px; white-space:nowrap; }
   table.cmp th { position:sticky; top:0; background:var(--surface); font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
   table.cmp th.num, table.cmp td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
   table.cmp th.sortable { cursor:pointer; }
   table.cmp th.sortable.on { color:var(--g1); }
-  table.cmp td { padding:14px 14px; border-bottom:1px solid var(--line); vertical-align:middle; }
+  table.cmp td { padding:13px 9px; border-bottom:1px solid var(--line); vertical-align:middle; }
   table.cmp tr.main { cursor:pointer; }
   table.cmp tr.main:hover { background:var(--surface); }
   table.cmp tr.main.sel { background:var(--g1-soft); }
@@ -131,8 +131,43 @@
   .addb.on { background:var(--g1); color:#fff; }
   td.prod .mk2 { font-size:11px; font-weight:800; color:var(--ink); }
   .prodflex { display:flex; gap:10px; align-items:center; }
-  .thumb { flex:none; width:46px; height:46px; border-radius:10px; border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:var(--ink3); overflow:hidden; text-align:center; line-height:1.2; }
+  .thumb { flex:none; width:58px; height:58px; border-radius:12px; border:1px solid var(--line); background:var(--surface); display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800; color:var(--ink3); overflow:hidden; text-align:center; line-height:1.2; }
   .thumb img { width:100%; height:100%; object-fit:contain; background:#fff; }
+
+  /* ===== スマートフォン専用UI(720px以下): テーブルをカード型リストに再構成 ===== */
+  #msort { display:none; }
+  @media (max-width:720px){
+    .wrap { padding:0 14px; }
+    h1 { font-size:26px; }
+    header .tagline { font-size:14.5px; }
+    .tablewrap { border:none; border-radius:0; overflow-x:visible; }
+    table.cmp { min-width:0; display:block; }
+    table.cmp caption { display:block; }
+    table.cmp thead { display:none; }
+    table.cmp tbody { display:block; }
+    table.cmp tr.main { display:grid; grid-template-columns:34px 1fr 92px; grid-template-rows:auto auto; align-items:center; gap:2px 8px; padding:12px 2px; border-bottom:1px solid var(--line); cursor:pointer; }
+    table.cmp tr.main td { display:block; padding:0; border-bottom:none; }
+    table.cmp td.pcol { grid-column:1; grid-row:1 / span 2; }
+    table.cmp td.prod { grid-column:2; grid-row:1; min-width:0; }
+    table.cmp td.pricec { grid-column:3; grid-row:1 / span 2; text-align:right; width:auto; }
+    table.cmp td.packc { grid-column:2; grid-row:2; text-align:left; width:auto; font-size:12px; white-space:normal; }
+    table.cmp td.packc .sub { display:inline; margin-left:4px; }
+    table.cmp tr.main td.dosec, table.cmp tr.main td.amtc { display:none; }
+    td.packc .m-extra { display:inline; font-size:11px; color:var(--ink3); }
+    table.cmp tr.main td.chev { display:none; }
+    tr.detail { display:none; }
+    tr.detail.open { display:block; padding:0 2px 14px; border-bottom:1px solid var(--line); }
+    tr.detail.open td { display:block; padding:10px 0 0; border-bottom:none; }
+    .thumb { width:64px; height:64px; }
+    td.pricec b { font-size:17px; }
+    #msort { display:flex; gap:8px; align-items:center; width:100%; margin-top:8px; }
+    #msort .lbl2 { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; }
+    #msort button { font-size:12px; font-weight:700; padding:6px 12px; border-radius:100px; border:1.5px solid var(--line); background:var(--bg); color:var(--ink2); cursor:pointer; }
+    #msort button.on { border-color:var(--g1); background:var(--g1-soft); color:var(--g1); }
+    #sumbar .inner { padding:10px 14px 12px; }
+  }
+  /* PC(721px以上)は従来のテーブル型を維持 */
+  .m-extra { display:none; }
   td.prod .nm2 { font-size:13.5px; font-weight:700; line-height:1.4; }
   td.amtc b { font-weight:800; font-size:14.5px; }
   td.amtc .pc { font-size:11px; color:var(--ink3); display:block; }
@@ -210,6 +245,7 @@
     <label class="flt"><input type="checkbox" data-f="chew">グミ・チュアブル</label>
     </span>
     <span class="count" id="count"></span>
+    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">価格/日 ▲</button><button data-s="amt">摂れる量</button></div>
   </div>
 </div>
 
@@ -429,15 +465,18 @@
       toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null){ if(bv==null||v.reg/v.days<bv.reg/bv.days) bv=v; } });
       var packCell;
       if(bv){
-        packCell=bv.qty+(bv.unit||"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+(toArr(p.variants).length>1?'・他容量':'')+'</span>';
+        packCell=bv.qty+(bv.unit||"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分</span>';
       } else {
         var v0=toArr(p.variants)[0];
-        packCell=(v0&&v0.qty!=null)?(v0.qty+(v0.unit||"")+'<span class="sub">価格未取得</span>'):'<span style="color:var(--ink3)">未取得</span>';
+        packCell=(v0&&v0.qty!=null)?('<span class="pk1">'+v0.qty+(v0.unit||"")+'</span><span style="color:var(--ink3);font-size:11px">価格未取得</span>'):'<span style="color:var(--ink3)">未取得</span>';
       }
       // ③ 飲む量/日
       var doseCell=(p.doseMin!=null)
         ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0&&p.form.indexOf("粒")!==0?p.form.split("(")[0]:"")+'</span>'
         : '<span style="color:var(--ink3)">未確認</span>';
+      // スマホの2行目用: 飲む量と摂れる量をpackセルに統合表示(PCでは非表示)
+      var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+"/日"):"";
+      packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+fmtAmt(p)+'</span>';
       // ④ D量/日(属性選択時は食事平均+本品%)
       var amtCell=(p.amtMin!=null)
         ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
@@ -525,9 +564,27 @@
     state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
     save(); renderYou(); render();
   });
+  function syncMsort(){
+    document.querySelectorAll("#msort button").forEach(function(b){
+      var on=b.dataset.s===state.sort;
+      b.classList.toggle("on", on);
+      b.textContent=(b.dataset.s==="price"?"価格/日":"摂れる量")+(on?(state.dir===1?" ▲":" ▼"):"");
+    });
+  }
+  document.querySelectorAll("#msort button").forEach(function(b){
+    b.addEventListener("click", function(){
+      if(state.sort===b.dataset.s){ state.dir=-state.dir; } else { state.sort=b.dataset.s; state.dir=1; }
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent=(x.dataset.s===state.sort)?(state.dir===1?"▲":"▼"):"";
+      });
+      syncMsort(); render();
+    });
+  });
   document.querySelectorAll("th.sortable").forEach(function(th){
     th.addEventListener("click", function(){
       if(state.sort===th.dataset.s){ state.dir=-state.dir; } else { state.sort=th.dataset.s; state.dir=1; }
+      syncMsort();
       document.querySelectorAll("th.sortable").forEach(function(x){
         x.classList.toggle("on",x.dataset.s===state.sort);
         x.querySelector(".arr").textContent = (x.dataset.s===state.sort) ? (state.dir===1?"▲":"▼") : "";
