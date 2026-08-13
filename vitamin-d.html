@@ -96,7 +96,12 @@
   #sumbar .clear { float:right; font-size:12px; font-weight:700; color:var(--g2); background:none; border:none; cursor:pointer; }
   /* 比較テーブル */
   .tablewrap { overflow-x:auto; border:1px solid var(--line); border-radius:14px; }
-  table.cmp { width:100%; min-width:680px; border-collapse:collapse; font-size:13.5px; }
+  table.cmp { width:100%; min-width:640px; border-collapse:collapse; font-size:13.5px; }
+  td.prod { min-width:190px; }
+  td.packc, th.packh { width:148px; }
+  td.dosec { width:76px; }
+  td.amtc { width:118px; }
+  td.pricec { width:96px; }
   table.cmp th { position:sticky; top:0; background:var(--surface); font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
   table.cmp th.num, table.cmp td.num { text-align:right; font-variant-numeric:tabular-nums; }
   table.cmp th.sortable { cursor:pointer; }
@@ -187,7 +192,7 @@
 </div>
 <span style="font-size:11.5px;color:var(--ink3)">※商品ごとにメーカーの指定がある場合はそちらが優先です（各行の詳細に「メーカー推奨の飲み方」原文を掲載）。効果を保証するものではありません。</span>
 </div>
-<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">D量/日 <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num">内容量・販売価格</th><th class="num">飲む量/日</th><th class="num sortable" data-s="amt">摂れるビタミンD <span class="arr"></span></th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -340,7 +345,7 @@
       toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null){ if(bv==null||v.reg/v.days<bv.reg/bv.days) bv=v; } });
       var packCell;
       if(bv){
-        packCell=bv.qty+(bv.unit||"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+(toArr(p.variants).length>1?'・ほか容量あり':'')+'</span>';
+        packCell=bv.qty+(bv.unit||"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+(toArr(p.variants).length>1?'・他容量':'')+'</span>';
       } else {
         var v0=toArr(p.variants)[0];
         packCell=(v0&&v0.qty!=null)?(v0.qty+(v0.unit||"")+'<span class="sub">価格未取得</span>'):'<span style="color:var(--ink3)">未取得</span>';
@@ -350,15 +355,8 @@
         ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0&&p.form.indexOf("粒")!==0?p.form.split("(")[0]:"")+'</span>'
         : '<span style="color:var(--ink3)">未確認</span>';
       // ④ D量/日(属性選択時は食事平均+本品%)
-      var diet=dietAvg(); var pcLine;
-      if(p.amtMin==null){ pcLine=null; }
-      else if(diet!=null){
-        var tot=Math.round((diet+p.amtMin)*10)/10;
-        var pct2=Math.round(tot/GOAL*100);
-        pcLine='食事平均+本品 ≈'+tot+'μg（目安量の'+pct2+'%）';
-      } else { pcLine='目安量9.0μgの約'+pct+'%'; }
       var amtCell=(p.amtMin!=null)
-        ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+pcLine+'</span>'
+        ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
         : '<span style="color:var(--ink3)">未取得</span>';
       // ⑤ 価格/日(数字1つ+定期のみ)
       var priceCell = bp
@@ -411,7 +409,7 @@
     });
     var d=dietAvg();
     document.getElementById("youstat").innerHTML = d!=null
-      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・平均摂取 <b>"+d+"μg/日</b>（令和5年調査）。表の%は<b>食事平均にその商品を足した場合</b>の目安量に対する割合に切り替わります。"
+      ? "この属性の目安量 <b>9.0μg/日</b>（ビタミンDは成人共通）・食事からの平均摂取 <b>"+d+"μg/日</b>（令和5年調査）。表の%は商品単体の目安量に対する割合です。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
       : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
