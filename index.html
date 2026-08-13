@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta property="og:title" content="1日に必要なビタミン・ミネラルの、まとめサイト">
+<meta property="og:description" content="国の基準データで、あなたに必要な栄養素と最適なサプリを同じ物差しで比べられるサイト。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://takemoritoshihiko-png.github.io/supplement-db-site/">
+<meta name="twitter:card" content="summary">
 <title>1日に必要なビタミン・ミネラルの、まとめサイト</title>
 </head>
 <body>
@@ -227,7 +232,7 @@
     <h2>第1弾リリース：健やかな毎日の鍵『ビタミンD』</h2>
     <p class="body" style="max-width:520px;margin-left:auto;margin-right:auto;text-align:left">平均摂取量と基準値の差が大きく、私たちが最も補ってあげたい栄養素のひとつ「ビタミンD」。現在、国内で流通する主要商品30件を、同じ基準で美しく並べた徹底比較データを公開しています。</p>
     <a class="btn" href="vitamin-d.html">ビタミンDのページへ →</a>
-    <span class="soon">商品比較データベースは検品中です</span>
+    <span class="soon">一部の項目は確認中です（表内に「未確認」「未取得」と表示しています）</span>
   </div>
 </section>
 
@@ -260,15 +265,18 @@
   }
   document.getElementById("youreset").addEventListener("click", function(){
     state.sex=null; state.age=null;
-    try{ localStorage.setItem("sdb-you","{}"); }catch(e){}
+    try{
+      localStorage.setItem("sdb-you","{}");
+      var v=JSON.parse(localStorage.getItem("sdb-vd")||"{}"); delete v.you; localStorage.setItem("sdb-vd", JSON.stringify(v));
+    }catch(e){}
     syncBtns(); res.classList.remove("show");
   });
   sel.addEventListener("click", function(e){
     var b = e.target.closest("button"); if(!b || b.disabled || !b.dataset.k) return;
-    state[b.dataset.k] = b.dataset.v;
+    state[b.dataset.k] = (state[b.dataset.k]===b.dataset.v) ? null : b.dataset.v;
     try { localStorage.setItem("sdb-you", JSON.stringify({sex:state.sex, age:state.age})); } catch(e){}
     syncBtns();
-    render();
+    if(state.sex && state.age){ render(); } else { res.classList.remove("show"); }
   });
   if(state.sex||state.age){ syncBtns(); render(); }
   function render(){

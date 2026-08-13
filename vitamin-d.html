@@ -4,6 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta property="og:title" content="ビタミンD 商品比較 ─ 30商品を1日あたりで比べる">
+<meta property="og:description" content="バラバラな単位を「1日あたりの量と価格」に換算して、国内で流通するビタミンD 30商品をフラットに比較。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://takemoritoshihiko-png.github.io/supplement-db-site/vitamin-d.html">
+<meta name="twitter:card" content="summary">
 <title>ビタミンD 商品比較（30商品・1日あたりで比べる）</title>
 <style>
   :root {
@@ -238,10 +243,10 @@
 <div class="controls">
   <div class="wrap row1">
     <span class="lbl">絞り込み</span>
-    <select class="mkr" id="ingsel"><option value="">ビタミンD（全商品）</option></select>
+    <select class="mkr" id="ingsel"><option value="">成分で絞り込む（現在: 全商品）</option></select>
     <select class="mkr" id="mksel"><option value="">全メーカー</option></select>
     <label class="flt"><input type="checkbox" data-f="onsale" checked>販売中のみ</label>
-    <label class="flt"><input type="checkbox" data-f="veg">動物由来 不使用表示</label>
+    <label class="flt"><input type="checkbox" data-f="veg">動物由来原料なし</label>
     <span id="dchips">
     <label class="flt"><input type="checkbox" data-f="d3">D3明記のみ</label>
     <label class="flt"><input type="checkbox" data-f="single">単一成分のみ</label>
@@ -290,9 +295,9 @@
   var state = { sort:"price", dir:1, f:{ onsale:true, veg:false, d3:false, single:false, chew:false },
                 mk:"", ing:"", you:{ sex:null, age:null }, picked:{}, open:{} };
   try { var sv = JSON.parse(localStorage.getItem("sdb-vd")||"{}"); if(sv.you) state.you=sv.you; if(sv.picked) state.picked=sv.picked; } catch(e){}
-  try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } } catch(e){}
+  try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } else if(sv.you&&(sv.you.sex||sv.you.age)){ state.you=sv.you; } else { state.you={sex:null,age:null}; } } catch(e){}
 
-  function save(){ try{ localStorage.setItem("sdb-vd", JSON.stringify({you:state.you, picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
+  function save(){ try{ localStorage.setItem("sdb-vd", JSON.stringify({picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
   function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
   function dietAvg(){ return (state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
   function bestPrice(p){
@@ -392,15 +397,15 @@
     var diet=dietAvg();
     var totMin=sMin+(diet||0), totMax=sMax+(diet||0);
     var pctMin=Math.round(totMin/GOAL*100);
-    var over=totMax>UL;
+    var over=totMax>=UL;
     var verdict, cls;
-    if(over){ verdict="⚠️ 耐容上限(100μg/成人)を超えます — この組み合わせは摂りすぎに注意"; cls="warn"; }
-    else if(totMin>=GOAL){ verdict="✓ 目安量(9.0μg)を満たします（耐容上限100μgまで余裕 約"+(Math.round((UL-totMax)*10)/10)+"μg）"; cls="ok"; }
+    if(over){ verdict="⚠️ 耐容上限(100μg/成人)に達します — この組み合わせは摂りすぎに注意"; cls="warn"; }
+    else if(totMin>=GOAL){ verdict="✓ 目安量(9.0μg)を満たします（耐容上限100μgとの差 約"+(Math.round((UL-totMax)*10)/10)+"μg）"; cls="ok"; }
     else { verdict="目安量まであと約"+(Math.round((GOAL-totMin)*10)/10)+"μg"; cls=""; }
     var dietTxt=(diet!=null)?("食事(平均) "+diet+"μg ＋ "):"";
     var totTxt=(totMin===totMax)?(Math.round(totMin*10)/10+"μg"):(Math.round(totMin*10)/10+"〜"+Math.round(totMax*10)/10+"μg");
     document.getElementById("sumline").innerHTML =
-      '選択中 '+ids.length+'品　｜　'+dietTxt+'サプリ合計 '+(sMin===sMax?sMin:sMin+"〜"+sMax)+'μg ＝ <b>1日合計 '+totTxt+'</b>'
+      '選択中 '+ids.length+'品　｜　'+dietTxt+'サプリのビタミンD合計 '+(sMin===sMax?sMin:sMin+"〜"+sMax)+'μg ＝ <b>1日合計 '+totTxt+'</b>'
       +'（目安量の約'+pctMin+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
     var viz=document.getElementById("sumbarviz");
     var scale=Math.max(UL, totMax);
@@ -464,7 +469,7 @@
     if(state.f.onsale) items=items.filter(isOnSale);
     if(state.f.d3) items=items.filter(function(p){return p.d3;});
     if(state.f.single) items=items.filter(function(p){return (p.comp||"").indexOf("単一")>=0;});
-    if(state.f.veg) items=items.filter(function(p){return p.animal && (/不使用|植物性/.test(p.animal) || /^なし/.test(p.animal));});
+    if(state.f.veg) items=items.filter(function(p){return p.veg===true;});
     if(state.f.chew) items=items.filter(isChew);
     if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
     if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
@@ -492,12 +497,13 @@
     items.forEach(function(p){
       var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
+      var pctTxt=(pct==null)?null:((p.amtMin!==p.amtMax)?(Math.round(p.amtMin/GOAL*100)+"〜"+pct):String(pct));
       // ① 商品セル: チップ+配合成分名を行内表示
       var tags="";
       if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
       if(p.d3) tags+='<span class="b d3">D3</span>';
       if(isChew(p)) tags+='<span class="b">グミ</span>';
-      if(p.amtMax!=null&&p.amtMax>100) tags+='<span class="b warn">上限超え注意</span>';
+      if(p.amtMax!=null&&p.amtMax>=100) tags+='<span class="b warn">上限量に注意</span>';
       if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
       var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].replace("ビタミン","").replace("Vitamin ","").trim(); }).filter(function(n){return n;});
       var ingTxt="";
@@ -526,7 +532,7 @@
       if(state.ing){
         var na=p._na;
         amtShort=state.ing+" "+((na&&na.min!=null)?((na.min===na.max?na.min:na.min+"〜"+na.max)+na.unit):"未取得");
-      } else { amtShort=fmtAmt(p)+((pct!=null)?'（'+pct+'%）':''); }
+      } else { amtShort=fmtAmt(p)+((pctTxt!=null)?'（'+pctTxt+'%）':''); }
       packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+amtShort+'</span>';
       // ④ 摂れる量: 通常はビタミンD、栄養素フィルター時はその栄養素の量に切替
       var amtCell;
@@ -534,7 +540,7 @@
         amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
       } else {
         amtCell=(p.amtMin!=null)
-          ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pctTxt+'%</span>'
           : '<span style="color:var(--ink3)">未取得</span>';
       }
       // ⑤ 価格/日(数字1つ+定期のみ)
@@ -615,7 +621,7 @@
         + "平均はあなた自身の食事ではありません。表の%は商品単体の目安量に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
       : "未選択のときは成人共通の目安量 9.0μg/日 を基準に表示します（耐容上限 100μg/日・1μg=40IU）。";
     if(state.you.sex||state.you.age){
-      document.getElementById("youstat").innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none">選択をリセット</a>';
+      document.getElementById("youstat").innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none">属性をリセット</a>';
       var rs=document.getElementById("youreset");
       if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
     }
