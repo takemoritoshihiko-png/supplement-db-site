@@ -125,6 +125,11 @@
   tr.detail .how { margin-top:8px; }
   tr.detail .badges { margin-top:8px; }
   tr.detail .meta { margin-top:8px; }
+  table.cmp caption { }
+  th .arr { font-size:10px; }
+  td.dosec { white-space:nowrap; font-weight:700; }
+  td.dosec .fm { display:block; font-size:10.5px; font-weight:400; color:var(--ink3); }
+  td.pricec .pk { display:block; font-size:10.5px; color:var(--ink3); font-weight:400; }
   select.mkr { font-size:12.5px; font-weight:700; padding:7px 12px; border-radius:100px; border:1.5px solid var(--line); background:var(--bg); color:var(--ink2); }
   footer { padding:32px 0 60px; border-top:1px solid var(--line); }
   footer .legal { font-size:12.5px; color:var(--ink2); line-height:1.9; }
@@ -164,7 +169,7 @@
   </div>
 </div>
 
-<main><div class="wrap"><div class="tablewrap"><table class="cmp"><thead><tr><th></th><th>メーカー / 商品名</th><th class="num sortable on" data-s="price">1日あたり価格 ▾</th><th class="num sortable" data-s="amtHi">1日あたり量 ▾</th><th>特徴</th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（容量と価格・飲み方・出典）が開きます。</p></div></main>
+<main><div class="wrap"><div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:12px;color:var(--ink2);padding:10px 14px;background:var(--surface);border-bottom:1px solid var(--line)">量・価格は「メーカー推奨の1日目安量」を飲んだ場合の1日あたりの値です。列見出しをクリックすると並び替え（もう一度で昇順・降順が反転）。</caption><thead><tr><th></th><th>メーカー / 商品名</th><th class="num">飲む量/日</th><th class="num sortable on" data-s="price">価格/日 <span class="arr">▲</span></th><th class="num sortable" data-s="amt">ビタミンD量/日 <span class="arr"></span></th><th>特徴</th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -187,7 +192,7 @@
 (function(){
   var GOAL = 9.0, UL = 100;
   var DIET = { m:{20:4.7,30:5.7,40:5.5}, f:{20:4.3,30:4.8,40:5.1} };
-  var state = { sort:"price", f:{ onsale:true, d3:false, single:false, k2:false, chew:false },
+  var state = { sort:"price", dir:1, f:{ onsale:true, d3:false, single:false, k2:false, chew:false },
                 mk:"", you:{ sex:null, age:null }, picked:{}, open:{} };
   try { var sv = JSON.parse(localStorage.getItem("sdb-vd")||"{}"); if(sv.you) state.you=sv.you; if(sv.picked) state.picked=sv.picked; } catch(e){}
 
@@ -289,8 +294,8 @@
     if(state.f.chew) items=items.filter(isChew);
     if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
     items.forEach(function(p){ p._bp=bestPrice(p); });
-    if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return x-y;});
-    if(state.sort==="amtHi") items.sort(function(a,b){return (b.amtMax||0)-(a.amtMax||0);});
+    if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
+    if(state.sort==="amt") items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
     var el=document.getElementById("list"); el.innerHTML="";
     items.forEach(function(p){
       var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
@@ -306,14 +311,21 @@
       var amtCell = (p.amtMin!=null)
         ? '<b>'+fmtAmt(p)+'</b><span class="pc">目安量の約'+pct+'%</span>'
         : '<span style="color:var(--ink3)">未取得</span>';
+      var doseCell=(p.doseMin!=null)
+        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+(p.doseUnit||"粒")+'<span class="fm">'+(p.form&&p.form.indexOf("未確認")<0?p.form.split("(")[0]:"")+'</span>'
+        : '<span style="color:var(--ink3)">未確認</span>';
+      var packSub="";
+      var bv=null; toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null&&(bv==null||v.reg/v.days<bv.reg/bv.days)) bv=v; });
+      if(bv) packSub='<span class="pk">'+bv.qty+(bv.unit||"")+'・約'+bv.days+'日分 '+bv.reg.toLocaleString()+'円</span>';
       el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
         +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
         +'<td class="prod"><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div></td>'
-        +'<td class="num pricec">'+priceCell+'</td>'
+        +'<td class="num dosec">'+doseCell+'</td>'
+        +'<td class="num pricec">'+priceCell+packSub+'</td>'
         +'<td class="num amtc'+(p.amtMax!=null&&p.amtMax>=100?' ul':'')+'">'+amtCell+'</td>'
         +'<td class="tagc">'+tags+'</td>'
         +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
-        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="6">'+detailHtml(p)+'</td></tr>';
+        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
     });
     document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
     el.querySelectorAll(".addb").forEach(function(b){
@@ -355,8 +367,11 @@
   });
   document.querySelectorAll("th.sortable").forEach(function(th){
     th.addEventListener("click", function(){
-      state.sort=th.dataset.s;
-      document.querySelectorAll("th.sortable").forEach(function(x){x.classList.toggle("on",x===th);});
+      if(state.sort===th.dataset.s){ state.dir=-state.dir; } else { state.sort=th.dataset.s; state.dir=1; }
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent = (x.dataset.s===state.sort) ? (state.dir===1?"▲":"▼") : "";
+      });
       render();
     });
   });
