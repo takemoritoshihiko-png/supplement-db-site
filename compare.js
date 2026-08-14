@@ -351,9 +351,7 @@
       }
     }
     var caveat = DIET
-      ? (d!=null
-          ? '※平均は公的統計の値で、あなた自身の食事ではありません。商品を＋で選ぶと、食事平均との合算を下のバーに表示します。'
-          : (NUT.youUnselectedText||''))
+      ? (d!=null ? '' : (NUT.youUnselectedText||''))
       : (NUT.youStaticText||'');
     el.innerHTML='<div class="statgrid">'+tiles+'</div>'+(caveat?'<div class="caveat">'+caveat+'</div>':'');
   }
