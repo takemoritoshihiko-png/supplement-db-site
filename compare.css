@@ -277,7 +277,10 @@ table.mtx th.ph .mtxdel:hover { border-color:var(--warn); }
 header.page { border-bottom:none; }
 
 /* --- あなたの摂取量ブロック: 白カード + 白タイル --- */
-.you { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:20px; padding:18px 22px; }
+/* 「1日に必要な栄養素」は枠で囲わない（2026-08-14 竹森氏指示）。
+   中の数字タイル(.stt)と属性ピルが各自の細枠線＋淡影を持つので、外枠は二重になり不要。
+   栄養素切替ピルとの間隔は16px→32pxへ（同指示） */
+.you { background:none; border:none; box-shadow:none; border-radius:0; padding:0; margin-top:32px; }
 .you .t { color:var(--ink); font-size:14px; letter-spacing:.02em; }
 .you button { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); font-size:13px; padding:7px 16px; }
 .you button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
