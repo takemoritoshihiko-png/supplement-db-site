@@ -152,7 +152,7 @@
     var note;
     if(DIET){
       note = (diet==null?"上の「あなたの基準で見る」で性別・年代を選ぶと、食事の平均摂取分も足して判定します。":"食事分は公的統計の平均値です（あなた自身の食事ではありません）。")
-        + " バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+(scale===UL?"（耐容上限）":"")+"。";
+        + " バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+(scale===UL?"（耐容上限）":"")+"。"+(UL==null?(NUT.sumStaticNote||""):"");
     } else {
       note = "バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+"。"+(NUT.sumStaticNote||"");
     }
@@ -336,6 +336,7 @@
       b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
     });
     var el=document.getElementById("youstat");
+    document.getElementById("youbtns").style.display = DIET ? "" : "none";
     var d=dietAvg();
     var tiles='<div class="stt"><div class="l">'+NUT.goalLabelFull+(NUT.goalSuffix||"")+'</div><div class="v">'+fdec(GOAL)+'<small>'+UNIT+'/日</small></div></div>';
     if(DIET){
@@ -351,11 +352,11 @@
     }
     var caveat = DIET
       ? (d!=null
-          ? '平均はあなた自身の食事ではありません。表の%は商品単体の'+NUT.goalLabel+'に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。'
+          ? '※平均は公的統計の値で、あなた自身の食事ではありません。商品を＋で選ぶと、食事平均との合算を下のバーに表示します。'
           : (NUT.youUnselectedText||''))
       : (NUT.youStaticText||'');
     el.innerHTML='<div class="statgrid">'+tiles+'</div>'+(caveat?'<div class="caveat">'+caveat+'</div>':'');
-    if(state.you.sex||state.you.age){
+    if(DIET&&(state.you.sex||state.you.age)){
       el.innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none;font-size:12px">属性をリセット</a>';
       var rs=document.getElementById("youreset");
       if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
