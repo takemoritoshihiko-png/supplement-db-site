@@ -336,20 +336,27 @@
       b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
     });
     var el=document.getElementById("youstat");
-    if(!DIET){
-      el.innerHTML = NUT.youStaticText || "";
-    } else {
-      var d=dietAvg();
-      var gap = d!=null ? Math.round((GOAL-d)*(DEC>0?10:1))/(DEC>0?10:1) : null;
-      el.innerHTML = d!=null
-        ? (gap>0
-            ? "この属性の食事からの平均摂取は <b>"+fdec(d)+UNIT+"/日</b>（令和5年調査）。"+NUT.goalLabelFull+" <b>"+fdec(GOAL)+UNIT+"/日</b>"+(NUT.goalSuffix||"")+" まで、<b style=\"color:var(--g2)\">あと約"+fdec(gap)+UNIT+"</b> です。"
-            : "この属性の食事からの平均摂取は <b>"+fdec(d)+UNIT+"/日</b>（令和5年調査）で、"+NUT.goalLabelFull+" "+fdec(GOAL)+UNIT+"/日 に達しています。")
-          + "平均はあなた自身の食事ではありません。表の%は商品単体の"+NUT.goalLabel+"に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
-        : (NUT.youUnselectedText||"");
+    var d=dietAvg();
+    var tiles='<div class="stt"><div class="l">'+NUT.goalLabelFull+(NUT.goalSuffix||"")+'</div><div class="v">'+fdec(GOAL)+'<small>'+UNIT+'/日</small></div></div>';
+    if(DIET){
+      if(d!=null){
+        var gap=GOAL-d;
+        tiles+='<div class="stt"><div class="l">あなたの年代の平均摂取（令和5年調査）</div><div class="v">'+fdec(d)+'<small>'+UNIT+'/日</small></div></div>';
+        tiles+= gap>0
+          ? '<div class="stt gap"><div class="l">'+NUT.goalLabel+'まで</div><div class="v">あと'+fdec(gap)+'<small>'+UNIT+'</small></div></div>'
+          : '<div class="stt ok2"><div class="l">'+NUT.goalLabel+'との比較</div><div class="v" style="font-size:16px">達しています</div></div>';
+      } else {
+        tiles+='<div class="stt"><div class="l">あなたの年代の平均摂取</div><div class="v" style="font-size:13.5px;color:var(--ink3);font-weight:700">上の性別・年代を選ぶと表示されます</div></div>';
+      }
     }
+    var caveat = DIET
+      ? (d!=null
+          ? '平均はあなた自身の食事ではありません。表の%は商品単体の'+NUT.goalLabel+'に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。'
+          : (NUT.youUnselectedText||''))
+      : (NUT.youStaticText||'');
+    el.innerHTML='<div class="statgrid">'+tiles+'</div>'+(caveat?'<div class="caveat">'+caveat+'</div>':'');
     if(state.you.sex||state.you.age){
-      el.innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none">属性をリセット</a>';
+      el.innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none;font-size:12px">属性をリセット</a>';
       var rs=document.getElementById("youreset");
       if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
     }
