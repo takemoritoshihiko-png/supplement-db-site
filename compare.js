@@ -305,7 +305,7 @@
         amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
       } else {
         amtCell=(p.amtMin!=null)
-          ? '<span class="amtflex">'+gaugeSvg(p.amtMin/GOAL*100,22,5)+'<b>'+fmtAmt(p)+'</b></span><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
           : '<span style="color:var(--ink3)">未取得</span>';
       }
       var priceCell = bp

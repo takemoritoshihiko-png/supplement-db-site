@@ -14,8 +14,8 @@
 <body>
 <style>
   :root {
-    --bg: #EEEFF4; --surface: #FFFFFF; --ink: #1B2333; --ink2: #5A6172; --ink3: #8B92A3;
-    --line: #E3E6EE; --track: #E7EAF1;
+    --bg: #FFFFFF; --surface: #FFFFFF; --ink: #1B2333; --ink2: #5A6172; --ink3: #8B92A3;
+    --line: #E2E5EB; --track: #EEF0F4;
     --g1: #20304F; --g1-soft: #E4E9F4; --g1-line: #CBD5E8;
     --g2: #C25E2E; --g2-soft: #F7E7DA; --g2-line: #E8C9B2;
     --ok: #2E7D4F; --ok-soft: #E8F4EC;
@@ -96,11 +96,11 @@
   footer .legal { font-size:12.5px; color:var(--ink2); margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
 
   /* DESIGN v1.0 上書き(正本: docs/DESIGN.md) */
-  :root { --shadow:0 1px 2px rgba(27,35,51,.04), 0 8px 24px rgba(27,35,51,.07); --shadow-sm:0 1px 2px rgba(27,35,51,.05), 0 3px 10px rgba(27,35,51,.06); }
+  :root { --shadow:0 1px 2px rgba(27,35,51,.03), 0 4px 14px rgba(27,35,51,.05); --shadow-sm:0 1px 2px rgba(27,35,51,.04), 0 2px 6px rgba(27,35,51,.04); }
   section { border-bottom:none; }
-  .promise .c { border:none; background:var(--surface); box-shadow:var(--shadow); border-radius:16px; }
-  .exclude .x { border:none; background:var(--surface); box-shadow:var(--shadow-sm); border-radius:16px; }
-  table.terms td.t span { background:var(--surface); border:none; box-shadow:var(--shadow-sm); }
+  .promise .c { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow); border-radius:16px; }
+  .exclude .x { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:16px; }
+  table.terms td.t span { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
   .btn { box-shadow:var(--shadow); }
 </style>
 

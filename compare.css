@@ -1,13 +1,13 @@
   :root {
-    --bg:#EEEFF4; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#8B92A3;
-    --line:#E3E6EE; --track:#E7EAF1;
+    --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#8B92A3;
+    --line:#E2E5EB; --track:#EEF0F4;
     --g1:#20304F; --g1-soft:#E4E9F4; --g1-line:#CBD5E8;
     --g2:#C25E2E; --g2-soft:#F7E7DA; --g2-line:#E8C9B2;
     --ok:#2E7D4F; --ok-soft:#E8F4EC;
     --warn:#B3452C; --warn-soft:#FBEEEA;
     --cream:#FBF3EA; --gold:#D9A05B; --goldbg:#FDF8F1;
-    --shadow:0 1px 2px rgba(27,35,51,.04), 0 8px 24px rgba(27,35,51,.07);
-    --shadow-sm:0 1px 2px rgba(27,35,51,.05), 0 3px 10px rgba(27,35,51,.06);
+    --shadow:0 1px 2px rgba(27,35,51,.03), 0 4px 14px rgba(27,35,51,.05);
+    --shadow-sm:0 1px 2px rgba(27,35,51,.04), 0 2px 6px rgba(27,35,51,.04);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -23,7 +23,7 @@
     }
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; padding-bottom:130px; }
+  body { background:var(--bg); color:var(--ink); font-weight:500; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; padding-bottom:130px; }
   .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
   header.page { padding:40px 0 22px; border-bottom:1px solid var(--line); }
   .back { font-size:13px; font-weight:700; color:var(--g1); text-decoration:none; }
@@ -37,7 +37,7 @@
   details.guide[open] summary::after { content:"閉じる ▴"; }
   details.guide .gbody { padding:0 18px 12px; border-top:1px solid var(--g2-line); padding-top:10px; }
   .b.best { border-color:var(--ok); background:var(--ok-soft); color:var(--ok); font-weight:800; }
-  h1 { font-size:clamp(26px,3.6vw,38px); font-weight:800; line-height:1.45; margin-top:12px; letter-spacing:.01em; }
+  h1 { font-size:clamp(26px,3.6vw,38px); font-weight:900; line-height:1.45; margin-top:12px; letter-spacing:.01em; }
   .sub { font-size:13.5px; color:var(--ink2); margin-top:8px; }
 
   .you { margin-top:16px; border:1px solid var(--g1-line); background:var(--g1-soft); border-radius:14px; padding:14px 18px; }
@@ -269,8 +269,8 @@ table.mtx th.ph .mtxdel:hover { border-color:var(--red,#c02626); }
   background:linear-gradient(90deg, var(--g1) 50%, var(--g1-soft) 50%); transform:rotate(-28deg); }
 
 /* --- 栄養素切替ピル --- */
-.nutswitch a, .nutswitch span.ns { border:none; background:var(--surface); box-shadow:var(--shadow-sm); padding:8px 18px; font-size:13px; }
-.nutswitch a.on { background:var(--g1); color:#fff; box-shadow:var(--shadow-sm); }
+.nutswitch a, .nutswitch span.ns { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); padding:8px 18px; font-size:13px; }
+.nutswitch a.on { background:var(--g1); border-color:var(--g1); color:#fff; box-shadow:var(--shadow-sm); }
 .nutswitch span.ns.soon { background:var(--surface); opacity:.75; }
 .nutswitch span.ns.soon i { background:var(--track); border:none; }
 
@@ -278,10 +278,10 @@ table.mtx th.ph .mtxdel:hover { border-color:var(--red,#c02626); }
 header.page { border-bottom:none; }
 
 /* --- あなたの摂取量ブロック: 白カード + 白タイル --- */
-.you { background:var(--surface); border:none; box-shadow:var(--shadow); border-radius:20px; padding:18px 22px; }
+.you { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow); border-radius:20px; padding:18px 22px; }
 .you .t { color:var(--ink); font-size:14px; letter-spacing:.02em; }
-.you button { border:none; background:var(--bg); box-shadow:var(--shadow-sm); font-size:13px; padding:7px 16px; }
-.you button.on { background:var(--g1); border:none; color:#fff; }
+.you button { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); font-size:13px; padding:7px 16px; }
+.you button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 .statgrid .stt { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow-sm); border-radius:16px; position:relative; }
 .stt .v { color:var(--g1); }
 .stt.gap { background:linear-gradient(135deg,#F9E7DA,#F5D8C2); border:none; display:flex; align-items:center; justify-content:space-between; gap:8px; }
@@ -299,19 +299,19 @@ details.guide { background:var(--cream); border:1px solid var(--g2-line); border
 details.guide summary { padding:14px 20px; font-weight:800; color:var(--ink); }
 details.guide summary::after { content:"＋"; font-size:15px; }
 details.guide[open] summary::after { content:"−"; }
-.gloss { background:var(--surface); border:none; box-shadow:var(--shadow-sm); border-radius:16px; }
+.gloss { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow-sm); border-radius:16px; }
 .gloss summary { padding:14px 20px; font-weight:800; }
 details.gloss summary::after { content:"＋" !important; float:right; font-size:15px; color:var(--g1); font-weight:700; }
 details.gloss[open] summary::after { content:"−" !important; }
 
 /* --- 絞り込みバー --- */
 .controls { background:var(--bg); border-bottom:none; box-shadow:none; }
-.controls .mkr { border:none; background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:9px 16px; }
-.controls button.sortb, .controls label.flt { border:none; background:var(--surface); box-shadow:var(--shadow-sm); padding:8px 16px; }
-.controls button.sortb.on { background:var(--g1); color:#fff; }
-.controls label.flt:has(input:checked) { background:var(--g1); color:#fff; border:none; }
+.controls .mkr { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:9px 16px; }
+.controls button.sortb, .controls label.flt { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); padding:8px 16px; }
+.controls button.sortb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
+.controls label.flt:has(input:checked) { background:var(--g1); color:#fff; border-color:var(--g1); }
 .controls label.flt:has(input:checked)::before { color:#fff; }
-.sharebtn { border:none; background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:8px 16px; }
+.sharebtn { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:8px 16px; }
 
 /* --- 比較表: 行カード化 + ネイビーヘッダー帯 --- */
 .tablewrap { border:none; border-radius:0; overflow-x:auto; padding:2px; }
@@ -323,14 +323,14 @@ table.cmp th.sortable.on { color:#fff; }
 table.cmp th.sortable:hover { color:#fff; opacity:.9; }
 th .arr { color:#F0B27A; }
 table.cmp td { border-bottom:none; background:var(--surface); padding:14px 10px; }
-table.cmp tr.main { box-shadow:var(--shadow); border-radius:16px; }
+table.cmp tr.main { box-shadow:0 0 0 1px var(--line), var(--shadow); border-radius:16px; }
 table.cmp tr.main td:first-child { border-radius:16px 0 0 16px; padding-left:16px; }
 table.cmp tr.main td:last-child { border-radius:0 16px 16px 0; }
 table.cmp tr.main:hover td { background:var(--surface); }
-table.cmp tr.main:hover { box-shadow:0 2px 4px rgba(27,35,51,.06), 0 12px 28px rgba(27,35,51,.1); }
+table.cmp tr.main:hover { box-shadow:0 0 0 1px var(--g1-line), 0 4px 16px rgba(27,35,51,.08); }
 table.cmp tr.main.sel { box-shadow:0 0 0 1.5px var(--gold), var(--shadow); }
 table.cmp tr.main.sel td { background:var(--goldbg); }
-tr.detail td { background:var(--surface); border-radius:16px; box-shadow:var(--shadow-sm); }
+tr.detail td { background:var(--surface); border-radius:16px; box-shadow:0 0 0 1px var(--line), var(--shadow-sm); }
 table.cmp caption { padding-bottom:12px !important; }
 table.cmp caption b { font-size:16px !important; }
 
@@ -340,9 +340,9 @@ table.cmp caption b { font-size:16px !important; }
 .addb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 
 /* サムネ・バッジ・数値セル */
-.thumb { border:none; background:#fff; box-shadow:var(--shadow-sm); width:60px; height:60px; }
+.thumb { border:1px solid var(--line); background:#fff; box-shadow:none; width:60px; height:60px; }
 .b.best { background:var(--g2); border:none; color:#fff; }
-td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; }
+td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 .amtflex { display:inline-flex; align-items:center; gap:6px; }
 
 /* --- sumbar: 浮遊カード --- */
@@ -351,7 +351,7 @@ td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; }
 /* --- スマホ調整 --- */
 @media (max-width:600px){
   table.cmp { border-spacing:0; }
-  table.cmp tr.main { border-radius:16px; box-shadow:var(--shadow); border:none; }
+  table.cmp tr.main { border-radius:16px; box-shadow:0 0 0 1px var(--line), var(--shadow); border:none; }
   table.cmp tr.main td { background:var(--surface); }
   #msort button.on { background:var(--g1); color:#fff; border-color:var(--g1); }
 }
