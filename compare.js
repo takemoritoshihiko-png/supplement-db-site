@@ -163,8 +163,14 @@
     var dietTxt=(diet!=null)?("食事(平均) "+diet+UNIT+" ＋ "):"";
     var rMin=Math.round(totMin*10)/10, rMax=Math.round(totMax*10)/10;
     var totTxt=(rMin===rMax)?(fnum(rMin)+UNIT):(fnum(rMin)+"〜"+fnum(rMax)+UNIT);
+    var plist='';
+    ids.forEach(function(id){ var p=findP(id); if(!p) return;
+      var bp=bestPrice(p);
+      plist+='<div class="pli"><button class="plx" data-id="'+id+'" aria-label="リストから外す">✕</button><span class="pln">'+p.name+'</span><span class="plm">'+mkName(p)+'</span><span class="pla">'+fmtAmt(p)+'/日</span>'+(bp?'<span class="pla">約'+(Math.round(bp.day*10)/10)+'円/日</span>':'')+'</div>';
+    });
+    document.getElementById('picklist').innerHTML=plist;
     document.getElementById("sumline").innerHTML =
-      '選択中 '+ids.length+'品　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
+      '<a href="javascript:void(0)" id="pltoggle">選択中 '+ids.length+'品 ▴</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
       +'（'+NUT.goalLabel+'の約'+fnum(pctMin)+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
     var viz=document.getElementById("sumbarviz");
     var scale=(UL!=null)?Math.max(UL, totMax):Math.max(GOAL, totMax);
@@ -420,6 +426,11 @@
     i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
   });
   document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
+  document.getElementById("sumbar").addEventListener("click", function(ev){
+    var t=ev.target;
+    if(t.id==="pltoggle"){ var pl=document.getElementById("picklist"); var open=pl.classList.toggle("open"); t.textContent=t.textContent.replace(open?"▴":"▾", open?"▾":"▴"); }
+    if(t.classList.contains("plx")){ state.picked[t.dataset.id]=false; save(); render(); var pl2=document.getElementById("picklist"); if(pl2&&Object.keys(state.picked).some(function(k){return state.picked[k];})) pl2.classList.add("open"); }
+  });
   buildMk(); buildIng();
   /* URL/保存状態をUIへ反映 */
   (function(){

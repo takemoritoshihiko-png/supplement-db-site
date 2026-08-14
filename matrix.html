@@ -131,7 +131,7 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
 
   var h='<div class="mtxtablewrap"><table class="mtx"><thead><tr><th class="rowh">栄養素・成分</th>';
   cols.forEach(function(c){
-    h+='<th class="ph"><a href="'+c.nut.file+'" title="'+c.p.maker+' '+c.p.name+'">'+c.p.name+'<span class="mk">'+mkName(c.p.maker)+'・'+c.nut.name+'ページ</span></a></th>';
+    h+='<th class="ph"><a href="'+c.nut.file+'" title="'+c.p.maker+' '+c.p.name+'">'+c.p.name+'<span class="mk">'+mkName(c.p.maker)+'・'+c.nut.name+'ページ</span></a><button class="mtxdel" data-slug="'+c.nut.slug+'" data-id="'+c.p.id+'" title="リストから外す" aria-label="リストから外す">✕</button></th>';
   });
   h+='<th>合計/日</th><th>基準値</th><th>充足の目安</th></tr></thead><tbody>';
   order.forEach(function(key){
@@ -159,5 +159,11 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
   });
   h+='</tbody></table></div>';
   body.innerHTML=h;
+  /* 列ヘッダーの✕でその商品をリストから外す */
+  body.addEventListener('click', function(ev){
+    var t=ev.target; if(!t.classList||!t.classList.contains('mtxdel')) return;
+    try{ var k='sdb-'+t.dataset.slug; var sv=JSON.parse(localStorage.getItem(k)||'{}'); if(sv.picked){ delete sv.picked[t.dataset.id]; localStorage.setItem(k,JSON.stringify(sv)); } }catch(e){}
+    location.reload();
+  });
 })();
 </script>

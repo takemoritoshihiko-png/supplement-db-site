@@ -235,3 +235,19 @@
 /* B15: sumbarから横断合算表への入口 */
 .mtxlink { font-size:12px; color:var(--blue); text-decoration:none; white-space:nowrap; margin-left:10px; float:right; }
 .mtxlink:hover { text-decoration:underline; }
+
+/* 飲むリストの一覧+削除(sumbar内・「選択中N品」クリックで開閉) */
+#picklist { display:none; max-height:180px; overflow-y:auto; border-bottom:1px solid var(--line); margin-bottom:8px; padding-bottom:6px; }
+#picklist.open { display:block; }
+#picklist .pli { display:flex; align-items:center; gap:10px; padding:5px 2px; font-size:12.5px; border-bottom:1px dashed var(--line); }
+#picklist .pli:last-child { border-bottom:none; }
+#picklist .plx { border:1px solid var(--line); background:var(--card); color:var(--red,#c02626); border-radius:6px; width:22px; height:22px; line-height:1; cursor:pointer; font-size:11px; flex:none; }
+#picklist .plx:hover { border-color:var(--red,#c02626); }
+#picklist .pln { font-weight:700; }
+#picklist .plm { color:var(--ink3); font-size:11px; }
+#picklist .pla { color:var(--ink2); font-size:11.5px; margin-left:auto; }
+#picklist .pla + .pla { margin-left:10px; flex:none; }
+#pltoggle { color:var(--blue); text-decoration:none; font-weight:700; }
+/* matrixの列ヘッダー削除ボタン */
+table.mtx th.ph .mtxdel { border:1px solid var(--line); background:var(--card); color:var(--red,#c02626); border-radius:6px; width:20px; height:20px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
+table.mtx th.ph .mtxdel:hover { border-color:var(--red,#c02626); }
