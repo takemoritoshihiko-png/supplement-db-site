@@ -56,7 +56,7 @@
   .note { font-size:13.5px; line-height:1.9; color:var(--ink2); margin-top:16px; }
   .note .nt { font-weight:800; color:var(--ink); }
 
-  .hero { min-height:64vh; display:flex; align-items:center; border-bottom:1px solid var(--line); }
+  .hero { min-height:auto; display:flex; align-items:center; border-bottom:1px solid var(--line); }
   .hero-inner { padding:80px 0; }
 
   /* できること3つ */
@@ -162,12 +162,21 @@
   .gap.warn2 { color:var(--bad); }
   .rchip { font-size:11px; font-weight:800; color:var(--g1); text-decoration:none; border:1px solid var(--g1-line); border-radius:100px; padding:2px 10px; margin-left:8px; vertical-align:2px; white-space:nowrap; }
   .rchip.soon { color:var(--ink3); border-color:var(--line); }
-  .crow { display:grid; grid-template-columns:1fr 90px 110px; align-items:center; gap:12px; padding:6px 0; border-bottom:1px dashed var(--line); }
+  .crow .cnm { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .crow .rchip { margin-left:0; width:max-content; }
+  .crow { display:grid; grid-template-columns:1fr 90px 130px; align-items:center; gap:12px; padding:6px 0; border-bottom:1px dashed var(--line); }
   .crow:last-of-type { border-bottom:none; }
   .crow .cnm { font-size:13px; font-weight:700; color:var(--ink); }
   .crow .cbar { position:relative; height:8px; background:var(--track); border-radius:4px; overflow:hidden; }
   .crow .cbar i { position:absolute; inset:0; background:var(--ok); border-radius:4px; }
   .crow .cpc { font-size:12px; font-weight:700; color:var(--ok); text-align:right; font-variant-numeric:tabular-nums; }
+  .rbox { border:1px solid var(--line); border-radius:14px; padding:8px 18px; margin-top:6px; }
+  .rbox.warnbox { border-color:var(--bad-line); }
+  .crow .cbar i.shi { position:absolute; inset:0 auto 0 0; background:var(--g2); border-radius:4px; }
+  .crow .cbar i.ovi { position:absolute; inset:0 auto 0 0; background:var(--bad); border-radius:4px; }
+  .crow .cpc.shp { color:var(--g2); }
+  .crow .cpc.ovp { color:var(--bad); }
+  .crow .cpc small { display:block; font-weight:400; color:var(--ink3); font-size:10.5px; letter-spacing:0; }
   .ndnote { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3); }
   details.fold { margin-top:18px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
   details.fold summary { cursor:pointer; padding:12px 18px; font-size:13px; font-weight:800; color:var(--ink2); list-style:none; }
@@ -189,8 +198,6 @@
   <div class="wrap hero-inner">
     <div class="eyebrow">データが導く、心地よいサプリ選び</div>
     <h1>あなたにぴったりの、<br>スマートなサプリ選びを。</h1>
-    <p class="lede">あふれる情報。迷う、サプリ選び。<strong>国のデータ</strong>が、あなたにとっての「本当に必要な成分」との心地よい出会いを導きます。</p>
-    <a class="btn" style="margin-top:26px" href="#you">まずは現在地をチェック ↓</a>
   </div>
 </div>
 
@@ -345,23 +352,17 @@
     }
     var html='';
     if(short.length){
-      html+='<div class="rgh">意識して補いたい栄養素 <span>'+short.length+'種</span></div>';
-      short.forEach(function(x){
-        var judge;
-        if(x.pct>=95){ judge='平均的な食事は、'+x.name+'の基準までもう少しです'; }
-        else if(x.type==="AI"){ judge='平均的な食事では、'+x.name+'が目安量に届いていません'; }
-        else{ judge='平均的な食事では、'+x.name+'が不足しがちです'; }
-        html+='<div class="rrow"><div class="head"><span class="nm">'+x.name+chip(x.name)+'</span><span class="gap short">'+judge+'</span></div>'
-          +'<div class="nums">国の'+typeLabel[x.type]+' '+fx(x.ref)+x.unit+' ／ あなたの年代の食事（平均） '+fx(x.got)+x.unit+'（約'+x.pct+'%）</div>'
-          +'<div class="bar"><i class="sh" style="width:'+Math.min(100,x.pct)+'%"></i><b></b></div></div>';
-      });
+      html+='<div class="rgh">意識して補いたい栄養素 <span>'+short.length+'種</span></div><div class="rbox">';
+      html+=short.map(function(x){
+        return '<div class="crow"><span class="cnm">'+x.name+chip(x.name)+'</span><span class="cbar"><i class="shi" style="width:'+Math.min(100,x.pct)+'%"></i></span><span class="cpc shp">約'+x.pct+'%<small>'+fx(x.got)+' / '+fx(x.ref)+x.unit+(x.type==="AI"?"(目安量)":"")+'</small></span></div>';
+      }).join('');
+      html+='</div>';
     }
     over.forEach(function(x){
-      html+='<div class="rgh warn">摂りすぎに注意</div>'
-        +'<div class="rrow warnrow"><div class="head"><span class="nm">'+x.disp+'</span><span class="gap warn2">平均的な食事では、塩分を摂りすぎています</span></div>'
-        +'<div class="nums">国の目標量（上限） '+fx(x.ref)+'g未満 ／ あなたの年代の食事（平均） '+fx(x.got)+'g（上限の約'+x.pct+'%）</div>'
-        +'<div class="bar"><i class="ov" style="width:100%"></i><b></b></div></div>';
+      html+='<div class="rgh warn">摂りすぎに注意</div><div class="rbox warnbox">'
+        +'<div class="crow"><span class="cnm">'+x.disp+'</span><span class="cbar"><i class="ovi" style="width:100%"></i></span><span class="cpc ovp">上限の約'+x.pct+'%<small>'+fx(x.got)+' / '+fx(x.ref)+'g未満</small></span></div></div>';
     });
+
     var okRows=ok.map(function(x){
       return '<div class="crow"><span class="cnm">'+x.disp+'</span><span class="cbar"><i></i></span><span class="cpc">基準の約'+x.pct+'%</span></div>';
     }).join('');
