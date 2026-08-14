@@ -47,15 +47,31 @@
     var fill=f>0?'<path d="M'+x0+' '+c+' A '+r+' '+r+' 0 0 1 '+x1+' '+c+'" fill="none" stroke="var(--g2)" stroke-width="'+sw+'" stroke-linecap="round" stroke-dasharray="'+(len*f)+' '+(len+9)+'"/>':'';
     return '<svg class="gg" width="'+size+'" height="'+h+'" viewBox="0 0 '+size+' '+h+'" aria-hidden="true">'+track+fill+'</svg>';
   }
+  function isDeadV(v){ return /販売終了|売り切れ|在庫切れ/.test(v.status||""); }
   function bestPrice(p){
-    var best=null;
+    var best=null, sub=null;
     toArr(p.variants).forEach(function(v){
+      if(isDeadV(v)) return;
+      if(v.sub!=null && v.days!=null && v.days>0){ var s=v.sub/v.days; if(sub==null||s<sub) sub=s; }
       if(v.reg==null || v.days==null || v.days<=0) return;
-      var d=v.reg/v.days, ds=(v.sub!=null)?v.sub/v.days:null;
-      if(best==null || d<best.day) best={day:d,sub:ds};
-      else if(ds!=null && best.sub==null && d===best.day) best.sub=ds;
+      var d=v.reg/v.days;
+      if(best==null || d<best.day) best={day:d};
     });
+    if(best) best.sub=sub;
     return best;
+  }
+  /* 費用の幅(1日目安量が幅の商品はコスト幅で返す)+税抜/セール検知 */
+  function costRange(p){
+    var mn=null,mx=null,tax=false;
+    toArr(p.variants).forEach(function(v){
+      if(isDeadV(v)||v.reg==null) return;
+      var a=null,b=null;
+      if(v.qty!=null && p.doseMin!=null && p.doseMax!=null && p.doseMax!==p.doseMin){ a=v.reg*p.doseMin/v.qty; b=v.reg*p.doseMax/v.qty; }
+      else if(v.days!=null && v.days>0){ a=v.reg/v.days; b=a; }
+      else return;
+      if(mn==null || a<mn){ mn=a; mx=b; tax=/税抜|セール/.test(v.note||""); }
+    });
+    return mn==null?null:{min:mn,max:mx,tax:tax};
   }
   function isOnSale(p){ return toArr(p.variants).some(function(v){ return (v.status||"").indexOf("販売中")>=0 || (v.status||"").indexOf("在庫あり")>=0; }); }
   function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
@@ -96,6 +112,9 @@
   function canonOf(name){
     var n=(name||"").toLowerCase();
     if(/k2/.test(n)) return "ビタミンK2";
+    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
+    if(/コラーゲン/.test(n)) return "コラーゲン";
+    if(/cpp|ccp|cbp|ペプチド/.test(n)) return "ミルク由来ペプチド(CPP等)";
     if(/カルシウム|calcium/.test(n)) return "カルシウム";
     if(/マグネシウム|magnesium/.test(n)) return "マグネシウム";
     if(/乳酸菌/.test(n)) return "乳酸菌";
@@ -110,8 +129,6 @@
     if(/b2/.test(n)) return "ビタミンB2";
     if(/b6/.test(n)) return "ビタミンB6";
     if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) return "オメガ3系オイル";
-    if(/コラーゲン/.test(n)) return "コラーゲン";
-    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
     if(/カリウム|potassium/.test(n)) return "カリウム";
     if(/ナトリウム|sodium/.test(n)) return "ナトリウム";
     if(/メチオニン/.test(n)) return "メチオニン";
@@ -123,7 +140,6 @@
     if(/セラミド/.test(n)) return "セラミド";
     if(/エラスチン/.test(n)) return "エラスチン";
     if(/プロテオグリカン/.test(n)) return "プロテオグリカン";
-    if(/cpp|ccp|cbp|ペプチド/.test(n)) return "ミルク由来ペプチド(CPP等)";
     if(/銅/.test(n)) return "銅";
     return (name||"").split("(")[0].split("（")[0].trim();
   }
@@ -156,14 +172,14 @@
 
   function renderSum(){
     var bar=document.getElementById("sumbar");
-    var ids=Object.keys(state.picked).filter(function(k){return state.picked[k];});
+    var ids=Object.keys(state.picked).filter(function(k){return state.picked[k] && findP(k);});
     if(ids.length===0){ bar.classList.remove("show"); return; }
     bar.classList.add("show");
     var sMin=0,sMax=0,otherNote=0,naNote=0;
     ids.forEach(function(id){ var p=findP(id); if(!p) return; if(p.amtMax==null){ naNote++; return; } sMin+=p.amtMin; sMax+=p.amtMax; if((p.others||0)>0||toArr(p.ings).length>0) otherNote++; });
     var diet=dietAvg();
     var totMin=sMin+(diet||0), totMax=sMax+(diet||0);
-    var pctMin=Math.round(totMin/GOAL*100);
+    var pctMin=Math.round(totMin/GOAL*100), pctMax=Math.round(totMax/GOAL*100);
     var over=(UL!=null)&&(totMax>=UL);
     var verdict, cls;
     if(over){ verdict="⚠️ 耐容上限("+fnum(UL)+UNIT+"/成人)に達します — この組み合わせは摂りすぎに注意"; cls="warn"; }
@@ -178,9 +194,17 @@
       plist+='<div class="pli"><button class="plx" data-id="'+id+'" aria-label="リストから外す">✕</button><span class="pln">'+p.name+'</span><span class="plm">'+mkName(p)+'</span><span class="pla">'+fmtAmt(p)+'/日</span>'+(bp?'<span class="pla">約'+(Math.round(bp.day*10)/10)+'円/日</span>':'')+'</div>';
     });
     document.getElementById('picklist').innerHTML=plist;
+    var cMin=0, cMax=0, costMiss=0, taxN=0;
+    ids.forEach(function(id){ var p=findP(id); if(!p) return; var cr=costRange(p); if(cr){ cMin+=cr.min; cMax+=cr.max; if(cr.tax) taxN++; } else costMiss++; });
+    function fy(x){ return (Math.round(x*10)/10).toLocaleString(); }
+    var costCore = cMin>0 ? '費用 <b>約'+(Math.round(cMin)===Math.round(cMax)?fy(cMin):fy(cMin)+'〜'+fy(cMax))+'円/日</b>' : (costMiss?'費用 —':'');
+    var costNotes=[];
+    if(costMiss) costNotes.push('価格未取得'+costMiss+'品を除く');
+    if(taxN) costNotes.push('税抜'+taxN+'品を含む');
+    var costTxt = costCore ? '　｜　'+costCore+(costNotes.length?'<span style="font-size:10.5px;color:var(--ink3)">（'+costNotes.join('・')+'）</span>':'') : '';
     document.getElementById("sumline").innerHTML =
-      '<a href="javascript:void(0)" id="pltoggle">選択中 '+ids.length+'品 '+(document.getElementById("picklist").classList.contains("open")?"▾":"▴")+'</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
-      +'（'+NUT.goalLabel+'の約'+fnum(pctMin)+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
+      '<a href="javascript:void(0)" id="pltoggle">飲む予定リスト '+ids.length+'品 '+(document.getElementById("picklist").classList.contains("open")?"▾":"▴")+'</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
+      +'（'+NUT.goalLabel+'の約'+(pctMin===pctMax?fnum(pctMin):fnum(pctMin)+'〜'+fnum(pctMax))+'%）'+costTxt+'　<span class="verdict '+cls+'">'+verdict+'</span>';
     var viz=document.getElementById("sumbarviz");
     var scale=(UL!=null)?Math.max(UL, totMax):Math.max(GOAL, totMax);
     viz.classList.toggle("over", over);
@@ -312,7 +336,7 @@
         ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
         : '<span style="color:var(--ink3)">—</span>';
       el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
-        +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
+        +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲む予定リストに入れる">'+(on?'✓':'＋')+'</button></td>'
         +'<td class="prod"><div class="prodflex"><div class="thumb">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':formShort(p))+'</div><div><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></div></div></td>'
         +'<td class="num packc">'+packCell+'</td>'
         +'<td class="num dosec">'+doseCell+'</td>'

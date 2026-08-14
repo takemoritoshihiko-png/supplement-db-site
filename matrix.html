@@ -1,14 +1,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>飲むリストの合算表 — 全栄養素をまとめてチェック</title>
+<title>飲む予定リスト — 合計量・費用・充足率</title>
 <link rel="stylesheet" href="compare.css">
 <style>
 /* このページ専用の最小スタイル(共通はcompare.css) */
 .mtxwrap { max-width:1100px; margin:0 auto; padding:20px 16px 60px; }
-.mtxwrap .back { font-size:13px; color:var(--blue); text-decoration:none; }
-.mtxwrap h1 { font-size:24px; margin:14px 0 6px; letter-spacing:.02em; }
-.mtxwrap .sub { font-size:13.5px; color:var(--ink2); line-height:1.8; max-width:760px; }
+.mtxwrap .back { font-size:13px; color:var(--g1); text-decoration:none; }
+.mtxwrap h1 { font-size:26px; margin:14px 0 6px; letter-spacing:.02em; font-weight:900; }
+.mtxwrap .sub { font-size:13.5px; color:var(--ink2); line-height:1.8; max-width:780px; }
+.youline { margin-top:12px; font-size:13px; color:var(--ink2); }
+.youline b { color:var(--ink); }
+.youline a { color:var(--g1); font-weight:700; text-decoration:none; }
 .mtxtablewrap { overflow-x:auto; border:1px solid var(--line); box-shadow:var(--shadow); border-radius:16px; margin-top:18px; background:var(--surface); }
 table.mtx { border-collapse:collapse; width:100%; font-size:13px; }
 table.mtx tbody tr:hover td { background:var(--bg); }
@@ -21,41 +24,47 @@ table.mtx th.ph a { color:#fff; text-decoration:none; }
 table.mtx th.ph .mk { display:block; font-size:9px; color:rgba(255,255,255,.7); font-weight:400; }
 table.mtx td.tot { font-weight:800; background:var(--g1-soft); color:var(--g1); }
 table.mtx td.pct { font-weight:700; }
-table.mtx td.pct.ok { color:var(--green,#16803c); }
-table.mtx td.pct.warn { color:var(--red,#c02626); }
+table.mtx td.pct .done { display:inline-block; background:var(--ok-soft); color:var(--ok); border-radius:100px; font-size:10.5px; font-weight:800; padding:1px 8px; margin-left:6px; }
+table.mtx td.pct.ok { color:var(--ok); }
+table.mtx td.pct.warn { color:var(--warn); }
 table.mtx td .u { font-size:10px; color:var(--ink3); font-weight:400; }
+table.mtx td .sub2 { display:block; font-size:10px; color:var(--ink3); font-weight:400; }
+table.mtx tr.costrow td { border-top:2px solid var(--line); font-weight:700; }
+table.mtx tr.costrow td.tot { color:var(--g1); }
 table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
-.mtxempty { border:1px dashed var(--line); border-radius:12px; padding:28px 20px; text-align:center; color:var(--ink2); font-size:14px; margin-top:18px; line-height:2; }
-.mtxempty a { color:var(--blue); }
-.mtxnote { font-size:11.5px; color:var(--ink3); line-height:1.9; margin-top:14px; max-width:820px; }
+table.mtx th.ph .mtxdel { border:1px solid rgba(255,255,255,.4); background:transparent; color:#fff; border-radius:6px; width:20px; height:20px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
+table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
+.mtxempty { border:1px dashed var(--line); border-radius:16px; padding:28px 20px; text-align:center; color:var(--ink2); font-size:14px; margin-top:18px; line-height:2; }
+.mtxempty a { color:var(--g1); }
+.mtxnote { font-size:11.5px; color:var(--ink3); line-height:1.9; margin-top:14px; max-width:840px; }
 .mtxpages { margin-top:10px; font-size:12.5px; }
-.mtxpages a { color:var(--blue); text-decoration:none; margin-right:14px; }
+.mtxpages a { color:var(--g1); text-decoration:none; margin-right:14px; font-weight:700; }
 </style>
 <div class="mtxwrap">
   <a class="back" href="index.html">← トップへ戻る</a>
-  <h1>飲むリストの合算表</h1>
-  <div class="sub">各比較ページで＋を押した商品を、<b>全栄養素まとめて</b>集計します。「マルチビタミンと単品サプリで同じ栄養素が重複していないか」をひと目で確認できます。リストの変更は各比較ページで行えます。</div>
+  <h1>飲む予定リスト</h1>
+  <div class="sub">各比較ページで<b>□にチェックした商品</b>がここに保存されています。栄養素の合計量・<b>1日の費用</b>・<b>不足に対する充足率</b>をまとめて確認できます。リストの変更は各比較ページ、または列の✕で行えます。</div>
+  <div class="youline" id="youline"></div>
   <div class="mtxpages" id="mtxpages"></div>
   <div id="mtxbody"></div>
-  <div class="mtxnote">※ 基準値=栄養素等表示基準値（食品表示基準・商品パッケージの%表示と同じ物差し）。ビタミンDのみ比較ページと同じ成人の目安量9.0μg/日を使用。基準値の照合が済んでいない成分は量の合算のみ表示します。<br>※ この表はサプリメント分のみの合算で、食事からの摂取分は含みません（食事平均との合算は各比較ページの下部バーで確認できます）。充足%は表示上の目安であり、効果の優劣を示すものではありません。</div>
+  <div class="mtxnote" id="mtxnote"></div>
 </div>
 <script src="matrix-data.js"></script>
 <script>
 (function(){
-  /* 基準値(検証済みのみ)。出典: 栄養素等表示基準値=商品パッケージの%表示から確認。VDのみ目安量9.0 */
+  /* 追加成分の基準値(検証済みのみ)。主要栄養素はMTX.nutsのgoal/dietを使う */
   var NSTD={
-    "ビタミンD":{goal:9.0,unit:"μg",label:"目安量",ul:100},
-    "カルシウム":{goal:680,unit:"mg",label:"基準値",ul:2500},
-    "ビタミンC":{goal:100,unit:"mg",label:"基準値",ul:null},
-    "マグネシウム":{goal:320,unit:"mg",label:"基準値",ul:null},
-    "亜鉛":{goal:8.8,unit:"mg",label:"基準値",ul:null},
-    "鉄":{goal:6.8,unit:"mg",label:"基準値",ul:null},
-    "ビタミンB6":{goal:1.3,unit:"mg",label:"基準値",ul:null}
+    "マグネシウム":{goal:320,unit:"mg",label:"基準値",diet:{m:{"20":229.4,"30":241.37,"40":237.73,"50":256.23,"60":277.55,"70":284.38,"80":270.52},f:{"20":192.55,"30":197.32,"40":213.99,"50":229.31,"60":251.7,"70":262.48,"80":244.34}}},
+    "亜鉛":{goal:8.8,unit:"mg",label:"基準値",diet:{m:{"20":9.12,"30":9.28,"40":9.37,"50":9.07,"60":9.17,"70":8.73,"80":8.16},f:{"20":7.73,"30":7.44,"40":7.59,"50":7.69,"60":7.58,"70":7.51,"80":7.35}}},
+    "鉄":{goal:6.8,unit:"mg",label:"基準値",diet:{m:{"20":7.41,"30":7.39,"40":7.45,"50":7.71,"60":8.42,"70":8.75,"80":8.34},f:{"20":6.45,"30":6.17,"40":6.64,"50":7.09,"60":7.6,"70":8.06,"80":7.53}}},
+    "ビタミンB6":{goal:1.3,unit:"mg",label:"基準値",diet:{m:{"20":1.17,"30":1.2,"40":1.19,"50":1.22,"60":1.32,"70":1.32,"80":1.27},f:{"20":0.98,"30":0.98,"40":0.99,"50":1.05,"60":1.12,"70":1.23,"80":1.14}}}
   };
-  /* 成分名の正規化(compare.jsと同一辞書の縮約版) */
   function canonOf(name){
     var n=(name||"").toLowerCase();
     if(/k2/.test(n)) return "ビタミンK2";
+    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
+    if(/コラーゲン/.test(n)) return "コラーゲン";
+    if(/cpp|ccp|cbp|ペプチド/.test(n)) return "ミルク由来ペプチド(CPP等)";
     if(/カルシウム|calcium/.test(n)) return "カルシウム";
     if(/マグネシウム|magnesium/.test(n)) return "マグネシウム";
     if(/乳酸菌/.test(n)) return "乳酸菌";
@@ -70,14 +79,11 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
     if(/b2/.test(n)) return "ビタミンB2";
     if(/b6/.test(n)) return "ビタミンB6";
     if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) return "オメガ3系オイル";
-    if(/コラーゲン/.test(n)) return "コラーゲン";
-    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
     if(/カリウム|potassium/.test(n)) return "カリウム";
     if(/ルチン|ヘスペリジン|ビタミンp/.test(n)) return "ビタミンP(ルチン・ヘスペリジン)";
     if(/ナイアシン/.test(n)) return "ナイアシン";
     if(/パントテン酸/.test(n)) return "パントテン酸";
     if(/ローズヒップ/.test(n)) return "ローズヒップ";
-    if(/cpp|ccp|cbp|ペプチド/.test(n)) return "ミルク由来ペプチド(CPP等)";
     return (name||"").split("(")[0].split("（")[0].trim();
   }
   function fmt(v,unit){
@@ -85,43 +91,61 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
     return r>=1000?r.toLocaleString():String(r);
   }
   function mkName(m){ return (m||"").split("(")[0].split("（")[0].replace(/株式会社|有限会社/g,""); }
+  function isDeadV(v){ return /販売終了|売り切れ|在庫切れ/.test(v.status||""); }
+  function costRange(p){
+    var mn=null,mx=null,tax=false;
+    var vs=Array.isArray(p.variants)?p.variants:(p.variants?[p.variants]:[]);
+    vs.forEach(function(v){
+      if(isDeadV(v)||v.reg==null) return;
+      var a=null,b=null;
+      if(v.qty!=null && p.doseMin!=null && p.doseMax!=null && p.doseMax!==p.doseMin){ a=v.reg*p.doseMin/v.qty; b=v.reg*p.doseMax/v.qty; }
+      else if(v.days!=null && v.days>0){ a=v.reg/v.days; b=a; }
+      else return;
+      if(mn==null || a<mn){ mn=a; mx=b; tax=/税抜|セール/.test(v.note||""); }
+    });
+    return mn==null?null:{min:mn,max:mx,tax:tax};
+  }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
 
-  /* 各ページの飲むリスト(localStorage sdb-<slug>)から選択商品を収集 */
+  /* 属性(sdb-you)の読込 */
+  var you={}; try{ you=JSON.parse(localStorage.getItem("sdb-you")||"{}")||{}; }catch(e){}
+  var hasYou=!!(you.sex&&you.age);
+  var sexLabel=you.sex==="m"?"男性":"女性";
+  document.getElementById("youline").innerHTML = hasYou
+    ? '性別・年代: <b>'+sexLabel+'・'+you.age+'代</b> の平均的な食事を足して充足率を計算しています（<a href="index.html#you">トップで変更</a>）'
+    : '<a href="index.html#you">トップで性別・年代を選ぶ</a>と、食事の平均摂取分も足した充足率を表示できます（今はサプリ分のみで計算）。';
+
+  /* 各ページの飲む予定リストから選択商品を収集 */
   var cols=[];
   MTX.nuts.forEach(function(n){
-    var sv={}; try{ sv=JSON.parse(localStorage.getItem("sdb-"+n.slug)||"{}"); }catch(e){}
+    var sv={}; try{ sv=JSON.parse(localStorage.getItem("sdb-"+n.slug)||"{}")||{}; }catch(e){}
     var pk=sv.picked||{};
     (MTX.data[n.slug]||[]).forEach(function(p){ if(pk[p.id]) cols.push({p:p,nut:n}); });
   });
 
-  var pages=MTX.nuts.map(function(n){ return '<a href="'+n.file+'">'+n.name+'の比較表 →</a>'; }).join("");
-  document.getElementById("mtxpages").innerHTML=pages;
+  document.getElementById("mtxpages").innerHTML=MTX.nuts.map(function(n){ return '<a href="'+n.file+'">'+n.name+'の比較表 →</a>'; }).join("");
 
   var body=document.getElementById("mtxbody");
   if(cols.length===0){
-    body.innerHTML='<div class="mtxempty">まだ商品が選ばれていません。<br>各比較ページで＋ボタンを押すと、ここに全栄養素の合算が表示されます。</div>';
+    body.innerHTML='<div class="mtxempty">まだ商品がありません。<br>各比較ページで左の□にチェックすると、ここに保存されていきます。</div>';
     return;
   }
 
-  /* 行=栄養素(正規化名+単位)。列=商品。 */
+  /* 行=栄養素(正規化名+単位) */
   var rows={}, order=[];
   function addTo(key,disp,unit,ci,min,max){
     if(!rows[key]){ rows[key]={name:disp,unit:unit,cells:{},tmin:0,tmax:0}; order.push(key); }
-    var r=rows[key];
-    r.cells[ci]={min:min,max:max};
-    r.tmin+=min; r.tmax+=max;
+    var r=rows[key]; var cell=r.cells[ci]||{min:0,max:0}; cell.min+=min; cell.max+=max; r.cells[ci]=cell; r.tmin+=min; r.tmax+=max;
   }
   cols.forEach(function(c,ci){
     var p=c.p;
     if(p.amtMin!=null) addTo(c.nut.name+"|"+c.nut.unit, c.nut.name, c.nut.unit, ci, p.amtMin, p.amtMax!=null?p.amtMax:p.amtMin);
     (Array.isArray(p.ings)?p.ings:[]).forEach(function(g){
       if(g.a1==null&&g.a2==null) return;
-      var cn=canonOf(g.n), u=g.u||"";
-      var mn=(g.a1!=null?g.a1:g.a2), mx=(g.a2!=null?g.a2:g.a1);
-      addTo(cn+"|"+u, cn, u, ci, mn, mx);
+      addTo(canonOf(g.n)+"|"+(g.u||""), canonOf(g.n), g.u||"", ci, (g.a1!=null?g.a1:g.a2), (g.a2!=null?g.a2:g.a1));
     });
   });
-  /* 並び: 主要栄養素(NUTS順)→その他は合計降順 */
+  var mainByName={}; MTX.nuts.forEach(function(n){ mainByName[n.name+"|"+n.unit]=n; });
   var mainKeys=MTX.nuts.map(function(n){ return n.name+"|"+n.unit; });
   order.sort(function(a,b){
     var ia=mainKeys.indexOf(a), ib=mainKeys.indexOf(b);
@@ -132,12 +156,14 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
 
   var h='<div class="mtxtablewrap"><table class="mtx"><thead><tr><th class="rowh">栄養素・成分</th>';
   cols.forEach(function(c){
-    h+='<th class="ph"><a href="'+c.nut.file+'" title="'+c.p.maker+' '+c.p.name+'">'+c.p.name+'<span class="mk">'+mkName(c.p.maker)+'・'+c.nut.name+'ページ</span></a><button class="mtxdel" data-slug="'+c.nut.slug+'" data-id="'+c.p.id+'" title="リストから外す" aria-label="リストから外す">✕</button></th>';
+    h+='<th class="ph"><a href="'+c.nut.file+'" title="'+esc(c.p.maker)+' '+esc(c.p.name)+'">'+esc(c.p.name)+'<span class="mk">'+esc(mkName(c.p.maker))+'・'+c.nut.name+'ページ</span></a><button class="mtxdel" data-slug="'+c.nut.slug+'" data-id="'+c.p.id+'" title="リストから外す" aria-label="リストから外す">✕</button></th>';
   });
   h+='<th>合計/日</th><th>基準値</th><th>充足の目安</th></tr></thead><tbody>';
   order.forEach(function(key){
-    var r=rows[key], std=NSTD[r.name];
-    var stdOk=std&&std.unit===r.unit;
+    var r=rows[key];
+    var main=mainByName[key];
+    var std = main ? {goal:main.goal, unit:main.unit, label:main.goalLabel, ul:main.ul, diet:main.diet} : NSTD[r.name];
+    var stdOk = std && std.unit===r.unit && std.goal!=null;
     h+='<tr><td class="rowh">'+r.name+'</td>';
     cols.forEach(function(c,ci){
       var cell=r.cells[ci];
@@ -148,19 +174,58 @@ table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
     var tv=(r.tmin===r.tmax)?fmt(r.tmin,r.unit):(fmt(r.tmin,r.unit)+"〜"+fmt(r.tmax,r.unit));
     h+='<td class="tot">'+tv+'<span class="u">'+r.unit+'</span></td>';
     if(stdOk){
-      h+='<td>'+fmt(std.goal,r.unit)+'<span class="u">'+r.unit+'・'+std.label+'</span></td>';
-      var pmin=Math.round(r.tmin/std.goal*100), pmax=Math.round(r.tmax/std.goal*100);
+      h+='<td>'+fmt(std.goal,r.unit)+'<span class="u">'+r.unit+'・'+(std.label||"基準値")+'</span></td>';
+      var diet = (hasYou && std.diet && std.diet[you.sex]) ? std.diet[you.sex][you.age] : null;
+      var base = diet!=null ? diet : 0;
+      var pmin=Math.round((base+r.tmin)/std.goal*100), pmax=Math.round((base+r.tmax)/std.goal*100);
       var pt=(pmin===pmax)?("約"+pmin+"%"):("約"+pmin+"〜"+pmax+"%");
-      if(std.ul!=null&&r.tmax>=std.ul){ h+='<td class="pct warn">⚠ 上限'+fmt(std.ul,r.unit)+r.unit+'以上</td>'; }
-      else { h+='<td class="pct ok">'+pt+'</td>'; }
+      if(std.ul!=null && (base+r.tmax)>=std.ul){
+        h+='<td class="pct warn">⚠ 上限'+fmt(std.ul,r.unit)+r.unit+'以上'+(diet!=null?'<span class="sub2">食事平均を含む</span>':'')+'</td>';
+      } else if(diet!=null){
+        var wasShort = diet < std.goal;
+        var nowMet = (base+r.tmin) >= std.goal;
+        var badge = (wasShort && nowMet) ? '<span class="done">不足を解消 ✓</span>' : '';
+        h+='<td class="pct '+(nowMet?"ok":"")+'">'+pt+badge+'<span class="sub2">食事'+fmt(diet,r.unit)+r.unit+'＋リスト分</span></td>';
+      } else {
+        h+='<td class="pct '+(pmin>=100?"ok":"")+'">'+pt+'<span class="sub2">サプリ分のみ</span></td>';
+      }
     } else {
       h+='<td class="na">整備中</td><td class="na">量のみ表示</td>';
     }
     h+='</tr>';
   });
+  /* 費用/日の行(幅dose商品は最小〜最大のコスト幅) */
+  var cMin=0, cMax=0, costMiss=0, taxN=0, priced=0;
+  function fy(x){ return (Math.round(x*10)/10).toLocaleString(); }
+  h+='<tr class="costrow"><td class="rowh">費用/日</td>';
+  cols.forEach(function(c){
+    var cr=costRange(c.p);
+    if(cr==null){ costMiss++; h+='<td class="na">価格なし</td>'; return; }
+    priced++; cMin+=cr.min; cMax+=cr.max; if(cr.tax) taxN++;
+    h+='<td>約'+(Math.round(cr.min)===Math.round(cr.max)?fy(cr.min):fy(cr.min)+'〜'+fy(cr.max))+'<span class="u">円'+(cr.tax?'・税抜':'')+'</span></td>';
+  });
+  if(priced===0){
+    h+='<td class="tot">—</td><td class="na">—</td><td class="na">全品価格未取得</td></tr>';
+  } else {
+    var dayTxt=(Math.round(cMin)===Math.round(cMax))?fy(cMin):fy(cMin)+'〜'+fy(cMax);
+    var moTxt=(Math.round(cMin*30)===Math.round(cMax*30))?Math.round(cMin*30).toLocaleString():Math.round(cMin*30).toLocaleString()+'〜'+Math.round(cMax*30).toLocaleString();
+    h+='<td class="tot">約'+dayTxt+'<span class="u">円/日</span></td><td class="na">—</td><td class="na">月 約'+moTxt+'円</td></tr>';
+  }
   h+='</tbody></table></div>';
   body.innerHTML=h;
-  /* 列ヘッダーの✕でその商品をリストから外す */
+
+  var noAmt=cols.filter(function(c){ return c.p.amtMin==null; }).length;
+  var ulNone=MTX.nuts.filter(function(n){ return n.ul==null && rows[n.name+"|"+n.unit]; }).map(function(n){ return n.name; });
+  document.getElementById("mtxnote").innerHTML=
+    (costMiss?('※ 価格未取得の'+costMiss+'商品は費用合計に含まれていません。'):'')
+    +(taxN?('※ 費用には税抜価格の商品'+taxN+'品を含みます。'):'')
+    +(noAmt?('※ 主成分量が未取得の商品'+noAmt+'品は、栄養素の合算に含まれていません。'):'')
+    +(ulNone.length?('※ '+ulNone.join('・')+'には耐容上限量は設定されていません（食事摂取基準）。ただし多量摂取が健康の増進につながるものではありません。'):'')
+    +'※ トップの診断は「日本人の食事摂取基準2025」の属性別基準、このページと比較ページの基準値は商品パッケージの%表示と同じ物差し（栄養素等表示基準値）で、役割が異なります。'
+    +'※ 基準値=栄養素等表示基準値（商品パッケージの%表示と同じ物差し）。ビタミンDのみ成人の目安量9.0μg/日。基準値の照合が済んでいない成分は量の合算のみ表示します。'
+    +(hasYou?'※ 充足率は「あなたの年代の平均的な食事＋リストの商品」で計算した参考値で、あなた自身の食事の診断ではありません。':'')
+    +'※ 充足率・「不足を解消」の表示は表示上の目安であり、効果の優劣や健康効果を示すものではありません。';
+
   body.addEventListener('click', function(ev){
     var t=ev.target; if(!t.classList||!t.classList.contains('mtxdel')) return;
     try{ var k='sdb-'+t.dataset.slug; var sv=JSON.parse(localStorage.getItem(k)||'{}'); if(sv.picked){ delete sv.picked[t.dataset.id]; localStorage.setItem(k,JSON.stringify(sv)); } }catch(e){}
