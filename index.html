@@ -20,6 +20,7 @@
     --g2: #B65C1F; --g2-soft: #FAF0E7; --g2-line: #EBD3BE;
     --ok: #2E7D4F; --ok-soft: #E8F4EC;
     --tip-bg: #1B1D22; --tip-ink: #F4F5F7;
+    --bad: #B03A2E; --bad-line: #E5C3BC;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -28,7 +29,7 @@
       --g1: #5E7FD1; --g1-soft: #1D2434; --g1-line: #31405E;
       --g2: #C97B3E; --g2-soft: #2A2018; --g2-line: #4A3521;
       --ok: #5CAD7F; --ok-soft: #1C2B22;
-      --tip-bg: #ECEDF0; --tip-ink: #1B1D22;
+      --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24;
     }
   }
   :root[data-theme="dark"] {
@@ -37,7 +38,7 @@
     --g1: #5E7FD1; --g1-soft: #1D2434; --g1-line: #31405E;
     --g2: #C97B3E; --g2-soft: #2A2018; --g2-line: #4A3521;
     --ok: #5CAD7F; --ok-soft: #1C2B22;
-    --tip-bg: #ECEDF0; --tip-ink: #1B1D22;
+    --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:16px; line-height:1.95; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; }
@@ -152,6 +153,33 @@
   footer .src { font-size:12px; line-height:2; color:var(--ink3); }
   footer .legal { font-size:12.5px; color:var(--ink2); margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
 
+  .rgh { font-size:13px; font-weight:800; letter-spacing:0.08em; color:var(--g2); margin:20px 0 2px; }
+  .rgh span { color:var(--ink3); font-weight:700; }
+  .rgh.warn { color:var(--bad); }
+  .rrow .bar i.sh { background:var(--g2); }
+  .rrow .bar i.ov { background:var(--bad); }
+  .rrow.warnrow { border-color:var(--bad-line); }
+  .gap.warn2 { color:var(--bad); }
+  .rchip { font-size:11px; font-weight:800; color:var(--g1); text-decoration:none; border:1px solid var(--g1-line); border-radius:100px; padding:2px 10px; margin-left:8px; vertical-align:2px; white-space:nowrap; }
+  .rchip.soon { color:var(--ink3); border-color:var(--line); }
+  .crow { display:grid; grid-template-columns:1fr 90px 110px; align-items:center; gap:12px; padding:6px 0; border-bottom:1px dashed var(--line); }
+  .crow:last-of-type { border-bottom:none; }
+  .crow .cnm { font-size:13px; font-weight:700; color:var(--ink); }
+  .crow .cbar { position:relative; height:8px; background:var(--track); border-radius:4px; overflow:hidden; }
+  .crow .cbar i { position:absolute; inset:0; background:var(--ok); border-radius:4px; }
+  .crow .cpc { font-size:12px; font-weight:700; color:var(--ok); text-align:right; font-variant-numeric:tabular-nums; }
+  .ndnote { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3); }
+  details.fold { margin-top:18px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+  details.fold summary { cursor:pointer; padding:12px 18px; font-size:13px; font-weight:800; color:var(--ink2); list-style:none; }
+  details.fold summary::before { content:"▸ "; color:var(--ink3); }
+  details.fold[open] summary::before { content:"▾ "; }
+  details.fold .fbody { padding:0 18px 14px; font-size:12.5px; line-height:2; color:var(--ink2); }
+  details.fold { margin-top:18px; border:1px solid var(--line); border-radius:12px; background:var(--surface); }
+  details.fold summary { cursor:pointer; padding:12px 18px; font-size:13px; font-weight:800; color:var(--ink2); list-style:none; }
+  details.fold summary::-webkit-details-marker { display:none; }
+  details.fold summary::before { content:"▸ "; color:var(--ink3); }
+  details.fold[open] summary::before { content:"▾ "; }
+  details.fold .fbody { padding:0 18px 14px; font-size:12.5px; line-height:2; color:var(--ink2); }
   .rv { opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
   .rv.on { opacity:1; transform:none; }
   @media (prefers-reduced-motion: reduce) { .rv { opacity:1; transform:none; transition:none; } .meter .fill { transition:none; } }
@@ -160,23 +188,17 @@
 <div class="hero">
   <div class="wrap hero-inner">
     <div class="eyebrow">データが導く、心地よいサプリ選び</div>
-    <h1>あなたに「ぴったり」が見つかる。</h1>
-    <div class="tagline">データで整える、スマートなサプリ選び</div>
-    <p class="lede">情報も商品もあふれるサプリメント売り場で、もう迷う必要はありません。<strong>国の基準データ</strong>と<strong>独自のクリアな比較指標</strong>が、今のあなたにとって「本当に必要な成分」と「最適なアイテム」との心地よい出会いをサポートします。</p>
-    <a class="btn" style="margin-top:26px" href="#db">比較データベースを見る →</a>
-    <div class="can">
-      <div class="c"><div class="n">できること 1</div><h3>今のあなたに必要な栄養素が、ひと目でわかる</h3><p>性別・年齢・ライフステージを選択するだけで、国の基準に基づく「1日の必要量」と、同年代の食事で「満たしてあげたい分」を美しいデータで可視化します。自分を知る楽しさが、ここから始まります。</p></div>
-      <div class="c"><div class="n">できること 2</div><h3>もう迷わない！あなたにとっての「最高の一粒」を比較</h3><p>バラバラな単位（1粒/2粒、μg/IUなど）を、「1日あたりの量と価格」に統一。コストパフォーマンスと成分量を同じ基準で比べられるから、納得して賢く選べます。</p></div>
-      <div class="c"><div class="n">できること 3</div><h3>話題の成分もスマートに。根拠ベースのトレンドチェック</h3><p>NMNやクレアチンなど、気になるトレンド成分の「本当のところ」を、科学的根拠のレベルと共に分かりやすく解説。期待感と安心感を持って、新しい成分を取り入れられます。</p></div>
-    </div>
+    <h1>あなたにぴったりの、<br>スマートなサプリ選びを。</h1>
+    <p class="lede">あふれる情報。迷う、サプリ選び。<strong>国のデータ</strong>が、あなたにとっての「本当に必要な成分」との心地よい出会いを導きます。</p>
+    <a class="btn" style="margin-top:26px" href="#you">まずは現在地をチェック ↓</a>
   </div>
 </div>
 
 <section id="you">
   <div class="wrap rv">
-    <div class="eyebrow">現在地を知る</div>
-    <h2>あなたを満たす栄養のバランスは？</h2>
-    <p class="body">まずは、同年代の平均的な食生活から、あなたをさらに輝かせる<strong>「栄養のヒント」</strong>を探してみましょう。</p>
+    <div class="eyebrow">STEP 1 — 現在地を知る</div>
+    <h2>あなたの「栄養の現在地」は？</h2>
+    <p class="body">ご自身のライフステージを選択して、今のあなたに足りない栄養素をチェックしてみましょう。<strong>自分を知る楽しさ</strong>が、ここから始まります。</p>
     <div class="selector" id="sel">
       <span class="lbl">性別</span>
       <button data-k="sex" data-v="m">男性</button>
@@ -193,13 +215,25 @@
       <button id="youreset" style="display:none;border-color:var(--g2);color:var(--g2)">リセット</button>
     </div>
     <div class="result" id="res"></div>
-    <p class="note"><span class="nt">データの読み方について</span><br>この数値は「日本人の食事摂取基準（2025年版）」と「令和5年 国民健康・栄養調査」に基づき算出しています。同年代の平均値との比較をベースに、ご自身の普段の食生活と照らし合わせて、楽しくご活用ください。ビタミンDの9.0μgは「目安量」で、これを下回っていても不足していると判断することはできません（食事摂取基準・活用編）。鉄の女性は50代まで「月経あり」、60代からは「月経なし」の基準値を表示しています。70代は70〜74歳の基準値です（75歳以上はやや低い区分になる栄養素があります）。妊娠中・授乳中の基準データは現在整備中です。</p>
+    <details class="fold"><summary>データの読み方について</summary><div class="fbody">この数値は「日本人の食事摂取基準（2025年版）」の基準値と「令和5年 国民健康・栄養調査」の平均摂取量に基づきます。同年代の平均との比較であり、あなた自身の食事の診断ではありません。楽しくご活用ください。<br>・年代と基準の対応: 20代=18〜29歳／30・40代=30〜49歳／50代=50〜64歳／60・70代=65〜74歳／80代〜=75歳以上の基準値を表示しています。<br>・「目安量」の栄養素（ビタミンD・E・Kなど）は、平均がそれを下回っていても不足と判断することはできません（食事摂取基準・活用編）。<br>・鉄の女性は50代まで「月経あり」、60代からは「月経なし」の推奨量です。<br>・ヨウ素・セレン・クロム・モリブデン・ビオチンは調査に平均摂取量データがありません。<br>・比較ページの%は商品パッケージと同じ物差し（栄養素等表示基準値）で、このページの属性別基準とは役割が異なります。</div></details>
+  </div>
+</section>
+
+<section id="benefit">
+  <div class="wrap rv">
+    <div class="eyebrow">このアプリで叶えること</div>
+    <h2>心地よいサプリ選びを、スマートに</h2>
+    <div class="can">
+      <div class="c"><div class="n">1</div><h3>あなたに必要な栄養素を、可視化</h3><p>ライフステージを選ぶだけで、国の基準に基づく「1日の目標」と、同年代の食事で「満たしてあげたい分」を美しいデータで可視化します。</p></div>
+      <div class="c"><div class="n">2</div><h3>迷わない。あなたにとっての「最高の一粒」</h3><p>バラバラなパッケージ表記に惑わされることはありません。すべて「1日あたりの量と価格」に計算し直しました。納得の選択を、ここから。</p></div>
+      <div class="c"><div class="n">3</div><h3>トレンド成分も、確かな根拠で</h3><p>NMNやGABAなど、トレンド成分が「市場でどう語られているか」を、根拠の種類と共に分かりやすく紹介。安心感を持って、新しい成分と付き合えます。</p></div>
+    </div>
   </div>
 </section>
 
 <section id="map">
   <div class="wrap rv">
-    <h2>サプリメントを紐解く「2つのシンプル・ルール」</h2>
+    <h2>スマートに選ぶための「2つのシンプル・ルール」</h2>
     <p class="body">実は、サプリメント売り場には役割の違う<strong>「2種類」</strong>の商品が並んでいます。当サイトはこの区別をクリアにし、無駄なく、そして美しく選べるステップをご用意しました。</p>
     <div class="duo">
       <div class="d d1"><span class="cat">BASE</span><h4>基礎を整える</h4>国が必要量を定めている<strong>26種のビタミン・ミネラル</strong>。自分の数値をチェックし、足りないピースを<strong>「論理的」に補う</strong>グループです。上の「現在地を知る」はこちらの機能です。</div>
@@ -212,37 +246,17 @@
   <div class="wrap rv">
     <div class="eyebrow accent">TARGET</div>
     <h2>いま市場が注目する、魅力的な成分たち</h2>
-    <p class="body">気になる成分をタップしてみてください。その成分への期待値と、根拠の種類（※）、そしてぴったりな商品との出会いが待っています（2026年8月調査）。市場でどう語られているかの紹介であり、効果が科学的に確立されていることを意味しません。</p>
+    <p class="body">気になる成分をタップしてみてください。その成分への期待と、確かな情報をコンパクトに紹介します（商品比較は順次公開・2026年8月調査）。市場でどう語られているかの紹介であり、効果が科学的に確立されていることを意味しません。</p>
     <div class="trend" id="tgrid"></div>
-    <p class="note"><span class="nt">※ 根拠の種類について</span><br>①国が必要量を定める栄養素 ／ ②機能性表示食品の届出あり（事業者が科学的根拠を消費者庁に届け出たもの。国が個別に審査・許可したものではありません） ／ ③「良いと言われている」段階。これらは分類の違いであり、優劣を決めるものではありません。透明性のある情報で、あなたの選択を後押しします。</p>
-  </div>
-</section>
-
-<section id="fact">
-  <div class="wrap rv">
-    <h2>ファクトチェック：日本人の平均的な「栄養の現在地」</h2>
-    <p class="body">国の調査と基準を突き合わせると、20〜40代の平均摂取量から、私たちが<strong>「意識して補うと嬉しい栄養素」</strong>がはっきりと見えてきます。</p>
-    <div class="chart" role="img" aria-label="栄養素別の充足率グラフ">
-      <div class="chart-cond">基準値に対する平均摂取量の割合・20〜40代（令和5年 国民健康・栄養調査 × 食事摂取基準2025年版）</div>
-      <div class="row"><div class="nm">ビタミンA<small>個人差が大きい</small></div><div class="meter"><div class="fill" data-w="52"></div><div class="goal"></div></div><div class="val">46〜59%</div></div>
-      <div class="row"><div class="nm">ビタミンD</div><div class="meter"><div class="fill" data-w="55"></div><div class="goal"></div></div><div class="val">48〜63%</div></div>
-      <div class="row"><div class="nm">カルシウム</div><div class="meter"><div class="fill" data-w="59"></div><div class="goal"></div></div><div class="val">55〜63%</div></div>
-      <div class="row"><div class="nm">鉄<small>月経のある女性</small></div><div class="meter"><div class="fill" data-w="62"></div><div class="goal"></div></div><div class="val">59〜65%</div></div>
-      <div class="row"><div class="nm">ビタミンC</div><div class="meter"><div class="fill" data-w="68"></div><div class="goal"></div></div><div class="val">65〜71%</div></div>
-      <div class="row"><div class="nm">マグネシウム</div><div class="meter"><div class="fill" data-w="68"></div><div class="goal"></div></div><div class="val">63〜74%</div></div>
-      <div class="row"><div class="nm">ビタミンB2</div><div class="meter"><div class="fill" data-w="76"></div><div class="goal"></div></div><div class="val">68〜85%</div></div>
-      <div class="goal-label">右端の線 ＝ 基準値（100%）</div>
-    </div>
-    <p class="body">一方で、ビタミンE・K・B12・葉酸・亜鉛などは平均でも基準値を上回っており、むやみにサプリで足す必要性は薄いことがわかります。<strong>本当に必要なものだけを、シンプルに。</strong></p>
-    <p class="note">平均値が基準値を下回ることは、個人が不足していることを意味しません。まず自分の食生活を確認することが出発点です。</p>
+    <details class="fold"><summary>根拠の種類について</summary><div class="fbody">①国が必要量を定める栄養素 ／ ②機能性表示食品の届出あり（事業者が科学的根拠を消費者庁に届け出たもの。国が個別に審査・許可したものではありません） ／ ③「良いと言われている」段階。これらは分類の違いであり、優劣を決めるものではありません。透明性のある情報で、あなたの選択を後押しします。</div></details>
   </div>
 </section>
 
 <section id="db">
   <div class="wrap rv">
     <div class="eyebrow">比較データベース</div>
-    <h2>栄養素から選んで、同じ物差しで比べる</h2>
-    <p class="body">気になる栄養素を選ぶと、国内外の主要商品を<strong>「1日あたりの量と価格」</strong>に揃えた比較表が開きます。調査中の栄養素も、準備ができ次第ここに追加されていきます。</p>
+    <h2>あなたのサプリを見つける「比較データベース」</h2>
+    <p class="body">栄養素から選んで、国内外の主要商品を<strong>「1日あたりの量と価格」</strong>に統一した比較表でスマートに比べましょう。コストパフォーマンスも成分量も、すべて同じ基準で。納得の選択を。</p>
     <div class="dbgrid">
       <a class="dbc" href="matrix.html"><span class="st open">NEW</span><h3>飲むリストの合算表</h3><p>各ページで選んだ商品を全栄養素まとめて集計。重複チェックに。</p><span class="go">合算表を見る →</span></a>
       <a class="dbc" href="vitamin-d.html"><span class="st open">公開中</span><h3>ビタミンD</h3><p>30商品。絞り込み・上限チェック・飲むリストつきの詳細比較。</p><span class="go">比較表を見る →</span></a>
@@ -258,24 +272,22 @@
 
 <footer>
   <div class="wrap">
-    <div class="src">出典：厚生労働省「令和5年国民健康・栄養調査」／「日本人の食事摂取基準（2025年版）」／消費者庁 機能性表示食品届出データベース・健康食品ポータル／市場動向は2026年8月時点の調査に基づく</div>
-    <div class="legal">本ページは一般的な栄養情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。成分の働きに関する記述は「一般にそのように言われている」ことの紹介であり、特定の商品の効果を保証するものではありません。体調に不安がある場合は医師・薬剤師にご相談ください。</div>
+    <details class="fold"><summary>出典と免責事項</summary><div class="fbody">出典：厚生労働省「令和5年国民健康・栄養調査」／「日本人の食事摂取基準（2025年版）」／消費者庁 機能性表示食品届出データベース・健康食品ポータル／市場動向は2026年8月時点の調査に基づく<br><br>本ページは一般的な栄養情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。成分の働きに関する記述は「一般にそのように言われている」ことの紹介であり、特定の商品の効果を保証するものではありません。体調に不安がある場合は医師・薬剤師にご相談ください。</div></details>
   </div>
 </footer>
 
 <script>
 (function(){
   /* ---------- あなたの必要量デモ（実データ: 摂取基準2025×令和5年調査） ---------- */
-  var REQ = {
-    d:  { m:{20:9.0,30:9.0,40:9.0,50:9.0,60:9.0,70:9.0,80:9.0}, f:{20:9.0,30:9.0,40:9.0,50:9.0,60:9.0,70:9.0,80:9.0}, unit:"μg", dec:1, name:"ビタミンD", note:"目安量" },
-    ca: { m:{20:800,30:750,40:750,50:750,60:750,70:750,80:750}, f:{20:650,30:650,40:650,50:650,60:650,70:650,80:600}, unit:"mg", dec:0, name:"カルシウム", note:"推奨量" },
-    fe: { m:{20:7.0,30:7.5,40:7.5,50:7.0,60:7.0,70:7.0,80:6.5}, f:{20:10.0,30:10.5,40:10.5,50:10.5,60:6.0,70:6.0,80:5.5}, unit:"mg", dec:1, name:"鉄", note:"推奨量（女性50代までは月経あり・60代からは月経なしの値）" }
-  };
-  var INTAKE = {
-    d:  { m:{20:4.7,30:5.7,40:5.5,50:6.0,60:7.8,70:8.1,80:8.7}, f:{20:4.3,30:4.8,40:5.1,50:5.1,60:7.0,70:7.8,80:7.4} },
-    ca: { m:{20:454,30:443,40:413,50:453,60:514,70:550,80:561}, f:{20:386,30:399,40:409,50:446,60:518,70:543,80:528} },
-    fe: { m:{20:7.4,30:7.4,40:7.5,50:7.7,60:8.4,70:8.8,80:8.3}, f:{20:6.5,30:6.2,40:6.6,50:7.1,60:7.6,70:8.1,80:7.5} }
-  };
+  /* 26栄養素の診断データ(食事摂取基準2025×令和5年国民健康・栄養調査。証拠: docs/collection/raw-2026-08-14/) */
+  var REF = {"ビタミンA":{"unit":"μgRAE","type":"RDA","m":{"18-29":850,"30-49":900,"50-64":900,"65-74":850,"75+":800},"f":{"18-29":650,"30-49":700,"50-64":700,"65-74":700,"75+":650}},"ビタミンD":{"unit":"μg","type":"AI","m":{"18-29":9,"30-49":9,"50-64":9,"65-74":9,"75+":9},"f":{"18-29":9,"30-49":9,"50-64":9,"65-74":9,"75+":9}},"ビタミンE":{"unit":"mg","type":"AI","m":{"18-29":6.5,"30-49":6.5,"50-64":6.5,"65-74":7.5,"75+":7},"f":{"18-29":5,"30-49":6,"50-64":6,"65-74":7,"75+":6}},"ビタミンK":{"unit":"μg","type":"AI","m":{"18-29":150,"30-49":150,"50-64":150,"65-74":150,"75+":150},"f":{"18-29":150,"30-49":150,"50-64":150,"65-74":150,"75+":150}},"ビタミンB1":{"unit":"mg","type":"RDA","m":{"18-29":1.1,"30-49":1.2,"50-64":1.1,"65-74":1,"75+":1},"f":{"18-29":0.8,"30-49":0.9,"50-64":0.8,"65-74":0.8,"75+":0.7}},"ビタミンB2":{"unit":"mg","type":"RDA","m":{"18-29":1.6,"30-49":1.7,"50-64":1.6,"65-74":1.4,"75+":1.4},"f":{"18-29":1.2,"30-49":1.2,"50-64":1.2,"65-74":1.1,"75+":1.1}},"ナイアシン":{"unit":"mgNE","type":"RDA","m":{"18-29":15,"30-49":16,"50-64":15,"65-74":14,"75+":13},"f":{"18-29":11,"30-49":12,"50-64":11,"65-74":11,"75+":10}},"ビタミンB6":{"unit":"mg","type":"RDA","m":{"18-29":1.5,"30-49":1.5,"50-64":1.5,"65-74":1.4,"75+":1.4},"f":{"18-29":1.2,"30-49":1.2,"50-64":1.2,"65-74":1.2,"75+":1.2}},"ビタミンB12":{"unit":"μg","type":"AI","m":{"18-29":4,"30-49":4,"50-64":4,"65-74":4,"75+":4},"f":{"18-29":4,"30-49":4,"50-64":4,"65-74":4,"75+":4}},"葉酸":{"unit":"μg","type":"RDA","m":{"18-29":240,"30-49":240,"50-64":240,"65-74":240,"75+":240},"f":{"18-29":240,"30-49":240,"50-64":240,"65-74":240,"75+":240}},"パントテン酸":{"unit":"mg","type":"AI","m":{"18-29":6,"30-49":6,"50-64":6,"65-74":6,"75+":6},"f":{"18-29":5,"30-49":5,"50-64":5,"65-74":5,"75+":5}},"ビオチン":{"unit":"μg","type":"AI","m":{"18-29":50,"30-49":50,"50-64":50,"65-74":50,"75+":50},"f":{"18-29":50,"30-49":50,"50-64":50,"65-74":50,"75+":50}},"ビタミンC":{"unit":"mg","type":"RDA","m":{"18-29":100,"30-49":100,"50-64":100,"65-74":100,"75+":100},"f":{"18-29":100,"30-49":100,"50-64":100,"65-74":100,"75+":100}},"ナトリウム":{"unit":"g","type":"DG","m":{"18-29":7.5,"30-49":7.5,"50-64":7.5,"65-74":7.5,"75+":7.5},"f":{"18-29":6.5,"30-49":6.5,"50-64":6.5,"65-74":6.5,"75+":6.5}},"カリウム":{"unit":"mg","type":"AI","m":{"18-29":2500,"30-49":2500,"50-64":2500,"65-74":2500,"75+":2500},"f":{"18-29":2000,"30-49":2000,"50-64":2000,"65-74":2000,"75+":2000}},"カルシウム":{"unit":"mg","type":"RDA","m":{"18-29":800,"30-49":750,"50-64":750,"65-74":750,"75+":750},"f":{"18-29":650,"30-49":650,"50-64":650,"65-74":650,"75+":600}},"マグネシウム":{"unit":"mg","type":"RDA","m":{"18-29":340,"30-49":380,"50-64":370,"65-74":350,"75+":330},"f":{"18-29":280,"30-49":290,"50-64":290,"65-74":280,"75+":270}},"リン":{"unit":"mg","type":"AI","m":{"18-29":1000,"30-49":1000,"50-64":1000,"65-74":1000,"75+":1000},"f":{"18-29":800,"30-49":800,"50-64":800,"65-74":800,"75+":800}},"鉄":{"unit":"mg","type":"RDA","m":{"18-29":7,"30-49":7.5,"50-64":7,"65-74":7,"75+":6.5},"f":{"18-29":6,"30-49":6,"50-64":6,"65-74":6,"75+":5.5},"f_menst":{"18-29":10,"30-49":10.5,"50-64":10.5,"65-74":null,"75+":null}},"亜鉛":{"unit":"mg","type":"RDA","m":{"18-29":9,"30-49":9.5,"50-64":9.5,"65-74":9,"75+":9},"f":{"18-29":7.5,"30-49":8,"50-64":8,"65-74":7.5,"75+":7}},"銅":{"unit":"mg","type":"RDA","m":{"18-29":0.8,"30-49":0.9,"50-64":0.9,"65-74":0.8,"75+":0.8},"f":{"18-29":0.7,"30-49":0.7,"50-64":0.7,"65-74":0.7,"75+":0.7}},"マンガン":{"unit":"mg","type":"AI","m":{"18-29":3.5,"30-49":3.5,"50-64":3.5,"65-74":3.5,"75+":3.5},"f":{"18-29":3,"30-49":3,"50-64":3,"65-74":3,"75+":3}},"ヨウ素":{"unit":"μg","type":"RDA","m":{"18-29":140,"30-49":140,"50-64":140,"65-74":140,"75+":140},"f":{"18-29":140,"30-49":140,"50-64":140,"65-74":140,"75+":140}},"セレン":{"unit":"μg","type":"RDA","m":{"18-29":30,"30-49":35,"50-64":30,"65-74":30,"75+":30},"f":{"18-29":25,"30-49":25,"50-64":25,"65-74":25,"75+":25}},"クロム":{"unit":"μg","type":"AI","m":{"18-29":10,"30-49":10,"50-64":10,"65-74":10,"75+":10},"f":{"18-29":10,"30-49":10,"50-64":10,"65-74":10,"75+":10}},"モリブデン":{"unit":"μg","type":"RDA","m":{"18-29":30,"30-49":30,"50-64":30,"65-74":30,"75+":25},"f":{"18-29":25,"30-49":25,"50-64":25,"65-74":25,"75+":25}}};
+  var INTAKE = {"ビタミンA":{"unit":"μgRAE","m":{"20":394.25,"30":433.09,"40":498.46,"50":425.55,"60":522.08,"70":652.53,"80":550.14},"f":{"20":354.37,"30":410.39,"40":409.06,"50":416.94,"60":491.6,"70":545.2,"80":571.57}},"ビタミンD":{"unit":"μg","m":{"20":4.65,"30":5.69,"40":5.49,"50":5.96,"60":7.77,"70":8.09,"80":8.74},"f":{"20":4.25,"30":4.81,"40":5.14,"50":5.13,"60":7.01,"70":7.78,"80":7.43}},"ビタミンE":{"unit":"mg","m":{"20":6.43,"30":6.93,"40":6.65,"50":6.91,"60":7.41,"70":7.86,"80":7.71},"f":{"20":5.7,"30":5.81,"40":6.06,"50":6.34,"60":6.91,"70":7.23,"80":6.83}},"ビタミンK":{"unit":"μg","m":{"20":198.85,"30":222.85,"40":231.94,"50":243.01,"60":264.6,"70":282.09,"80":301.88},"f":{"20":207.56,"30":200.28,"40":214.28,"50":230.56,"60":251.53,"70":278.8,"80":273.67}},"ビタミンB1":{"unit":"mg","m":{"20":1.07,"30":1.09,"40":1.04,"50":1.07,"60":1.02,"70":1.04,"80":0.97},"f":{"20":0.85,"30":0.83,"40":0.88,"50":0.9,"60":0.88,"70":0.91,"80":0.81}},"ビタミンB2":{"unit":"mg","m":{"20":1.14,"30":1.17,"40":1.16,"50":1.19,"60":1.29,"70":1.31,"80":1.31},"f":{"20":1,"30":0.97,"40":1.02,"50":1.07,"60":1.15,"70":1.21,"80":1.15}},"ナイアシン当量":{"unit":"mgNE","m":{"20":33.25,"30":34.54,"40":33.97,"50":34.51,"60":34.98,"70":33.93,"80":30.33},"f":{"20":26.56,"30":26.58,"40":27.33,"50":28.85,"60":29.24,"70":29.38,"80":26.66}},"ビタミンB6":{"unit":"mg","m":{"20":1.17,"30":1.2,"40":1.19,"50":1.22,"60":1.32,"70":1.32,"80":1.27},"f":{"20":0.98,"30":0.98,"40":0.99,"50":1.05,"60":1.12,"70":1.23,"80":1.14}},"ビタミンB12":{"unit":"μg","m":{"20":4.41,"30":4.9,"40":5.07,"50":5.48,"60":6.57,"70":7.22,"80":6.77},"f":{"20":4.26,"30":3.97,"40":4.34,"50":4.47,"60":5.33,"70":5.87,"80":5.79}},"葉酸":{"unit":"μg","m":{"20":240.37,"30":242.05,"40":254.3,"50":274.52,"60":310.25,"70":333.91,"80":333.75},"f":{"20":220.38,"30":218.96,"40":238.5,"50":257.66,"60":288.4,"70":332.74,"80":307.29}},"パントテン酸":{"unit":"mg","m":{"20":5.66,"30":5.72,"40":5.72,"50":5.78,"60":6.12,"70":6.17,"80":5.88},"f":{"20":4.91,"30":4.85,"40":4.95,"50":5.08,"60":5.34,"70":5.66,"80":5.33}},"ビタミンC":{"unit":"mg","m":{"20":65.84,"30":66.99,"40":65.64,"50":78.04,"60":96.11,"70":112.87,"80":126.74},"f":{"20":65.01,"30":65.67,"40":71.14,"50":77.57,"60":98.95,"70":128.45,"80":125.55}},"ナトリウム":{"unit":"mg","m":{"20":4074.48,"30":4157.06,"40":4157.72,"50":4056.79,"60":4372.45,"70":4304.93,"80":4064.53},"f":{"20":3263.67,"30":3201.39,"40":3490.75,"50":3491.44,"60":3744.22,"70":3838.43,"80":3500.29}},"食塩相当量":{"unit":"g","m":{"20":10.35,"30":10.56,"40":10.56,"50":10.3,"60":11.11,"70":10.93,"80":10.32},"f":{"20":8.29,"30":8.13,"40":8.87,"50":8.87,"60":9.51,"70":9.75,"80":8.89}},"カリウム":{"unit":"mg","m":{"20":2132.22,"30":2176.23,"40":2153.04,"50":2294.48,"60":2464.3,"70":2584.62,"80":2561.27},"f":{"20":1826.41,"30":1861.91,"40":1947.71,"50":2095.83,"60":2284.65,"70":2547.03,"80":2338.91}},"カルシウム":{"unit":"mg","m":{"20":453.83,"30":442.56,"40":412.72,"50":453.38,"60":514.26,"70":549.87,"80":560.64},"f":{"20":386.01,"30":398.94,"40":409.42,"50":446.16,"60":518.08,"70":542.9,"80":527.56}},"マグネシウム":{"unit":"mg","m":{"20":229.4,"30":241.37,"40":237.73,"50":256.23,"60":277.55,"70":284.38,"80":270.52},"f":{"20":192.55,"30":197.32,"40":213.99,"50":229.31,"60":251.7,"70":262.48,"80":244.34}},"リン":{"unit":"mg","m":{"20":1014.49,"30":1048.54,"40":1013.79,"50":1039.42,"60":1109.8,"70":1108.81,"80":1033.83},"f":{"20":856.02,"30":851.48,"40":877.91,"50":912.61,"60":976.17,"70":995.63,"80":937.46}},"鉄":{"unit":"mg","m":{"20":7.41,"30":7.39,"40":7.45,"50":7.71,"60":8.42,"70":8.75,"80":8.34},"f":{"20":6.45,"30":6.17,"40":6.64,"50":7.09,"60":7.6,"70":8.06,"80":7.53}},"亜鉛":{"unit":"mg","m":{"20":9.12,"30":9.28,"40":9.37,"50":9.07,"60":9.17,"70":8.73,"80":8.16},"f":{"20":7.73,"30":7.44,"40":7.59,"50":7.69,"60":7.58,"70":7.51,"80":7.35}},"銅":{"unit":"mg","m":{"20":1.1,"30":1.13,"40":1.13,"50":1.15,"60":1.24,"70":1.23,"80":1.23},"f":{"20":0.91,"30":0.93,"40":0.99,"50":1.02,"60":1.05,"70":1.12,"80":1.1}}};
+  var BANDS = {"20":"18-29","30":"30-49","40":"30-49","50":"50-64","60":"65-74","70":"65-74","80":"75+"};
+  var ORDER = ["ビタミンD","カルシウム","マグネシウム","鉄","亜鉛","ビタミンA","ビタミンE","ビタミンK","ビタミンB1","ビタミンB2","ナイアシン","ビタミンB6","ビタミンB12","葉酸","パントテン酸","ビオチン","ビタミンC","ナトリウム","カリウム","リン","銅","マンガン","ヨウ素","セレン","クロム","モリブデン"];
+  var IKEY = {"ナイアシン":"ナイアシン当量","ナトリウム":"食塩相当量"};
+  var DN = {"ナトリウム":"塩分（食塩相当量）"};
+  var LINKS = {"ビタミンD":"vitamin-d.html","カルシウム":"calcium.html","ビタミンC":"vitamin-c.html"};
+  var SOON = ["マグネシウム","鉄","亜鉛"];
   var state = { sex:null, age:null };
   try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex) state.sex=sy.sex; if(sy.age) state.age=sy.age; } catch(e){}
   var sel = document.getElementById("sel"), res = document.getElementById("res");
@@ -301,25 +313,65 @@
   if(state.sex||state.age){ syncBtns(); render(); }
   function render(){
     if(!state.sex || !state.age) return;
-    var html = "";
-    ["d","ca","fe"].forEach(function(k){
-      var need = REQ[k][state.sex][state.age], got = INTAKE[k][state.sex][state.age];
-      var fx = function(x){ return x.toFixed(REQ[k].dec); };
-      var pct = Math.min(100, Math.round(got/need*100));
-      var gap = Math.round((need-got)*10)/10;
-      var short = gap > 0;
-      var gapTxt;
-      if(!short){ gapTxt = "平均摂取量は基準値を上回っています"; }
-      else if(pct >= 95){ gapTxt = "平均摂取量は基準値とほぼ同水準です（差 約" + gap + REQ[k].unit + "）"; }
-      else { gapTxt = "平均摂取量は基準値を約" + gap + REQ[k].unit + " 下回ります"; }
-      html += '<div class="rrow"><div class="head"><span class="nm">' + REQ[k].name + '</span>'
-        + '<span class="gap ' + (short?"short":"ok") + '">' + gapTxt + '</span></div>'
-        + '<div class="nums">この属性の基準値 ' + fx(need) + REQ[k].unit + '（' + REQ[k].note + '）／ 平均摂取 ' + fx(got) + REQ[k].unit + '（基準値に対する割合 約' + pct + '%）</div>'
-        + '<div class="bar"><i style="width:' + pct + '%"></i><b></b></div></div>';
+    var sex=state.sex, age=state.age, band=BANDS[age];
+    function fx(v){ var r=(v<100)?(Math.round(v*10)/10):Math.round(v); return r>=1000?r.toLocaleString():String(r); }
+    var typeLabel={RDA:"推奨量",AI:"目安量",DG:"目標量"};
+    var items=[];
+    ORDER.forEach(function(name){
+      var r=REF[name]; if(!r) return;
+      var refVal;
+      if(name==="鉄" && sex==="f"){ refVal=(parseInt(age,10)<=50 && r.f_menst && r.f_menst[band]!=null)?r.f_menst[band]:r.f[band]; }
+      else refVal=r[sex][band];
+      var ik=INTAKE[IKEY[name]||name];
+      var got=(ik&&ik[sex])?ik[sex][age]:null;
+      var it={name:name, disp:DN[name]||name, unit:r.unit, type:r.type, ref:refVal, got:got};
+      if(got==null){ it.grp="nodata"; }
+      else{
+        it.pct=Math.round(got/refVal*100);
+        if(r.type==="DG"){ it.grp=(got>refVal)?"over":"ok"; }
+        else if(it.pct>=100){ it.grp="ok"; }
+        else{ it.grp="short"; }
+      }
+      items.push(it);
     });
-    res.innerHTML = html; res.classList.add("show");
+    var short=items.filter(function(x){return x.grp==="short";}).sort(function(a,b){return a.pct-b.pct;});
+    var over=items.filter(function(x){return x.grp==="over";});
+    var ok=items.filter(function(x){return x.grp==="ok";}).sort(function(a,b){return b.pct-a.pct;});
+    var nodata=items.filter(function(x){return x.grp==="nodata";});
+    function chip(nm){
+      if(LINKS[nm]) return ' <a class="rchip" href="'+LINKS[nm]+'">比較表を見る →</a>';
+      if(SOON.indexOf(nm)>=0) return ' <span class="rchip soon">比較表 準備中</span>';
+      return '';
+    }
+    var html='';
+    if(short.length){
+      html+='<div class="rgh">意識して補いたい栄養素 <span>'+short.length+'種</span></div>';
+      short.forEach(function(x){
+        var judge;
+        if(x.pct>=95){ judge='平均的な食事は、'+x.name+'の基準までもう少しです'; }
+        else if(x.type==="AI"){ judge='平均的な食事では、'+x.name+'が目安量に届いていません'; }
+        else{ judge='平均的な食事では、'+x.name+'が不足しがちです'; }
+        html+='<div class="rrow"><div class="head"><span class="nm">'+x.name+chip(x.name)+'</span><span class="gap short">'+judge+'</span></div>'
+          +'<div class="nums">国の'+typeLabel[x.type]+' '+fx(x.ref)+x.unit+' ／ あなたの年代の食事（平均） '+fx(x.got)+x.unit+'（約'+x.pct+'%）</div>'
+          +'<div class="bar"><i class="sh" style="width:'+Math.min(100,x.pct)+'%"></i><b></b></div></div>';
+      });
+    }
+    over.forEach(function(x){
+      html+='<div class="rgh warn">摂りすぎに注意</div>'
+        +'<div class="rrow warnrow"><div class="head"><span class="nm">'+x.disp+'</span><span class="gap warn2">平均的な食事では、塩分を摂りすぎています</span></div>'
+        +'<div class="nums">国の目標量（上限） '+fx(x.ref)+'g未満 ／ あなたの年代の食事（平均） '+fx(x.got)+'g（上限の約'+x.pct+'%）</div>'
+        +'<div class="bar"><i class="ov" style="width:100%"></i><b></b></div></div>';
+    });
+    var okRows=ok.map(function(x){
+      return '<div class="crow"><span class="cnm">'+x.disp+'</span><span class="cbar"><i></i></span><span class="cpc">基準の約'+x.pct+'%</span></div>';
+    }).join('');
+    var ndTxt=nodata.map(function(x){ return x.name+'（'+typeLabel[x.type]+' '+fx(x.ref)+x.unit+'）'; }).join('・');
+    html+='<details class="fold"><summary>足りている栄養素も見る（'+ok.length+'種）</summary><div class="fbody">'
+      +okRows
+      +(nodata.length?('<div class="ndnote">このほか '+ndTxt+' は、国民健康・栄養調査に平均摂取量のデータがないため比較できません（国の基準値のみ表示）。</div>'):'')
+      +'</div></details>';
+    res.innerHTML=html; res.classList.add("show");
   }
-
   /* ---------- 話題の成分カード（2026-08実調査に基づく） ---------- */
   var TREND = [
     { n:"NMN", t:"エイジングケア", lv:"③言われている段階", d:"加齢で減る補酵素NAD+の材料として、年齢に応じたケアの文脈で語られ、国内市場が拡大しています。ヒトでの効果はまだ確立されていません。" },
