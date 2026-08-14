@@ -131,6 +131,17 @@
   .goal-label { text-align:right; font-size:11px; color:var(--ink3); padding-right:84px; margin-top:4px; }
 
   .cta { text-align:center; }
+  /* 比較DBハブ */
+  .dbgrid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:30px; }
+  @media (max-width:820px){ .dbgrid { grid-template-columns:1fr; } }
+  .dbc { display:block; border:1px solid var(--g1-line); border-radius:14px; padding:20px; background:var(--g1-soft); text-decoration:none; color:var(--ink); }
+  .dbc:hover { border-color:var(--g1); }
+  .dbc h3 { font-size:17px; font-weight:800; margin:8px 0 4px; }
+  .dbc p { font-size:12.5px; color:var(--ink2); }
+  .dbc .st { display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:0.08em; padding:2px 10px; border-radius:100px; background:var(--bg); border:1px solid var(--line); color:var(--ink3); }
+  .dbc .st.open { border-color:var(--ok); color:var(--ok); background:var(--ok-soft); }
+  .dbc .go { display:inline-block; margin-top:10px; font-size:12.5px; font-weight:800; color:var(--g1); }
+  .dbc.soon2 { background:var(--surface); border-color:var(--line); opacity:.85; }
   .btn { display:inline-block; margin-top:32px; padding:15px 38px; border-radius:100px; background:var(--g1); color:#fff; font-size:15.5px; font-weight:800; text-decoration:none; letter-spacing:0.04em; }
   :root[data-theme="dark"] .btn { color:#101114; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color:#101114; } }
@@ -152,7 +163,7 @@
     <h1>あなたに「ぴったり」が見つかる。</h1>
     <div class="tagline">データで整える、スマートなサプリ選び</div>
     <p class="lede">情報も商品もあふれるサプリメント売り場で、もう迷う必要はありません。<strong>国の基準データ</strong>と<strong>独自のクリアな比較指標</strong>が、今のあなたにとって「本当に必要な成分」と「最適なアイテム」との心地よい出会いをサポートします。</p>
-    <a class="btn" style="margin-top:26px" href="vitamin-d.html">ビタミンD 30商品の比較を見る →</a>
+    <a class="btn" style="margin-top:26px" href="#db">比較データベースを見る →</a>
     <div class="can">
       <div class="c"><div class="n">できること 1</div><h3>今のあなたに必要な栄養素が、ひと目でわかる</h3><p>性別・年齢・ライフステージを選択するだけで、国の基準に基づく「1日の必要量」と、同年代の食事で「満たしてあげたい分」を美しいデータで可視化します。自分を知る楽しさが、ここから始まります。</p></div>
       <div class="c"><div class="n">できること 2</div><h3>もう迷わない！あなたにとっての「最高の一粒」を比較</h3><p>バラバラな単位（1粒/2粒、μg/IUなど）を、「1日あたりの量と価格」に統一。コストパフォーマンスと成分量を同じ基準で比べられるから、納得して賢く選べます。</p></div>
@@ -227,12 +238,20 @@
   </div>
 </section>
 
-<section class="cta">
+<section id="db">
   <div class="wrap rv">
-    <h2>第1弾リリース：健やかな毎日の鍵『ビタミンD』</h2>
-    <p class="body" style="max-width:520px;margin-left:auto;margin-right:auto;text-align:left">平均摂取量と基準値の差が大きく、私たちが最も補ってあげたい栄養素のひとつ「ビタミンD」。現在、国内で流通する主要商品30件を、同じ基準で美しく並べた徹底比較データを公開しています。</p>
-    <a class="btn" href="vitamin-d.html">ビタミンDのページへ →</a>
-    <span class="soon">一部の項目は確認中です（表内に「未確認」「未取得」と表示しています）<br><a href="about-data.html" style="color:var(--g1);font-weight:700">データの集め方（収集方法と二重チェックの仕組み）→</a></span>
+    <div class="eyebrow">比較データベース</div>
+    <h2>栄養素から選んで、同じ物差しで比べる</h2>
+    <p class="body">気になる栄養素を選ぶと、国内外の主要商品を<strong>「1日あたりの量と価格」</strong>に揃えた比較表が開きます。調査中の栄養素も、準備ができ次第ここに追加されていきます。</p>
+    <div class="dbgrid">
+      <a class="dbc" href="vitamin-d.html"><span class="st open">公開中</span><h3>ビタミンD</h3><p>30商品。絞り込み・上限チェック・飲むリストつきの詳細比較。</p><span class="go">比較表を見る →</span></a>
+      <a class="dbc" href="calcium.html"><span class="st open">公開中・NEW</span><h3>カルシウム</h3><p>29商品。子ども向け・妊娠授乳期向けから海外品まで。</p><span class="go">比較表を見る →</span></a>
+      <a class="dbc" href="vitamin-c.html"><span class="st open">公開中・拡充中</span><h3>ビタミンC</h3><p>16商品。定番からリポソーム・持続型まで型ごとに比較。</p><span class="go">比較表を見る →</span></a>
+      <div class="dbc soon2"><span class="st">調査中</span><h3>マグネシウム</h3><p>候補23商品の市場調査が完了。データ収集の準備中です。</p></div>
+      <div class="dbc soon2"><span class="st">調査中</span><h3>鉄</h3><p>候補50商品超の市場調査が完了。データ収集の準備中です。</p></div>
+      <div class="dbc soon2"><span class="st">調査中</span><h3>亜鉛</h3><p>候補40商品の市場調査が完了。データ収集の準備中です。</p></div>
+    </div>
+    <p class="note" style="margin-top:18px">一部の項目は確認中です（表内に「未確認」「未取得」と表示しています）。収集方法と二重チェックの仕組みは「<a href="about-data.html" style="color:var(--g1);font-weight:700">データの集め方</a>」で公開しています。</p>
   </div>
 </section>
 
