@@ -246,7 +246,10 @@
         packCell=(bv.qty!=null?bv.qty+dispUnit(bv.unit,p):"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+fl+((bv.note||"").indexOf("税抜")>=0?"・税抜":"")+((bv.note||"").indexOf("セール")>=0?"・セール価格":"")+'</span>';
       } else {
         var v0=toArr(p.variants)[0];
-        packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit,p)+'<span class="sub">'+((v0.note||"価格未取得").split("(")[0])+fl+'</span>'):'<span style="color:var(--ink3)">'+((v0&&v0.note)?v0.note.split("(")[0]:"未取得")+'</span>';
+        /* 統一ルール: 行セルは定型短句のみ(長文の注記は詳細行に置く) */
+        var sn=(v0&&v0.note)?(v0.note.indexOf("オープン価格")>=0?"オープン価格":(v0.note.indexOf("海外専売")>=0?"国内価格なし":((v0.note.indexOf("米国")>=0||v0.note.indexOf("日本価格未取得")>=0)?"日本価格未取得":"価格未取得"))):"価格未取得";
+        if(v0&&v0.reg!=null){ packCell=(v0.qty!=null?v0.qty+dispUnit(v0.unit,p):"")+' <b>'+v0.reg.toLocaleString()+'円</b><span class="sub">'+(v0.days!=null?("約"+v0.days+"日分"):"日数は詳細参照")+fl+'</span>'; }
+        else packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit,p)+'<span class="sub">'+sn+fl+'</span>'):'<span style="color:var(--ink3);font-size:12px">'+sn+'</span>';
       }
       var doseCell=(p.doseMin!=null)
         ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)
