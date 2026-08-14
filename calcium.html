@@ -57,7 +57,7 @@
 
 
 <div class="wrap tablehead">
-  <span class="icap"></span><b class="th-title">比較表</b>
+  <span class="icap"></span><b class="th-title" id="cmptitle">比較表</b>
   <button class="sharebtn" id="sharebtn" title="いま絞り込んでいる条件をURLにしてコピーします"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>この表示のリンクをコピー</button>
   <span class="count" id="count"></span>
 </div>
@@ -80,7 +80,7 @@
 <main><div class="wrap">
 <div id="sharedbanner" class="sharedbanner" style="display:none"></div>
 <div id="ingnote" style="display:none;border:1px solid var(--g1-line);background:var(--g1-soft);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink2)"></div>
-<div class="tablewrap"><table class="cmp"><caption class="sronly">カルシウムの商品比較表。左端のチェックを押すと「飲む予定リスト」に保存されます</caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">カルシウム/日</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<div class="tablewrap"><table class="cmp" aria-labelledby="cmptitle"><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">カルシウム/日</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
 
 <div id="sumbar">
   <div class="inner">
