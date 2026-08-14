@@ -170,7 +170,7 @@
     });
     document.getElementById('picklist').innerHTML=plist;
     document.getElementById("sumline").innerHTML =
-      '<a href="javascript:void(0)" id="pltoggle">選択中 '+ids.length+'品 ▴</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
+      '<a href="javascript:void(0)" id="pltoggle">選択中 '+ids.length+'品 '+(document.getElementById("picklist").classList.contains("open")?"▾":"▴")+'</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
       +'（'+NUT.goalLabel+'の約'+fnum(pctMin)+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
     var viz=document.getElementById("sumbarviz");
     var scale=(UL!=null)?Math.max(UL, totMax):Math.max(GOAL, totMax);
