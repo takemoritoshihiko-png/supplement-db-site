@@ -228,3 +228,10 @@
   details.gloss .gbody2 { padding:0 18px 14px; border-top:1px solid var(--line); padding-top:10px; }
   details.gloss dt { font-weight:800; color:var(--ink); margin-top:8px; }
   details.gloss dd { margin:0 0 2px 0; }
+
+/* B21: 共有ボタン */
+.sharebtn { border:1px solid var(--line); background:var(--card); color:var(--ink2); border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer; font-family:inherit; white-space:nowrap; }
+.sharebtn:hover { border-color:var(--blue); color:var(--blue); }
+/* B15: sumbarから横断合算表への入口 */
+.mtxlink { font-size:12px; color:var(--blue); text-decoration:none; white-space:nowrap; margin-left:10px; float:right; }
+.mtxlink:hover { text-decoration:underline; }

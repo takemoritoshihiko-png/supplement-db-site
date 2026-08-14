@@ -9,8 +9,32 @@
   try { var sv = JSON.parse(localStorage.getItem(LSKEY)||"{}"); if(sv.picked) state.picked=sv.picked; } catch(e){}
   try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } } catch(e){}
 
+  applyHash();
   function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
   function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
+  /* B21: URL状態共有 — 状態をハッシュに自動反映(共有URLで再現可能) */
+  function applyHash(){
+    var h=location.hash.replace(/^#/,''); if(!h) return;
+    var q={}; h.split('&').forEach(function(kv){ var i=kv.indexOf('='); if(i>0) q[kv.slice(0,i)]=decodeURIComponent(kv.slice(i+1)); });
+    if(q.sex) state.you.sex=q.sex; if(q.age) state.you.age=q.age;
+    if(q.ing) state.ing=q.ing; if(q.mk) state.mk=q.mk;
+    if(q.sort){ var p=q.sort.split('.'); if(p[0]) state.sort=p[0]; state.dir=(p[1]==='d')?-1:1; }
+    if(q.f!==undefined){ Object.keys(state.f).forEach(function(k){ state.f[k]=false; }); q.f.split(',').forEach(function(k){ if(k in state.f) state.f[k]=true; }); }
+    if(q.p){ state.picked={}; q.p.split(',').forEach(function(id){ if(id) state.picked[id]=true; }); }
+  }
+  function updateHash(){
+    var parts=[];
+    if(state.you.sex) parts.push('sex='+state.you.sex);
+    if(state.you.age) parts.push('age='+state.you.age);
+    if(state.ing) parts.push('ing='+encodeURIComponent(state.ing));
+    if(state.mk) parts.push('mk='+encodeURIComponent(state.mk));
+    if(!(state.sort==='price'&&state.dir===1)) parts.push('sort='+state.sort+'.'+(state.dir===1?'a':'d'));
+    var fs=Object.keys(state.f).filter(function(k){return state.f[k];});
+    if(!(fs.length===1&&fs[0]==='onsale')) parts.push('f='+fs.join(','));
+    var pids=Object.keys(state.picked).filter(function(k){return state.picked[k];});
+    if(pids.length) parts.push('p='+pids.join(','));
+    try{ history.replaceState(null,'', parts.length ? ('#'+parts.join('&')) : location.pathname+location.search); }catch(e){}
+  }
   function fnum(x){ return (x>=1000)?x.toLocaleString():String(x); }
   function dietAvg(){ return (DIET && state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
   function fdec(x){ return DEC>0 ? x.toFixed(DEC) : fnum(Math.round(x)); }
@@ -304,6 +328,7 @@
       });
     });
     renderSum();
+    updateHash();
   }
   function buildMk(){
     var sel=document.getElementById("mksel"), names={};
@@ -395,5 +420,22 @@
     i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
   });
   document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
-  buildMk(); buildIng(); renderYou(); render();
+  buildMk(); buildIng();
+  /* URL/保存状態をUIへ反映 */
+  (function(){
+    var isel=document.getElementById('ingsel'); if(state.ing){ isel.value=state.ing; isel.classList.add('on'); var box=document.getElementById('dchips'); if(box) box.style.display='none'; }
+    var msel=document.getElementById('mksel'); if(state.mk){ msel.value=state.mk; msel.classList.add('on'); }
+    document.querySelectorAll('.flt input').forEach(function(i){ i.checked=!!state.f[i.dataset.f]; });
+    document.querySelectorAll('th.sortable').forEach(function(x){
+      var on=x.dataset.s===state.sort; x.classList.toggle('on',on);
+      x.querySelector('.arr').textContent=on?(state.dir===1?'▲':'▼'):'';
+    });
+    syncMsort();
+    var sb=document.getElementById('sharebtn');
+    if(sb) sb.addEventListener('click', function(){
+      var t=sb.textContent;
+      (navigator.clipboard?navigator.clipboard.writeText(location.href):Promise.reject()).then(function(){ sb.textContent='コピーしました ✓'; setTimeout(function(){ sb.textContent=t; },1500); },function(){ prompt('このURLをコピーしてください', location.href); });
+    });
+  })();
+  renderYou(); render();
 })();
