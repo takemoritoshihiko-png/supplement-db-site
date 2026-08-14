@@ -439,6 +439,32 @@ main { padding-top:18px; }                            /* + tablewrap 2px = 20px�
   .controls { margin-top:0; }                         /* 0 + 12 = 12px */
 }
 
+/* ================================================================
+   基礎知識は枠で囲まない（2026-08-14 竹森氏指示）
+   枠のpadding 20pxのせいでカプセルアイコンだけ21px右にずれていた（実測）。
+   枠を外すと他の見出し（1日に必要な栄養素・比較表）と左端が揃う。
+   代わりに「クリックで開く」ことを、見出し直後のシェブロンと下線ホバーで示す
+   ================================================================ */
+details.guide { background:none; border:none; box-shadow:none; border-radius:0; }
+details.guide summary { padding:0; font-size:15px; display:flex; align-items:center; gap:0; }
+details.guide summary b { font-weight:800; color:var(--ink); font-size:16px !important; }
+
+/* 3つの見出し（1日に必要な栄養素／基礎知識／比較表）は同じ体裁に揃える。
+   カプセルアイコンは回転しているので、縦位置は vertical-align でなく flex の中央揃えで合わせる */
+.you .t, details.guide summary, .tablehead { align-items:center; }
+/* 見出しと長い注記が1行に詰まると密に見えるので、注記は次の行へ降ろす */
+.you .t { font-size:16px; flex-wrap:wrap; }
+.you .tnote { flex-basis:100%; margin-top:6px; line-height:1.7; }
+.you .t .icap, details.guide summary .icap, .tablehead .icap { vertical-align:middle; margin-right:9px; }
+details.guide summary::after {
+  content:"＋"; float:none; margin-left:10px; font-size:15px; font-weight:700;
+  color:var(--g1); line-height:1; flex:none;
+}
+details.guide[open] summary::after { content:"−"; }
+details.guide summary:hover b { text-decoration:underline; }
+details.guide summary:focus-visible { outline:2px solid var(--g2); outline-offset:4px; border-radius:4px; }
+details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margin-top:12px; }
+
 /* 比較表の見出し行（2026-08-14 竹森氏指示で絞り込みの上へ移動）
    セクション名（比較表）→ そのセクションの操作（絞り込み）→ 結果（表）の順にする。
    「この表示のリンクをコピー」は絞り込み(ピル型)と別の働きなので、ピルでなく文字リンク調にして件数の左に置く */
