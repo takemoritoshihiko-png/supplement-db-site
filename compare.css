@@ -481,7 +481,10 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
 .tablehead .sharebtn:hover { text-decoration:underline; }
 .tablehead .sharebtn:focus-visible { outline:2px solid var(--g2); outline-offset:3px; border-radius:4px; }
 .tablehead .sharebtn svg { flex:none; opacity:.85; }
-table.cmp caption .capnote { margin-top:0; }
+/* 表の説明文は画面に出さない（2026-08-14 竹森氏指示で削除）。
+   ただし読み上げソフト向けに表の名前は残す＝完全な無言にはしない。
+   チェックボックス自体にも title「飲む予定リストに入れる」が付いている（compare.js） */
+.sronly { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
 @media (max-width:600px){
   .tablehead .sharebtn { margin:6px 0 0; order:3; flex-basis:100%; }
   .tablehead .count { margin-left:auto; }
