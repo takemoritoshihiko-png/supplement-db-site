@@ -356,11 +356,6 @@
           : (NUT.youUnselectedText||''))
       : (NUT.youStaticText||'');
     el.innerHTML='<div class="statgrid">'+tiles+'</div>'+(caveat?'<div class="caveat">'+caveat+'</div>':'');
-    if(DIET&&(state.you.sex||state.you.age)){
-      el.innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none;font-size:12px">属性をリセット</a>';
-      var rs=document.getElementById("youreset");
-      if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
-    }
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
     var b=e.target.closest("button"); if(!b) return;
