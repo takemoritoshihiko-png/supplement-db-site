@@ -156,7 +156,7 @@
     tr.detail { display:none; }
     tr.detail.open { display:block; padding:0 2px 14px; border-bottom:1px solid var(--line); }
     tr.detail.open td { display:block; padding:10px 0 0; border-bottom:none; }
-    .thumb { width:64px; height:64px; }
+    .thumb { width:88px; height:88px; }
     td.pricec b { font-size:17px; }
     #msort { display:flex; gap:8px; align-items:center; width:100%; margin-top:8px; }
     #msort .lbl2 { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; }
@@ -340,7 +340,7 @@ table.cmp caption b { font-size:16px !important; }
 .addb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 
 /* サムネ・バッジ・数値セル */
-.thumb { border:1px solid var(--line); background:#fff; box-shadow:none; width:60px; height:60px; }
+.thumb { border:1px solid var(--line); background:#fff; box-shadow:none; width:84px; height:84px; border-radius:14px; }
 .b.best { background:var(--g2); border:none; color:#fff; }
 td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 .amtflex { display:inline-flex; align-items:center; gap:6px; }
