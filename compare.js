@@ -38,6 +38,15 @@
   function fnum(x){ return (x>=1000)?x.toLocaleString():String(x); }
   function dietAvg(){ return (DIET && state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
   function fdec(x){ return DEC>0 ? x.toFixed(DEC) : fnum(Math.round(x)); }
+  /* DESIGN v1.0: 半円アークゲージ(pct=0〜100で弧が伸びる) */
+  function gaugeSvg(pct,size,sw){
+    var r=(size-sw-2)/2, c=size/2, h=c+sw/2+1, len=Math.PI*r;
+    var f=Math.max(0,Math.min(1,pct/100));
+    var x0=c-r, x1=c+r;
+    var track='<path d="M'+x0+' '+c+' A '+r+' '+r+' 0 0 1 '+x1+' '+c+'" fill="none" stroke="var(--track)" stroke-width="'+sw+'" stroke-linecap="round"/>';
+    var fill=f>0?'<path d="M'+x0+' '+c+' A '+r+' '+r+' 0 0 1 '+x1+' '+c+'" fill="none" stroke="var(--g2)" stroke-width="'+sw+'" stroke-linecap="round" stroke-dasharray="'+(len*f)+' '+(len+9)+'"/>':'';
+    return '<svg class="gg" width="'+size+'" height="'+h+'" viewBox="0 0 '+size+' '+h+'" aria-hidden="true">'+track+fill+'</svg>';
+  }
   function bestPrice(p){
     var best=null;
     toArr(p.variants).forEach(function(v){
@@ -296,7 +305,7 @@
         amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
       } else {
         amtCell=(p.amtMin!=null)
-          ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
+          ? '<span class="amtflex">'+gaugeSvg(p.amtMin/GOAL*100,22,5)+'<b>'+fmtAmt(p)+'</b></span><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
           : '<span style="color:var(--ink3)">未取得</span>';
       }
       var priceCell = bp
@@ -372,13 +381,14 @@
     var el=document.getElementById("youstat");
     document.getElementById("youbtns").style.display = DIET ? "" : "none";
     var d=dietAvg();
-    var tiles='<div class="stt"><div class="l">'+NUT.goalLabelFull+(NUT.goalSuffix||"")+'</div><div class="v">'+fdec(GOAL)+'<small>'+UNIT+'/日</small></div></div>';
+    var mb='<span class="mbar"><i></i><i></i><i class="a"></i><i class="t"></i></span>';
+    var tiles='<div class="stt"><div class="l">'+NUT.goalLabelFull+(NUT.goalSuffix||"")+'</div><div class="v">'+fdec(GOAL)+'<small>'+UNIT+'/日</small></div>'+mb+'</div>';
     if(DIET){
       if(d!=null){
         var gap=GOAL-d;
-        tiles+='<div class="stt"><div class="l">あなたの年代の平均摂取（令和5年調査）</div><div class="v">'+fdec(d)+'<small>'+UNIT+'/日</small></div></div>';
+        tiles+='<div class="stt"><div class="l">あなたの年代の平均摂取（令和5年調査）</div><div class="v">'+fdec(d)+'<small>'+UNIT+'/日</small></div>'+mb+'</div>';
         tiles+= gap>0
-          ? '<div class="stt gap"><div class="l">'+NUT.goalLabel+'まで</div><div class="v">あと'+fdec(gap)+'<small>'+UNIT+'</small></div></div>'
+          ? '<div class="stt gap"><div><div class="l">'+NUT.goalLabel+'まで</div><div class="v">あと'+fdec(gap)+'<small>'+UNIT+'</small></div></div>'+gaugeSvg(d/GOAL*100,58,8)+'</div>'
           : '<div class="stt ok2"><div class="l">'+NUT.goalLabel+'との比較</div><div class="v" style="font-size:16px">達しています</div></div>';
       } else {
         tiles+='<div class="stt"><div class="l">あなたの年代の平均摂取</div><div class="v" style="font-size:13.5px;color:var(--ink3);font-weight:700">上の性別・年代を選ぶと表示されます</div></div>';

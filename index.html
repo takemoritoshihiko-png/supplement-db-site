@@ -14,13 +14,13 @@
 <body>
 <style>
   :root {
-    --bg: #FCFCFD; --surface: #F4F5F7; --ink: #1B1D22; --ink2: #5B5F6B; --ink3: #8A8F9B;
-    --line: #E4E6EA; --track: #E9EBEF;
-    --g1: #3B5BA5; --g1-soft: #EDF1FA; --g1-line: #C9D5EE;
-    --g2: #B65C1F; --g2-soft: #FAF0E7; --g2-line: #EBD3BE;
+    --bg: #EEEFF4; --surface: #FFFFFF; --ink: #1B2333; --ink2: #5A6172; --ink3: #8B92A3;
+    --line: #E3E6EE; --track: #E7EAF1;
+    --g1: #20304F; --g1-soft: #E4E9F4; --g1-line: #CBD5E8;
+    --g2: #C25E2E; --g2-soft: #F7E7DA; --g2-line: #E8C9B2;
     --ok: #2E7D4F; --ok-soft: #E8F4EC;
-    --tip-bg: #1B1D22; --tip-ink: #F4F5F7;
-    --bad: #B03A2E; --bad-line: #E5C3BC;
+    --tip-bg: #1B2333; --tip-ink: #F4F5F7;
+    --bad: #B03A2E; --bad-line: #E5C3BC; --shadow: 0 1px 2px rgba(27,35,51,.04), 0 8px 24px rgba(27,35,51,.07); --shadow-sm: 0 1px 2px rgba(27,35,51,.05), 0 3px 10px rgba(27,35,51,.06);
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -29,7 +29,7 @@
       --g1: #5E7FD1; --g1-soft: #1D2434; --g1-line: #31405E;
       --g2: #C97B3E; --g2-soft: #2A2018; --g2-line: #4A3521;
       --ok: #5CAD7F; --ok-soft: #1C2B22;
-      --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24;
+      --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35); --shadow-sm: 0 1px 2px rgba(0,0,0,.3), 0 3px 10px rgba(0,0,0,.3);
     }
   }
   :root[data-theme="dark"] {
@@ -38,7 +38,7 @@
     --g1: #5E7FD1; --g1-soft: #1D2434; --g1-line: #31405E;
     --g2: #C97B3E; --g2-soft: #2A2018; --g2-line: #4A3521;
     --ok: #5CAD7F; --ok-soft: #1C2B22;
-    --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24;
+    --tip-bg: #ECEDF0; --tip-ink: #1B1D22; --bad: #D96C5F; --bad-line: #4A2A24; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35); --shadow-sm: 0 1px 2px rgba(0,0,0,.3), 0 3px 10px rgba(0,0,0,.3);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:16px; line-height:1.95; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; }
@@ -194,6 +194,25 @@
   .rv { opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease; }
   .rv.on { opacity:1; transform:none; }
   @media (prefers-reduced-motion: reduce) { .rv { opacity:1; transform:none; transition:none; } .meter .fill { transition:none; } }
+
+  /* ============ DESIGN v1.0 上書き(正本: docs/DESIGN.md) ============ */
+  .selector button { border:none; background:var(--surface); box-shadow:var(--shadow-sm); color:var(--ink2); }
+  .selector button.on { background:var(--g1); color:#fff; border:none; }
+  .rbox { border:none; background:var(--surface); box-shadow:var(--shadow); border-radius:16px; padding:10px 20px; }
+  .rbox.warnbox { box-shadow:0 0 0 1px var(--bad-line), var(--shadow); }
+  details.fold { border:none; background:var(--surface); box-shadow:var(--shadow-sm); border-radius:16px; }
+  .can .c { border:none; background:var(--surface); box-shadow:var(--shadow); border-radius:16px; }
+  .duo .d { box-shadow:var(--shadow); border:none; }
+  .tcard { border:none; background:var(--surface); box-shadow:var(--shadow); }
+  .dbc { border:none; background:var(--surface); box-shadow:var(--shadow); transition:transform .15s, box-shadow .15s; }
+  .dbc:hover { transform:translateY(-2px); box-shadow:0 2px 4px rgba(27,35,51,.06), 0 14px 32px rgba(27,35,51,.12); }
+  .dbc .st.open { background:var(--g1); border-color:var(--g1); color:#fff; }
+  .dbc:first-child { background:linear-gradient(135deg,#F9E7DA,#F5D8C2); }
+  .dbc:first-child .st { background:var(--g2); border-color:var(--g2); color:#fff; }
+  .rrow { border:none; background:var(--surface); box-shadow:var(--shadow); border-radius:16px; }
+  .btn { box-shadow:var(--shadow); }
+  .rgh { color:var(--g2); }
+  .crow .cbar i { background:var(--ok); }
 </style>
 
 <div class="hero">
