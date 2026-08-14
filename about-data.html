@@ -14,10 +14,10 @@
 <body>
 <style>
   :root {
-    --bg: #FCFCFD; --surface: #F4F5F7; --ink: #1B1D22; --ink2: #5B5F6B; --ink3: #8A8F9B;
-    --line: #E4E6EA; --track: #E9EBEF;
-    --g1: #3B5BA5; --g1-soft: #EDF1FA; --g1-line: #C9D5EE;
-    --g2: #B65C1F; --g2-soft: #FAF0E7; --g2-line: #EBD3BE;
+    --bg: #EEEFF4; --surface: #FFFFFF; --ink: #1B2333; --ink2: #5A6172; --ink3: #8B92A3;
+    --line: #E3E6EE; --track: #E7EAF1;
+    --g1: #20304F; --g1-soft: #E4E9F4; --g1-line: #CBD5E8;
+    --g2: #C25E2E; --g2-soft: #F7E7DA; --g2-line: #E8C9B2;
     --ok: #2E7D4F; --ok-soft: #E8F4EC;
   }
   @media (prefers-color-scheme: dark) {
@@ -94,6 +94,14 @@
   footer { padding:44px 0 72px; border-top:1px solid var(--line); }
   footer .src { font-size:12px; line-height:2; color:var(--ink3); }
   footer .legal { font-size:12.5px; color:var(--ink2); margin-top:18px; padding-top:18px; border-top:1px solid var(--line); }
+
+  /* DESIGN v1.0 上書き(正本: docs/DESIGN.md) */
+  :root { --shadow:0 1px 2px rgba(27,35,51,.04), 0 8px 24px rgba(27,35,51,.07); --shadow-sm:0 1px 2px rgba(27,35,51,.05), 0 3px 10px rgba(27,35,51,.06); }
+  section { border-bottom:none; }
+  .promise .c { border:none; background:var(--surface); box-shadow:var(--shadow); border-radius:16px; }
+  .exclude .x { border:none; background:var(--surface); box-shadow:var(--shadow-sm); border-radius:16px; }
+  table.terms td.t span { background:var(--surface); border:none; box-shadow:var(--shadow-sm); }
+  .btn { box-shadow:var(--shadow); }
 </style>
 
 <div class="topbar"><div class="wrap"><a href="index.html">← トップへ戻る</a></div></div>
