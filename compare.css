@@ -305,12 +305,18 @@ details.gloss[open] summary::after { content:"−" !important; }
 
 /* --- 絞り込みバー --- */
 .controls { background:var(--bg); border-bottom:none; box-shadow:none; }
-.controls .mkr { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:9px 16px; }
-.controls button.sortb, .controls label.flt { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); padding:8px 16px; }
+.controls .mkr { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; }
+.controls button.sortb, .controls label.flt { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); }
 .controls button.sortb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 .controls label.flt:has(input:checked) { background:var(--g1); color:#fff; border-color:var(--g1); }
 .controls label.flt:has(input:checked)::before { color:#fff; }
-.sharebtn { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:8px 16px; }
+/* 絞り込み部品の高さを揃える（selectはline-height:normalで16px・labelは22.5pxとなり6.5pxずれていた） */
+.controls .mkr, .controls label.flt, .controls button.sortb {
+  height:40px; padding-top:0; padding-bottom:0; line-height:38px; vertical-align:middle;
+}
+.controls .mkr { padding-left:16px; padding-right:32px; }
+.controls label.flt, .controls button.sortb { padding-left:16px; padding-right:16px; }
+.controls label.flt { line-height:normal; }
 
 /* --- 比較表: 行カード化 + ネイビーヘッダー帯 --- */
 /* overflowを既定visibleにしないとthのsticky(ビューポート基準)が効かない。
@@ -397,9 +403,11 @@ td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 
 .capnote { display:block; margin-top:4px; font-size:12px; color:var(--ink2); font-weight:400; }
 
-/* A案(2026-08-14): 栄養素リードの格上げ + 基礎知識1枠 */
+/* 栄養素の説明は基礎知識の第1項へ（2026-08-14 竹森氏指示で.leadから移設） */
 .lead { font-size:16px; color:var(--ink); line-height:2; margin-top:42px; max-width:880px; }
 .lead b { font-weight:800; }
+.glead { font-size:14.5px; color:var(--ink); line-height:1.95; max-width:880px; margin-bottom:2px; }
+.gsec.gsec1 { margin-top:2px; }
 details.guide { background:var(--surface); border:1px solid var(--line); box-shadow:var(--shadow-sm); }
 details.guide .gbody { border-top:1px solid var(--line); }
 .gsec { font-weight:800; color:var(--ink); font-size:13.5px; margin:14px 0 4px; }
@@ -409,3 +417,18 @@ details.guide .gbody { border-top:1px solid var(--line); }
 .gbody dd { margin:0 0 2px 0; }
 
 table.cmp caption .count { float:right; font-size:12.5px; font-weight:700; color:var(--ink2); margin:0; }
+
+/* 「この表示のリンクをコピー」は絞り込み(ピル型)と別の働きなので、見た目の族を変える:
+   ピルでなく文字リンク調にして件数の左に置く（2026-08-14 竹森氏指示） */
+table.cmp caption .sharebtn {
+  float:right; margin:0 16px 0 0; padding:0; border:none; background:none; box-shadow:none;
+  color:var(--g1); font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit;
+  display:inline-flex; align-items:center; gap:5px; line-height:1.4;
+}
+table.cmp caption .sharebtn:hover { text-decoration:underline; }
+table.cmp caption .sharebtn:focus-visible { outline:2px solid var(--g2); outline-offset:3px; border-radius:4px; }
+table.cmp caption .sharebtn svg { flex:none; opacity:.85; }
+@media (max-width:600px){
+  table.cmp caption .sharebtn { float:none; display:inline-flex; margin:6px 0 0; }
+  table.cmp caption .count { float:none; display:block; margin-top:2px; }
+}
