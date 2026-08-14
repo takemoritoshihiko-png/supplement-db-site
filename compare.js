@@ -1,0 +1,395 @@
+/* 比較ページ共通エンジン（正本: docs/PAGE-STRUCTURE-RULES.md）
+   ページ側で window.NUT（栄養素設定）と PRODUCTS（データ）を定義してから読み込む */
+(function(){
+  var GOAL=NUT.goal, UL=NUT.ul, UNIT=NUT.unit, DEC=NUT.dec||0;
+  var DIET=NUT.diet||null;
+  var LSKEY="sdb-"+NUT.slug;
+  var state = { sort:"price", dir:1, f:{ onsale:true }, mk:"", ing:"", you:{sex:null,age:null}, picked:{}, open:{} };
+  (NUT.chips||[]).forEach(function(c){ state.f[c.f]=false; });
+  try { var sv = JSON.parse(localStorage.getItem(LSKEY)||"{}"); if(sv.picked) state.picked=sv.picked; } catch(e){}
+  try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } } catch(e){}
+
+  function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
+  function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
+  function fnum(x){ return (x>=1000)?x.toLocaleString():String(x); }
+  function dietAvg(){ return (DIET && state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
+  function fdec(x){ return DEC>0 ? x.toFixed(DEC) : fnum(Math.round(x)); }
+  function bestPrice(p){
+    var best=null;
+    toArr(p.variants).forEach(function(v){
+      if(v.reg==null || v.days==null || v.days<=0) return;
+      var d=v.reg/v.days, ds=(v.sub!=null)?v.sub/v.days:null;
+      if(best==null || d<best.day) best={day:d,sub:ds};
+      else if(ds!=null && best.sub==null && d===best.day) best.sub=ds;
+    });
+    return best;
+  }
+  function isOnSale(p){ return toArr(p.variants).some(function(v){ return (v.status||"").indexOf("販売中")>=0 || (v.status||"").indexOf("在庫あり")>=0; }); }
+  function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
+  function chipTest(c,p){
+    if(c.kind==="flag") return p[c.field]===true;
+    if(c.kind==="chew") return isChew(p);
+    if(c.kind==="comp") return (p.comp||"").indexOf("単一")>=0;
+    if(c.kind==="tech") return new RegExp(c.pattern).test(p.tech||"");
+    if(c.kind==="legal") return new RegExp(c.pattern).test(p.legal||"");
+    return false;
+  }
+  function mkName(p){ return (p.maker||"").split("(")[0].split("（")[0]; }
+  function dispUnit(u, p){
+    u=u||"";
+    if(p && isChew(p) && /粒|カプセル|錠|個/.test(u)) return "個";
+    if(/カプセル|ソフトジェル|ソフトゼル|錠|タブレット|ベジ/.test(u)) return "粒";
+    return u;
+  }
+  function formShort(p){
+    var f=p.form||"";
+    if(f.indexOf("未確認")>=0) return NUT.shortLabel;
+    if(/グミ|チュアブル/.test(f)) return "グミ";
+    if(/ソフト/.test(f)) return "ソフト";
+    if(/カプセル/.test(f)) return "カプセル";
+    if(/錠|タブレット/.test(f)) return "錠剤";
+    if(/顆粒|粉|パウダー/.test(f)) return "粉末";
+    if(/液|ジェル|ドロップ|オイル/.test(f)) return "液状";
+    return NUT.shortLabel;
+  }
+  function fmtAmt(p){
+    if(p.amtMin==null) return "未取得";
+    var a=(p.amtMin===p.amtMax)?fnum(p.amtMin):(fnum(p.amtMin)+"〜"+fnum(p.amtMax));
+    return a+UNIT;
+  }
+  function findP(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
+
+  /* 成分名の正規化（全栄養素共通辞書） */
+  function canonOf(name){
+    var n=(name||"").toLowerCase();
+    if(/k2/.test(n)) return "ビタミンK2";
+    if(/カルシウム|calcium/.test(n)) return "カルシウム";
+    if(/マグネシウム|magnesium/.test(n)) return "マグネシウム";
+    if(/乳酸菌/.test(n)) return "乳酸菌";
+    if(/ビタミンk(?!2)|vitamin k(?!2)/.test(n)) return "ビタミンK";
+    if(/葉酸|folic/.test(n)) return "葉酸";
+    if(/^鉄|iron/.test(n)) return "鉄";
+    if(/ビタミンc|vitamin c/.test(n)) return "ビタミンC";
+    if(/ビタミンd|vitamin d|v\.d/.test(n)) return "ビタミンD";
+    if(/亜鉛|zinc/.test(n)) return "亜鉛";
+    if(/b12/.test(n)) return "ビタミンB12";
+    if(/b1(?!2)/.test(n)) return "ビタミンB1";
+    if(/b2/.test(n)) return "ビタミンB2";
+    if(/b6/.test(n)) return "ビタミンB6";
+    if(/サーモンオイル|亜麻仁|dha|epa|omega|オメガ/.test(n)) return "オメガ3系オイル";
+    if(/コラーゲン/.test(n)) return "コラーゲン";
+    if(/ボーンペップ/.test(n)) return "ボーンペップ(卵黄ペプチド)";
+    if(/カリウム|potassium/.test(n)) return "カリウム";
+    if(/ナトリウム|sodium/.test(n)) return "ナトリウム";
+    if(/メチオニン/.test(n)) return "メチオニン";
+    if(/ルチン|ヘスペリジン|ビタミンp/.test(n)) return "ビタミンP(ルチン・ヘスペリジン)";
+    if(/ナイアシン/.test(n)) return "ナイアシン";
+    if(/パントテン酸/.test(n)) return "パントテン酸";
+    if(/ローズヒップ/.test(n)) return "ローズヒップ";
+    if(/ヒアルロン酸/.test(n)) return "ヒアルロン酸";
+    if(/セラミド/.test(n)) return "セラミド";
+    if(/エラスチン/.test(n)) return "エラスチン";
+    if(/プロテオグリカン/.test(n)) return "プロテオグリカン";
+    if(/cpp|ccp|cbp|ペプチド/.test(n)) return "ミルク由来ペプチド(CPP等)";
+    if(/銅/.test(n)) return "銅";
+    return (name||"").split("(")[0].split("（")[0].trim();
+  }
+  function nutTags(p){
+    var set={};
+    (NUT.ingFallbacks||[]).forEach(function(fb){ if(p[fb.flagField]) set[fb.tag]=1; });
+    toArr(p.ings).forEach(function(g){ var c=canonOf(g.n); if(c) set[c]=1; });
+    return set;
+  }
+  PRODUCTS.forEach(function(p){ p._nut=nutTags(p); });
+  function nutAmt(p, tag){
+    var min=0, max=0, unit="", found=false;
+    toArr(p.ings).forEach(function(g){
+      if(canonOf(g.n)!==tag) return;
+      if(g.a1==null&&g.a2==null){ found=true; return; }
+      min+=(g.a1!=null?g.a1:g.a2)||0; max+=(g.a2!=null?g.a2:g.a1)||0; unit=g.u||unit; found=true;
+    });
+    (NUT.ingFallbacks||[]).forEach(function(fb){
+      if(tag===fb.tag && !unit && p[fb.amtField]!=null){ min=p[fb.amtField]; max=p[fb.amtField]; unit=fb.unit; found=true; }
+    });
+    if(!found) return null;
+    if(!unit && min===0 && max===0) return {min:null,max:null,unit:""};
+    return {min:min,max:max,unit:unit};
+  }
+  function fmtNut(na){
+    if(!na||na.min==null) return '<span style="color:var(--ink3);font-size:12px">配合量未取得</span>';
+    var v=(na.min===na.max)?na.min:(na.min+"〜"+na.max);
+    return '<b>'+v+na.unit+'</b>';
+  }
+
+  function renderSum(){
+    var bar=document.getElementById("sumbar");
+    var ids=Object.keys(state.picked).filter(function(k){return state.picked[k];});
+    if(ids.length===0){ bar.classList.remove("show"); return; }
+    bar.classList.add("show");
+    var sMin=0,sMax=0,otherNote=0,naNote=0;
+    ids.forEach(function(id){ var p=findP(id); if(!p) return; if(p.amtMax==null){ naNote++; return; } sMin+=p.amtMin; sMax+=p.amtMax; if((p.others||0)>0||toArr(p.ings).length>0) otherNote++; });
+    var diet=dietAvg();
+    var totMin=sMin+(diet||0), totMax=sMax+(diet||0);
+    var pctMin=Math.round(totMin/GOAL*100);
+    var over=(UL!=null)&&(totMax>=UL);
+    var verdict, cls;
+    if(over){ verdict="⚠️ 耐容上限("+fnum(UL)+UNIT+"/成人)に達します — この組み合わせは摂りすぎに注意"; cls="warn"; }
+    else if(totMin>=GOAL){ verdict="✓ "+NUT.goalLabel+"("+fdec(GOAL)+UNIT+")を満たします"+(UL!=null?"（耐容上限"+fnum(UL)+UNIT+"との差 約"+fdec(UL-totMax)+UNIT+"）":""); cls="ok"; }
+    else { verdict=NUT.goalLabel+"まであと約"+fdec(GOAL-totMin)+UNIT; cls=""; }
+    var dietTxt=(diet!=null)?("食事(平均) "+diet+UNIT+" ＋ "):"";
+    var rMin=Math.round(totMin*10)/10, rMax=Math.round(totMax*10)/10;
+    var totTxt=(rMin===rMax)?(fnum(rMin)+UNIT):(fnum(rMin)+"〜"+fnum(rMax)+UNIT);
+    document.getElementById("sumline").innerHTML =
+      '選択中 '+ids.length+'品　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
+      +'（'+NUT.goalLabel+'の約'+fnum(pctMin)+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
+    var viz=document.getElementById("sumbarviz");
+    var scale=(UL!=null)?Math.max(UL, totMax):Math.max(GOAL, totMax);
+    viz.classList.toggle("over", over);
+    viz.querySelector(".diet").style.width=((diet||0)/scale*100)+"%";
+    viz.querySelector(".supp").style.left=((diet||0)/scale*100)+"%";
+    viz.querySelector(".supp").style.width=(sMax/scale*100)+"%";
+    viz.querySelector(".goalmark").style.left=(GOAL/scale*100)+"%";
+    var note;
+    if(DIET){
+      note = (diet==null?"上の「あなたの基準で見る」で性別・年代を選ぶと、食事の平均摂取分も足して判定します。":"食事分は公的統計の平均値です（あなた自身の食事ではありません）。")
+        + " バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+(scale===UL?"（耐容上限）":"")+"。";
+    } else {
+      note = "バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+"。"+(NUT.sumStaticNote||"");
+    }
+    if(otherNote>0) note += " 選択には"+NUT.name+"以外の配合成分を含む商品があります（他成分の合算は今後対応）。";
+    if(naNote>0) note += " 選択には"+NUT.name+"量が未取得の商品があり、合算に含まれていません。";
+    document.getElementById("sumnote").textContent=note;
+  }
+
+  function detailHtml(p){
+    var h='';
+    h+='<div class="how" style="margin-top:0"><b>配合成分の量（1日目安量あたり）:</b> '+NUT.name+' '+fmtAmt(p)
+      +(toArr(p.ings).length?('　'+toArr(p.ings).map(function(g){
+        var v=(g.a1==null)?'量未確認':((g.a1===g.a2?g.a1:g.a1+'〜'+g.a2)+(g.u||''));
+        return g.n+' '+v;
+      }).join('　')):'（'+NUT.name+'のみ）')+'</div>';
+    var packs="", seen={};
+    toArr(p.variants).forEach(function(v){
+      if(v.qty==null && v.reg==null && !v.note) return;
+      var key=(v.qty==null?"x":v.qty)+"-"+(v.reg==null?"x":v.reg);
+      if(seen[key]) return; seen[key]=1;
+      var days=v.days!=null?"・約"+v.days+"日分":"";
+      var seller=v.seller?("["+v.seller.split("(")[0]+"] "):"";
+      var hasUrl = v.url && v.url.indexOf("http")===0;
+      var tagO = hasUrl ? '<a href="'+v.url+'" target="_blank" rel="noopener" class="pack' : '<span class="pack';
+      var tagC = hasUrl ? ' ↗</a>' : '</span>';
+      if(v.reg!=null){
+        var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
+        packs+=tagO+'">'+seller+(v.qty!=null?v.qty+(v.unit||""):"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+(v.note?'<span class="per">'+v.note+'</span>':'')+tagC;
+      } else { packs+=tagO+' na">'+seller+(v.qty!=null?v.qty+(v.unit||""):"")+days+' '+(v.note||"価格未取得")+tagC; }
+    });
+    if(packs!=="") h+='<div class="how" style="margin-top:10px"><b>すべての容量と価格:</b></div><div class="buyline" style="margin-top:6px">'+packs+'</div>';
+    if(p.intake) h+='<div class="how"><b>メーカーの飲み方（原文）:</b> 「'+p.intake+'」</div>';
+    var prof=[];
+    if(p.cert) prof.push('製造・認証: '+p.cert);
+    if(p.legal && p.legal.indexOf('未確認')<0) prof.push('食品区分: '+p.legal.split('(')[0]);
+    if(p.tech) prof.push('製剤技術: '+p.tech);
+    if(p.target) prof.push('対象者: '+p.target);
+    if(p.allergen) prof.push('アレルギー物質: '+p.allergen);
+    if(p.animal) prof.push('動物由来原料: '+p.animal);
+    if(prof.length) h+='<div class="how"><b>品質・仕様:</b> '+prof.join('　/　')+'</div>';
+    if(p.raw) h+='<div class="how" style="font-size:12px"><b>原材料名（原文）:</b> '+p.raw+'</div>';
+    if(p.caution) h+='<div class="how" style="font-size:12px"><b>パッケージの注意書き（抜粋）:</b> '+p.caution+'</div>';
+    h+='<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 '+NUT.confirm+'</div>';
+    return h;
+  }
+  function render(){
+    var items=PRODUCTS.slice();
+    if(state.f.onsale) items=items.filter(isOnSale);
+    (NUT.chips||[]).forEach(function(c){ if(state.f[c.f]) items=items.filter(function(p){ return chipTest(c,p); }); });
+    if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
+    if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
+    items.forEach(function(p){ p._bp=bestPrice(p); p._na=state.ing?nutAmt(p,state.ing):null; });
+    if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
+    if(state.sort==="amt"){
+      if(state.ing){
+        items.sort(function(a,b){var x=(a._na&&a._na.max!=null)?a._na.max:-1,y=(b._na&&b._na.max!=null)?b._na.max:-1;return (y-x)*state.dir;});
+      } else {
+        items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
+      }
+    }
+    document.querySelector('th[data-s="amt"] .tl').textContent = state.ing ? (state.ing+"/日") : (NUT.name+"/日");
+    document.querySelector('th[data-s="price"] .tl').textContent = state.ing ? "価格/日(商品全体)" : "価格/日";
+    var inote=document.getElementById("ingnote");
+    if(state.ing){
+      inote.style.display="";
+      inote.innerHTML='「<b>'+state.ing+'</b>」で絞り込み中 — 「'+state.ing+'/日」列は各商品の'+state.ing+'の量です。<b>価格/日は'+NUT.name+'商品全体の価格</b>で、'+state.ing+'だけの単価ではありません。';
+    } else { inote.style.display="none"; }
+    var el=document.getElementById("list"); el.innerHTML="";
+    var bestId=null, bestDay=Infinity;
+    PRODUCTS.forEach(function(p){ if(!isOnSale(p)) return; var b=bestPrice(p); if(b&&b.day<bestDay){ bestDay=b.day; bestId=p.id; } });
+    items.forEach(function(p){
+      var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
+      var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
+      var pctTxt=(pct==null)?null:((p.amtMin!==p.amtMax)?(Math.round(p.amtMin/GOAL*100)+"〜"+pct):String(pct));
+      var tags="";
+      if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
+      (NUT.badges||[]).forEach(function(bg){ if(chipTest(bg,p)) tags+='<span class="b '+(bg.cls||'')+'">'+bg.label+'</span>'; });
+      if(UL!=null && p.amtMax!=null && p.amtMax>=UL) tags+='<span class="b warn">上限量に注意</span>';
+      if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
+      var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].replace("ビタミン","").replace("Vitamin ","").trim(); }).filter(function(n){return n;});
+      var ingTxt="";
+      if(ingNames.length){
+        var shown=ingNames.slice(0,4).join("・");
+        ingTxt='<span class="ingline">＋'+shown+(ingNames.length>4?"・他"+(ingNames.length-4):"")+'</span>';
+      }
+      var bv=null;
+      toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null){ if(bv==null||v.reg/v.days<bv.reg/bv.days) bv=v; } });
+      var packCell;
+      var fl=formShort(p); fl=(fl===NUT.shortLabel)?"":("・"+fl);
+      if(bv){
+        packCell=(bv.qty!=null?bv.qty+dispUnit(bv.unit,p):"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+fl+((bv.note||"").indexOf("税抜")>=0?"・税抜":"")+((bv.note||"").indexOf("セール")>=0?"・セール価格":"")+'</span>';
+      } else {
+        var v0=toArr(p.variants)[0];
+        packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit,p)+'<span class="sub">'+((v0.note||"価格未取得").split("(")[0])+fl+'</span>'):'<span style="color:var(--ink3)">'+((v0&&v0.note)?v0.note.split("(")[0]:"未取得")+'</span>';
+      }
+      var doseCell=(p.doseMin!=null)
+        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)
+        : '<span style="color:var(--ink3)">未確認</span>';
+      var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)+"/日"):"";
+      var amtShort;
+      if(state.ing){
+        var na=p._na;
+        amtShort=state.ing+" "+((na&&na.min!=null)?((na.min===na.max?na.min:na.min+"〜"+na.max)+na.unit):"未取得");
+      } else { amtShort=fmtAmt(p)+((pctTxt!=null)?'（'+pctTxt+'%）':''); }
+      packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+amtShort+'</span>';
+      var amtCell;
+      if(state.ing){
+        amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
+      } else {
+        amtCell=(p.amtMin!=null)
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
+          : '<span style="color:var(--ink3)">未取得</span>';
+      }
+      var priceCell = bp
+        ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
+        : '<span style="color:var(--ink3)">—</span>';
+      el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
+        +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
+        +'<td class="prod"><div class="prodflex"><div class="thumb">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':formShort(p))+'</div><div><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></div></div></td>'
+        +'<td class="num packc">'+packCell+'</td>'
+        +'<td class="num dosec">'+doseCell+'</td>'
+        +'<td class="num amtc'+(!state.ing&&UL!=null&&p.amtMax!=null&&p.amtMax>=UL?' ul':'')+'">'+amtCell+'</td>'
+        +'<td class="num pricec">'+priceCell+'</td>'
+        +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
+        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
+    });
+    document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
+    el.querySelectorAll(".addb").forEach(function(b){
+      b.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        state.picked[b.dataset.id]=!state.picked[b.dataset.id];
+        save(); render();
+      });
+    });
+    el.querySelectorAll("tr.main").forEach(function(tr){
+      tr.addEventListener("click", function(){
+        state.open[tr.dataset.id]=!state.open[tr.dataset.id];
+        render();
+      });
+    });
+    el.querySelectorAll("tr.detail").forEach(function(tr){
+      tr.addEventListener("click", function(e){
+        if(e.target.closest("a")) return;
+        state.open[tr.dataset.for]=false;
+        render();
+      });
+    });
+    renderSum();
+  }
+  function buildMk(){
+    var sel=document.getElementById("mksel"), names={};
+    PRODUCTS.forEach(function(p){ names[mkName(p)]=1; });
+    Object.keys(names).sort().forEach(function(n){
+      var o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){ state.mk=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
+  }
+  function buildIng(){
+    var sel=document.getElementById("ingsel"), counts={};
+    PRODUCTS.forEach(function(p){ Object.keys(p._nut).forEach(function(n){ counts[n]=(counts[n]||0)+1; }); });
+    Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b,"ja"); }).forEach(function(n){
+      var o=document.createElement("option"); o.value=n; o.textContent=n+"（"+counts[n]+"件）"; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){
+      state.ing=sel.value; sel.classList.toggle("on", !!sel.value);
+      var noIng = !sel.value;
+      var chipBox=document.getElementById("dchips");
+      if(chipBox) chipBox.style.display = noIng ? "" : "none";
+      if(!noIng){
+        (NUT.chips||[]).forEach(function(c){
+          if(c.persist) return;
+          state.f[c.f]=false;
+          var cb=document.querySelector('.controls input[data-f="'+c.f+'"]'); if(cb) cb.checked=false;
+        });
+      }
+      render();
+    });
+  }
+  function renderYou(){
+    document.querySelectorAll("#youbtns button").forEach(function(b){
+      b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
+    });
+    var el=document.getElementById("youstat");
+    if(!DIET){
+      el.innerHTML = NUT.youStaticText || "";
+    } else {
+      var d=dietAvg();
+      var gap = d!=null ? Math.round((GOAL-d)*(DEC>0?10:1))/(DEC>0?10:1) : null;
+      el.innerHTML = d!=null
+        ? (gap>0
+            ? "この属性の食事からの平均摂取は <b>"+fdec(d)+UNIT+"/日</b>（令和5年調査）。"+NUT.goalLabelFull+" <b>"+fdec(GOAL)+UNIT+"/日</b>"+(NUT.goalSuffix||"")+" まで、<b style=\"color:var(--g2)\">あと約"+fdec(gap)+UNIT+"</b> です。"
+            : "この属性の食事からの平均摂取は <b>"+fdec(d)+UNIT+"/日</b>（令和5年調査）で、"+NUT.goalLabelFull+" "+fdec(GOAL)+UNIT+"/日 に達しています。")
+          + "平均はあなた自身の食事ではありません。表の%は商品単体の"+NUT.goalLabel+"に対する割合。食事平均との合算は、商品を＋で選ぶと下のバーに表示されます。"
+        : (NUT.youUnselectedText||"");
+    }
+    if(state.you.sex||state.you.age){
+      el.innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none">属性をリセット</a>';
+      var rs=document.getElementById("youreset");
+      if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
+    }
+  }
+  document.getElementById("youbtns").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
+    save(); renderYou(); render();
+  });
+  function syncMsort(){
+    document.querySelectorAll("#msort button").forEach(function(b){
+      var on=b.dataset.s===state.sort;
+      b.classList.toggle("on", on);
+      b.textContent=(b.dataset.s==="price"?"価格/日":"摂れる量")+(on?(state.dir===1?" ▲":" ▼"):"");
+    });
+  }
+  document.querySelectorAll("#msort button").forEach(function(b){
+    b.addEventListener("click", function(){
+      if(state.sort===b.dataset.s){ state.dir=-state.dir; } else { state.sort=b.dataset.s; state.dir=1; }
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent=(x.dataset.s===state.sort)?(state.dir===1?"▲":"▼"):"";
+      });
+      syncMsort(); render();
+    });
+  });
+  document.querySelectorAll("th.sortable").forEach(function(th){
+    th.addEventListener("click", function(){
+      if(state.sort===th.dataset.s){ state.dir=-state.dir; } else { state.sort=th.dataset.s; state.dir=1; }
+      syncMsort();
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent = (x.dataset.s===state.sort) ? (state.dir===1?"▲":"▼") : "";
+      });
+      render();
+    });
+  });
+  document.querySelectorAll(".flt input").forEach(function(i){
+    i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
+  });
+  document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
+  buildMk(); buildIng(); renderYou(); render();
+})();
