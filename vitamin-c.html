@@ -4,101 +4,427 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<meta property="og:title" content="ビタミンC 商品比較（16商品・1日あたりで比べる）">
-<meta property="og:description" content="通常型からリポソーム・タイムリリース型まで、ビタミンCサプリを「1日あたりの量と価格」に揃えて比較。">
+<meta property="og:title" content="ビタミンC 商品比較 ─ 16商品を1日あたりで比べる">
+<meta property="og:description" content="定番からリポソーム・持続型まで、ビタミンC 16商品を「1日あたりの量と価格」に換算してフラットに比較。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://takemoritoshihiko-png.github.io/supplement-db-site/vitamin-c.html">
+<meta name="twitter:card" content="summary">
 <title>ビタミンC 商品比較（16商品・1日あたりで比べる）</title>
+<link rel="stylesheet" href="compare.css">
 </head>
 <body>
-<style>
-  :root {
-    --bg: #FCFCFD; --surface: #F4F5F7; --ink: #1B1D22; --ink2: #5B5F6B; --ink3: #8A8F9B;
-    --line: #E4E6EA; --track: #E9EBEF;
-    --g1: #3B5BA5; --g1-soft: #EDF1FA; --g1-line: #C9D5EE;
-    --g2: #B65C1F; --g2-soft: #FAF0E7; --g2-line: #EBD3BE;
-    --ok: #2E7D4F; --ok-soft: #E8F4EC;
+<header class="page">
+  <div class="wrap">
+    <a class="back" href="index.html">← トップへ戻る</a>&nbsp;&nbsp;<a class="back" href="vitamin-d.html">ビタミンDの比較</a>&nbsp;&nbsp;<a class="back" href="calcium.html">カルシウムの比較</a>
+    <div class="eyebrow">VITAMIN C ─ 徹底比較</div>
+    <h1>サプリ選びに、理にかなった選択を。</h1>
+    <div class="tagline">16商品のビタミンCを、「1日あたりの量と価格」でフラットに比較。</div>
+    <div class="sub">数百円の定番から高価格帯のリポソーム型まで。パッケージの謳い文句に惑わされず、<b style="color:var(--ink)">量・価格・製剤の型</b>という事実だけを同じ物差しで並べました（型の違いは事実として表示し、優劣の評価はしません）。</div>
+    <div class="sub" style="margin-top:10px"><b style="color:var(--ink)">ビタミンCとは</b> — 皮膚や粘膜の健康維持を助け、抗酸化作用を持つ栄養素とされています。体内で作れないため食品からの摂取が必要です。水に溶けやすい性質があります。本ページの%は栄養素等表示基準値（100mg/日）に対する割合で、多くの商品パッケージの（◯%）表記と同じ物差しです。</div>
+    <div class="you">
+      <div class="t"><span class="stepn">1</span>あなたの「栄養の現在地」を知る（任意）</div>
+      <div class="btns" id="youbtns">
+        <button data-k="sex" data-v="m">男性</button>
+        <button data-k="sex" data-v="f">女性</button>
+        <span style="width:8px"></span>
+        <button data-k="age" data-v="20">20代</button>
+        <button data-k="age" data-v="30">30代</button>
+        <button data-k="age" data-v="40">40代</button>
+        <button data-k="age" data-v="50">50代</button>
+        <button data-k="age" data-v="60">60代</button>
+        <button data-k="age" data-v="70">70代</button>
+        <button data-k="age" data-v="80">80代〜</button>
+      </div>
+      <div class="stat" id="youstat"></div>
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <div class="wrap row1">
+    <span class="lbl">絞り込み</span>
+    <select class="mkr" id="ingsel"><option value="">成分で絞り込む（現在: 全商品）</option></select>
+    <select class="mkr" id="mksel"><option value="">全メーカー</option></select>
+    <label class="flt"><input type="checkbox" data-f="onsale" checked>販売中のみ</label>
+    <span id="dchips">
+    <label class="flt"><input type="checkbox" data-f="lipo">リポソーム</label>
+    <label class="flt"><input type="checkbox" data-f="tr">持続型・タイムリリース</label>
+    <label class="flt"><input type="checkbox" data-f="single">単一成分のみ</label>
+    </span>
+    <span class="count" id="count"></span>
+    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">価格/日 ▲</button><button data-s="amt">摂れる量</button></div>
+  </div>
+</div>
+
+<main><div class="wrap">
+<details class="guide">
+<summary><b style="color:var(--ink)">飲み方の目安と、「型」の読み方</b></summary>
+<div class="gbody">
+<b style="color:var(--ink)">飲み方の目安</b> — ビタミンCは水に溶けやすく、一度に多く摂っても使われなかった分は排泄されやすいため、<b style="color:var(--ink)">数回に分けて</b>摂るのがよいとされています。メーカーの指定があればそちらが優先です（各行の詳細に原文を掲載）。<br>
+<b style="color:var(--ink)">「型」の読み方</b> — <span class="b k2" style="margin:0 2px">リポソーム</span>＝ビタミンCを脂質の膜で包んだ製剤、<span class="b k2" style="margin:0 2px">持続型</span>＝ゆっくり溶けるよう設計された製剤です。いずれもメーカーの表示に基づく<b style="color:var(--ink)">事実の分類</b>であり、優劣・効果の評価ではありません。<br>
+<span style="font-size:11.5px;color:var(--ink3)">※製剤の型が異なる商品は、単純な価格比較になじまない場合があります。</span>
+</div>
+</details>
+<div id="ingnote" style="display:none;border:1px solid var(--g1-line);background:var(--g1-soft);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink2)"></div>
+<div class="tablewrap"><table class="cmp"><caption style="caption-side:top;text-align:left;font-size:11.5px;color:var(--ink3);padding:0 2px 8px"><span class="stepn">2</span><b style="color:var(--ink);font-size:13.5px">同じ物差しだから、もう迷わない。</b><br>
+<span style="display:block;margin-top:2px">バラバラな単位（1粒/2粒・1包）は、すべて<b style="color:var(--ink)">「1日あたりの量と価格」</b>に換算済み。<span class="pconly">列見出しをタップすれば、安い順・多い順に一瞬で並び替わります（もう一度で逆順）。</span><span class="sponly">上の「並び替え」ボタンで、安い順・多い順に一瞬で切り替わります。</span><span style="color:var(--ink3)">※メーカー推奨の1日目安量を飲んだ場合の値です。</span></span></caption><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">ビタミンC/日</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+
+<div id="sumbar">
+  <div class="inner">
+    <button class="clear" id="clearpick">すべて外す</button>
+    <div class="l1" id="sumline"></div>
+    <div class="bar" id="sumbarviz"><div class="diet"></div><div class="supp"></div><div class="goalmark"></div></div>
+    <div class="l2" id="sumnote"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap legal">
+    <b style="color:var(--ink)">掲載データについて</b>：流通が確認できた16商品を「1日あたり」に揃えて比較しています（2026年8月14日調査・拡充中）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。収集方法と表示の意味の詳細は「<a href="about-data.html" style="color:var(--g1);font-weight:700">データの集め方</a>」をご覧ください。<br>
+    出典：各商品の公式サイト・販売ページ（各行のリンク先）。価格・仕様は2026年8月14日時点の調査値であり、変動します。表の%は栄養素等表示基準値（ビタミンC 100mg・18歳以上、基準熱量2,200kcal）に対する割合です。合算表示は選択した商品のビタミンC量に基づく参考値です（属性別の食事平均データは整備中のため、サプリ分のみで計算しています）。<br>
+    耐容上限量について：ビタミンCには耐容上限量が設定されていません（日本人の食事摂取基準）。ただし多量摂取が健康の増進につながるものではありません。<br>
+    調査中の商品：ヘルシーパス／ユニマットリケンZOO・こどもD&C／医食同源／養命酒／NOW／Solgar／California Gold／Naturecan／Blackmores／SINTO／ELLISS ほかは収集・照合が済み次第、順次追加します。<br>本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
+  </div>
+</footer>
+
+<script src="data-vc.js"></script>
+<script>
+(function(){
+  var GOAL = 100, UL = null, UNIT="mg";
+  var state = { sort:"price", dir:1, f:{ onsale:true, lipo:false, tr:false, single:false },
+                mk:"", ing:"", you:{ sex:null, age:null }, picked:{}, open:{} };
+  try { var sv = JSON.parse(localStorage.getItem("sdb-vc")||"{}"); if(sv.picked) state.picked=sv.picked; } catch(e){}
+  try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } } catch(e){}
+
+  function save(){ try{ localStorage.setItem("sdb-vc", JSON.stringify({picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
+  function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
+  function bestPrice(p){
+    var best=null;
+    toArr(p.variants).forEach(function(v){
+      if(v.reg==null || v.days==null || v.days<=0) return;
+      var d=v.reg/v.days, ds=(v.sub!=null)?v.sub/v.days:null;
+      if(best==null || d<best.day) best={day:d,sub:ds};
+      else if(ds!=null && best.sub==null && d===best.day) best.sub=ds;
+    });
+    return best;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #15161A; --surface: #1D1F25; --ink: #ECEDF0; --ink2: #9AA0AC; --ink3: #6E7480;
-      --line: #2A2D35; --track: #262932;
-      --g1: #5E7FD1; --g1-soft: #1D2434; --g1-line: #31405E;
-      --g2: #C97B3E; --g2-soft: #2A2018; --g2-line: #4A3521;
-      --ok: #5CAD7F; --ok-soft: #1C2B22;
+  function isOnSale(p){ return toArr(p.variants).some(function(v){ return (v.status||"").indexOf("販売中")>=0 || (v.status||"").indexOf("在庫あり")>=0; }); }
+  function isLipo(p){ return /リポソーム/.test(p.tech||""); }
+  function isTR(p){ return /タイムリリース|持続型/.test(p.tech||""); }
+  function isChew(p){ return /グミ|チュアブル/.test(p.form||""); }
+  function mkName(p){ return (p.maker||"").split("(")[0].split("（")[0]; }
+  function dispUnit(u, p){
+    u=u||"";
+    if(p && isChew(p) && /粒|カプセル|錠|個/.test(u)) return "個";
+    if(/カプセル|ソフトジェル|錠|タブレット|ベジ/.test(u)) return "粒";
+    return u;
+  }
+  function formShort(p){
+    var f=p.form||"";
+    if(/グミ|チュアブル/.test(f)) return "グミ";
+    if(/ソフト/.test(f)) return "ソフト";
+    if(/カプセル/.test(f)) return "カプセル";
+    if(/錠|タブレット|粒/.test(f)) return "錠剤";
+    if(/顆粒|粉|パウダー/.test(f)) return "粉末";
+    if(/液|ジェル/.test(f)) return "液状";
+    return "C";
+  }
+  function fmtAmt(p){
+    if(p.amtMin==null) return "未取得";
+    var a=(p.amtMin===p.amtMax)?p.amtMin.toLocaleString():(p.amtMin.toLocaleString()+"〜"+p.amtMax.toLocaleString());
+    return a+UNIT;
+  }
+  function findP(id){ for(var i=0;i<PRODUCTS.length;i++){ if(PRODUCTS[i].id===id) return PRODUCTS[i]; } return null; }
+
+  function canonOf(name){
+    var n=(name||"").toLowerCase();
+    if(/b2/.test(n)) return "ビタミンB2";
+    if(/b1(?!2)/.test(n)) return "ビタミンB1";
+    if(/b6/.test(n)) return "ビタミンB6";
+    if(/ビタミンd|vitamin d/.test(n)) return "ビタミンD";
+    if(/コラーゲン/.test(n)) return "コラーゲン";
+    if(/ルチン|ヘスペリジン|ビタミンp/.test(n)) return "ビタミンP(ルチン・ヘスペリジン)";
+    if(/ナイアシン/.test(n)) return "ナイアシン";
+    if(/パントテン酸/.test(n)) return "パントテン酸";
+    if(/ローズヒップ/.test(n)) return "ローズヒップ";
+    if(/ヒアルロン酸/.test(n)) return "ヒアルロン酸";
+    if(/セラミド/.test(n)) return "セラミド";
+    if(/エラスチン/.test(n)) return "エラスチン";
+    if(/プロテオグリカン/.test(n)) return "プロテオグリカン";
+    return (name||"").split("(")[0].split("（")[0].trim();
+  }
+  function nutTags(p){
+    var set={};
+    toArr(p.ings).forEach(function(g){ var c=canonOf(g.n); if(c) set[c]=1; });
+    return set;
+  }
+  PRODUCTS.forEach(function(p){ p._nut=nutTags(p); });
+  function nutAmt(p, tag){
+    var min=0, max=0, unit="", found=false;
+    toArr(p.ings).forEach(function(g){
+      if(canonOf(g.n)!==tag) return;
+      if(g.a1==null&&g.a2==null){ found=true; return; }
+      min+=(g.a1!=null?g.a1:g.a2)||0; max+=(g.a2!=null?g.a2:g.a1)||0; unit=g.u||unit; found=true;
+    });
+    if(!found) return null;
+    if(!unit && min===0 && max===0) return {min:null,max:null,unit:""};
+    return {min:min,max:max,unit:unit};
+  }
+  function fmtNut(na){
+    if(!na||na.min==null) return '<span style="color:var(--ink3);font-size:12px">配合量未取得</span>';
+    var v=(na.min===na.max)?na.min:(na.min+"〜"+na.max);
+    return '<b>'+v+na.unit+'</b>';
+  }
+
+  function renderSum(){
+    var bar=document.getElementById("sumbar");
+    var ids=Object.keys(state.picked).filter(function(k){return state.picked[k];});
+    if(ids.length===0){ bar.classList.remove("show"); return; }
+    bar.classList.add("show");
+    var sMin=0,sMax=0,naNote=0;
+    ids.forEach(function(id){ var p=findP(id); if(!p) return; if(p.amtMax==null){ naNote++; return; } sMin+=p.amtMin; sMax+=p.amtMax; });
+    var pctMin=Math.round(sMin/GOAL*100);
+    var verdict, cls;
+    if(sMin>=GOAL){ verdict="✓ 基準値(100mg)を満たします"; cls="ok"; }
+    else { verdict="基準値まであと約"+Math.round(GOAL-sMin)+"mg"; cls=""; }
+    var totTxt=(sMin===sMax)?(sMin.toLocaleString()+"mg"):(sMin.toLocaleString()+"〜"+sMax.toLocaleString()+"mg");
+    document.getElementById("sumline").innerHTML =
+      '選択中 '+ids.length+'品　｜　サプリのビタミンC合計 <b>'+totTxt+'</b>（基準値の約'+pctMin.toLocaleString()+'%）　<span class="verdict '+cls+'">'+verdict+'</span>';
+    var viz=document.getElementById("sumbarviz");
+    var scale=Math.max(GOAL, sMax);
+    viz.classList.remove("over");
+    viz.querySelector(".diet").style.width="0%";
+    viz.querySelector(".supp").style.left="0%";
+    viz.querySelector(".supp").style.width=(sMax/scale*100)+"%";
+    viz.querySelector(".goalmark").style.left=(GOAL/scale*100)+"%";
+    var note = "バーの緑線＝基準値100mg・右端＝"+scale.toLocaleString()+"mg。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。属性別の食事平均データは整備中のため、サプリ分のみで計算しています。"
+      + (naNote>0?" 選択にはビタミンC量が未取得の商品があり、合算に含まれていません。":"");
+    document.getElementById("sumnote").textContent=note;
+  }
+
+  function detailHtml(p){
+    var h='';
+    h+='<div class="how" style="margin-top:0"><b>配合成分の量（1日目安量あたり）:</b> ビタミンC '+fmtAmt(p)
+      +(toArr(p.ings).length?('　'+toArr(p.ings).map(function(g){
+        var v=(g.a1==null)?'量未確認':((g.a1===g.a2?g.a1:g.a1+'〜'+g.a2)+(g.u||''));
+        return g.n+' '+v;
+      }).join('　')):'（ビタミンCのみ）')+'</div>';
+    var packs="", seen={};
+    toArr(p.variants).forEach(function(v){
+      if(v.qty==null && v.reg==null && !v.note) return;
+      var key=(v.qty==null?"x":v.qty)+"-"+(v.reg==null?"x":v.reg);
+      if(seen[key]) return; seen[key]=1;
+      var days=v.days!=null?"・約"+v.days+"日分":"";
+      var seller=v.seller?("["+v.seller.split("(")[0]+"] "):"";
+      var hasUrl = v.url && v.url.indexOf("http")===0;
+      var tagO = hasUrl ? '<a href="'+v.url+'" target="_blank" rel="noopener" class="pack' : '<span class="pack';
+      var tagC = hasUrl ? ' ↗</a>' : '</span>';
+      if(v.reg!=null){
+        var per=(v.days!=null)?'<span class="per">→1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>':'';
+        packs+=tagO+'">'+seller+(v.qty!=null?v.qty+(v.unit||""):"")+days+' <b>'+v.reg.toLocaleString()+'円</b>'+(v.sub!=null?'/定期'+v.sub.toLocaleString()+'円':'')+per+(v.note?'<span class="per">'+v.note+'</span>':'')+tagC;
+      } else { packs+=tagO+' na">'+seller+(v.qty!=null?v.qty+(v.unit||""):"")+days+' '+(v.note||"価格未取得")+tagC; }
+    });
+    if(packs!=="") h+='<div class="how" style="margin-top:10px"><b>すべての容量と価格:</b></div><div class="buyline" style="margin-top:6px">'+packs+'</div>';
+    if(p.intake) h+='<div class="how"><b>メーカーの飲み方（原文）:</b> 「'+p.intake+'」</div>';
+    var prof=[];
+    if(p.cert) prof.push('製造・認証: '+p.cert);
+    if(p.legal) prof.push('食品区分: '+p.legal.split('(')[0]);
+    if(p.tech) prof.push('製剤技術: '+p.tech);
+    if(p.target) prof.push('対象者: '+p.target);
+    if(p.allergen) prof.push('アレルギー物質: '+p.allergen);
+    if(p.animal) prof.push('動物由来原料: '+p.animal);
+    if(prof.length) h+='<div class="how"><b>品質・仕様:</b> '+prof.join('　/　')+'</div>';
+    if(p.raw) h+='<div class="how" style="font-size:12px"><b>原材料名（原文）:</b> '+p.raw+'</div>';
+    if(p.caution) h+='<div class="how" style="font-size:12px"><b>パッケージの注意書き（抜粋）:</b> '+p.caution+'</div>';
+    h+='<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 2026-08-14</div>';
+    return h;
+  }
+  function render(){
+    var items=PRODUCTS.slice();
+    if(state.f.onsale) items=items.filter(isOnSale);
+    if(state.f.lipo) items=items.filter(isLipo);
+    if(state.f.tr) items=items.filter(isTR);
+    if(state.f.single) items=items.filter(function(p){return (p.comp||"").indexOf("単一")>=0;});
+    if(state.mk) items=items.filter(function(p){return mkName(p)===state.mk;});
+    if(state.ing) items=items.filter(function(p){return p._nut[state.ing];});
+    items.forEach(function(p){ p._bp=bestPrice(p); p._na=state.ing?nutAmt(p,state.ing):null; });
+    if(state.sort==="price") items.sort(function(a,b){var x=a._bp?a._bp.day:1e9,y=b._bp?b._bp.day:1e9;return (x-y)*state.dir;});
+    if(state.sort==="amt"){
+      if(state.ing){
+        items.sort(function(a,b){var x=(a._na&&a._na.max!=null)?a._na.max:-1,y=(b._na&&b._na.max!=null)?b._na.max:-1;return (y-x)*state.dir;});
+      } else {
+        items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
+      }
+    }
+    document.querySelector('th[data-s="amt"] .tl').textContent = state.ing ? (state.ing+"/日") : "ビタミンC/日";
+    document.querySelector('th[data-s="price"] .tl').textContent = state.ing ? "価格/日(商品全体)" : "価格/日";
+    var inote=document.getElementById("ingnote");
+    if(state.ing){
+      inote.style.display="";
+      inote.innerHTML='「<b>'+state.ing+'</b>」で絞り込み中 — 「'+state.ing+'/日」列は各商品の'+state.ing+'の量です。<b>価格/日はビタミンC商品全体の価格</b>で、'+state.ing+'だけの単価ではありません。';
+    } else { inote.style.display="none"; }
+    var el=document.getElementById("list"); el.innerHTML="";
+    var bestId=null, bestDay=Infinity;
+    PRODUCTS.forEach(function(p){ if(!isOnSale(p)) return; var b=bestPrice(p); if(b&&b.day<bestDay){ bestDay=b.day; bestId=p.id; } });
+    items.forEach(function(p){
+      var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
+      var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
+      var pctTxt=(pct==null)?null:((p.amtMin!==p.amtMax)?(Math.round(p.amtMin/GOAL*100)+"〜"+pct):String(pct));
+      var tags="";
+      if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
+      if(isLipo(p)) tags+='<span class="b k2">リポソーム</span>';
+      if(isTR(p)) tags+='<span class="b k2">持続型</span>';
+      if((p.comp||"").indexOf("単一")>=0) tags+='<span class="b d3">単一成分</span>';
+      if(isChew(p)) tags+='<span class="b">グミ</span>';
+      if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
+      var ingNames=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].replace("ビタミン","").trim(); }).filter(function(n){return n;});
+      var ingTxt="";
+      if(ingNames.length){
+        var shown=ingNames.slice(0,4).join("・");
+        ingTxt='<span class="ingline">＋'+shown+(ingNames.length>4?"・他"+(ingNames.length-4):"")+'</span>';
+      }
+      var bv=null;
+      toArr(p.variants).forEach(function(v){ if(v.reg!=null&&v.days!=null){ if(bv==null||v.reg/v.days<bv.reg/bv.days) bv=v; } });
+      var packCell;
+      var fl=formShort(p); fl=(fl==="C")?"":("・"+fl);
+      if(bv){
+        packCell=(bv.qty!=null?bv.qty+dispUnit(bv.unit,p):"")+' <b>'+bv.reg.toLocaleString()+'円</b><span class="sub">約'+bv.days+'日分'+fl+((bv.note||"").indexOf("税抜")>=0?"・税抜":"")+((bv.note||"").indexOf("セール")>=0?"・セール価格":"")+'</span>';
+      } else {
+        var v0=toArr(p.variants)[0];
+        packCell=(v0&&v0.qty!=null)?(v0.qty+dispUnit(v0.unit,p)+'<span class="sub">'+((v0.note||"価格未取得").split("(")[0])+fl+'</span>'):'<span style="color:var(--ink3)">'+((v0&&v0.note)?v0.note.split("(")[0]:"未取得")+'</span>';
+      }
+      var doseCell=(p.doseMin!=null)
+        ? (p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)
+        : '<span style="color:var(--ink3)">未確認</span>';
+      var doseShort=(p.doseMin!=null)?((p.doseMin===p.doseMax?p.doseMin:p.doseMin+"〜"+p.doseMax)+dispUnit(p.doseUnit||"粒",p)+"/日"):"";
+      var amtShort;
+      if(state.ing){
+        var na=p._na;
+        amtShort=state.ing+" "+((na&&na.min!=null)?((na.min===na.max?na.min:na.min+"〜"+na.max)+na.unit):"未取得");
+      } else { amtShort=fmtAmt(p)+((pctTxt!=null)?'（'+pctTxt+'%）':''); }
+      packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+amtShort+'</span>';
+      var amtCell;
+      if(state.ing){
+        amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
+      } else {
+        amtCell=(p.amtMin!=null)
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">基準値の約'+pctTxt+'%</span>'
+          : '<span style="color:var(--ink3)">未取得</span>';
+      }
+      var priceCell = bp
+        ? '<b>約'+(Math.round(bp.day*10)/10)+'円</b>'+(bp.sub!=null?'<span class="sb">定期 約'+(Math.round(bp.sub*10)/10)+'円</span>':'')
+        : '<span style="color:var(--ink3)">—</span>';
+      el.innerHTML+='<tr class="main'+(on?' sel':'')+'" data-id="'+p.id+'">'
+        +'<td class="pcol"><button class="addb'+(on?' on':'')+'" data-id="'+p.id+'" title="飲むリストに入れる">'+(on?'✓':'＋')+'</button></td>'
+        +'<td class="prod"><div class="prodflex"><div class="thumb">'+(p.img?'<img src="'+p.img+'" alt="'+p.name+'" loading="lazy">':formShort(p))+'</div><div><span class="mk2">'+mkName(p)+'</span><div class="nm2">'+p.name+'</div><div class="rowchips">'+tags+ingTxt+'</div></div></div></td>'
+        +'<td class="num packc">'+packCell+'</td>'
+        +'<td class="num dosec">'+doseCell+'</td>'
+        +'<td class="num amtc">'+amtCell+'</td>'
+        +'<td class="num pricec">'+priceCell+'</td>'
+        +'<td class="chev">'+(op?'▴':'▾')+'</td></tr>'
+        +'<tr class="detail'+(op?' open':'')+'" data-for="'+p.id+'"><td colspan="7">'+detailHtml(p)+'</td></tr>';
+    });
+    document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
+    el.querySelectorAll(".addb").forEach(function(b){
+      b.addEventListener("click", function(ev){
+        ev.stopPropagation();
+        state.picked[b.dataset.id]=!state.picked[b.dataset.id];
+        save(); render();
+      });
+    });
+    el.querySelectorAll("tr.main").forEach(function(tr){
+      tr.addEventListener("click", function(){
+        state.open[tr.dataset.id]=!state.open[tr.dataset.id];
+        render();
+      });
+    });
+    el.querySelectorAll("tr.detail").forEach(function(tr){
+      tr.addEventListener("click", function(e){
+        if(e.target.closest("a")) return;
+        state.open[tr.dataset.for]=false;
+        render();
+      });
+    });
+    renderSum();
+  }
+  function buildMk(){
+    var sel=document.getElementById("mksel"), names={};
+    PRODUCTS.forEach(function(p){ names[mkName(p)]=1; });
+    Object.keys(names).sort().forEach(function(n){
+      var o=document.createElement("option"); o.value=n; o.textContent=n; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){ state.mk=sel.value; sel.classList.toggle("on", !!sel.value); render(); });
+  }
+  function buildIng(){
+    var sel=document.getElementById("ingsel"), counts={};
+    PRODUCTS.forEach(function(p){ Object.keys(p._nut).forEach(function(n){ counts[n]=(counts[n]||0)+1; }); });
+    Object.keys(counts).sort(function(a,b){ return counts[b]-counts[a] || a.localeCompare(b,"ja"); }).forEach(function(n){
+      var o=document.createElement("option"); o.value=n; o.textContent=n+"（"+counts[n]+"件）"; sel.appendChild(o);
+    });
+    sel.addEventListener("change", function(){
+      state.ing=sel.value; sel.classList.toggle("on", !!sel.value);
+      var cOnly = !sel.value;
+      document.getElementById("dchips").style.display = cOnly ? "" : "none";
+      if(!cOnly){
+        ["lipo","tr","single"].forEach(function(k){
+          state.f[k]=false;
+          var cb=document.querySelector('.controls input[data-f="'+k+'"]'); if(cb) cb.checked=false;
+        });
+      }
+      render();
+    });
+  }
+  function renderYou(){
+    document.querySelectorAll("#youbtns button").forEach(function(b){
+      b.classList.toggle("on", state.you[b.dataset.k]===b.dataset.v);
+    });
+    document.getElementById("youstat").innerHTML =
+      "表の%は栄養素等表示基準値 <b>100mg/日</b>（パッケージの%表示と同じ物差し）に対する割合です。属性別の平均摂取データは整備中のため、合算バーはサプリ分のみで計算します。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。";
+    if(state.you.sex||state.you.age){
+      document.getElementById("youstat").innerHTML += ' <a href="#" id="youreset" style="color:var(--g2);font-weight:700;text-decoration:none">属性をリセット</a>';
+      var rs=document.getElementById("youreset");
+      if(rs) rs.addEventListener("click", function(e){ e.preventDefault(); state.you={sex:null,age:null}; save(); renderYou(); render(); });
     }
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--ink); font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.85; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; }
-  .wrap { max-width:1080px; margin:0 auto; padding:0 20px; }
-  .topbar { padding:18px 0; border-bottom:1px solid var(--line); }
-  .topbar a { font-size:13.5px; font-weight:700; color:var(--g1); text-decoration:none; }
-  header.hero { padding:44px 0 26px; }
-  .eyebrow { font-size:12px; font-weight:700; letter-spacing:0.14em; color:var(--ink3); margin-bottom:12px; }
-  h1 { font-size:clamp(23px,3.6vw,32px); font-weight:800; line-height:1.5; }
-  .lede { font-size:15px; color:var(--ink2); margin-top:12px; max-width:760px; }
-  .note { font-size:12.5px; line-height:1.85; color:var(--ink2); }
-  .tablewrap { overflow-x:auto; margin-top:22px; border:1px solid var(--line); border-radius:14px; }
-  table { border-collapse:collapse; width:100%; min-width:940px; font-size:13px; }
-  th { position:sticky; top:0; background:var(--surface); text-align:left; font-size:11.5px; letter-spacing:0.06em; color:var(--ink3); padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
-  td { padding:11px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
-  tr:last-child td { border-bottom:none; }
-  td.name b { font-size:13.5px; }
-  td.name .mk { display:block; font-size:11px; color:var(--ink3); font-weight:700; }
-  td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-  td.num b { font-size:14px; }
-  .chip { display:inline-block; font-size:10.5px; font-weight:800; padding:1px 8px; border-radius:100px; background:var(--g1-soft); border:1px solid var(--g1-line); color:var(--g1); white-space:nowrap; }
-  .chip.tech { background:var(--g2-soft); border-color:var(--g2-line); color:var(--g2); }
-  .na { color:var(--ink3); font-size:12px; }
-  .sub { display:block; font-size:11px; color:var(--ink3); }
-  a.src { color:var(--g1); text-decoration:none; font-weight:700; font-size:12px; }
-  section.notes { padding:26px 0 8px; }
-  footer { padding:34px 0 64px; }
-  footer .legal { font-size:12.5px; color:var(--ink2); padding-top:16px; border-top:1px solid var(--line); }
-</style>
-
-<div class="topbar"><div class="wrap" style="display:flex;gap:18px"><a href="index.html">← トップ</a><a href="vitamin-d.html">ビタミンDの比較</a><a href="calcium.html">カルシウムの比較</a><a href="about-data.html">データの集め方</a></div></div>
-
-<header class="hero"><div class="wrap">
-  <div class="eyebrow">比較データベース 第3弾（拡充中）</div>
-  <h1>ビタミンC 商品比較 <span style="color:var(--ink3);font-size:0.6em;font-weight:700">16商品・1日あたりで比べる</span></h1>
-  <p class="lede">数百円の定番から高価格帯のリポソーム型まで、ビタミンCサプリを<strong>「1日摂取目安量あたりの量と価格」</strong>に揃えて並べています（2026年8月14日調査）。%は<strong>栄養素等表示基準値（ビタミンC 100mg）</strong>に対する割合です。製剤の型（通常／持続型／リポソーム）は「型」列で区別できます。</p>
-</div></header>
-
-<div class="wrap">
-<div class="tablewrap">
-<table>
-<thead><tr><th>商品</th><th>区分</th><th>型・剤形</th><th>1日目安</th><th style="text-align:right">VC量/日</th><th style="text-align:right">基準値比</th><th style="text-align:right">1日あたり価格</th><th>主な併配合</th></tr></thead>
-<tbody>
-<tr><td class="name"><span class="mk">小林製薬</span><b>ビタミンC</b></td><td><span class="chip">栄養機能食品</span></td><td>錠剤</td><td>3粒</td><td class="num"><b>1,050mg</b></td><td class="num">1050%</td><td class="num"><b>約9.5円</b><span class="sub">税抜・60日分570円</span></td><td>B2 6.0mg・メチルヘスペリジン3.0mg</td></tr>
-<tr><td class="name"><span class="mk">DHC</span><b>ビタミンC（ハードカプセル）</b></td><td><span class="chip">栄養機能食品（C・B2）</span></td><td>カプセル</td><td>2粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約9.9円</b><span class="sub">30日分297円</span></td><td>B2 2.0mg</td></tr>
-<tr><td class="name"><span class="mk">ファンケル</span><b>ビタミンC</b></td><td><span class="na">確認中</span></td><td>粒</td><td>3粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約13.3円</b><span class="sub">30日分398円</span></td><td>B2 0.8mg・藤茶ポリフェノール1mg</td></tr>
-<tr><td class="name"><span class="mk">DHC</span><b>持続型ビタミンC</b></td><td><span class="chip">栄養機能食品（C）</span></td><td><span class="chip tech">持続型</span> 錠剤</td><td>4粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約14.4円</b><span class="sub">30日分432円</span></td><td>単一成分</td></tr>
-<tr><td class="name"><span class="mk">大塚製薬（ネイチャーメイド）</span><b>ビタミンC</b></td><td><span class="na">記載なし</span></td><td>錠剤</td><td>2粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約16.8円</b><span class="sub">税抜・100日分1,680円</span></td><td>ローズヒップ</td></tr>
-<tr><td class="name"><span class="mk">GoCLN</span><b>Quali-C ビタミンC 100%</b></td><td><span class="na">記載なし</span></td><td>植物性カプセル</td><td>2カプセル</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約49.8円</b><span class="sub">セール価格・60日分2,990円</span></td><td>単一成分（英国Quali-C原料）</td></tr>
-<tr><td class="name"><span class="mk">ファイン</span><b>ビタミンC+D</b></td><td><span class="chip">栄養機能食品</span></td><td>カプセル</td><td>2粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><b>約79.1円</b><span class="sub">30日分2,374円</span></td><td>ビタミンD 8.5μg</td></tr>
-<tr><td class="name"><span class="mk">ワカサプリ</span><b>ビタミンC</b></td><td><span class="na">VC含有加工食品</span></td><td>粉末</td><td>1包※1</td><td class="num"><b>2,000mg</b></td><td class="num">2000%</td><td class="num"><b>約108円</b><span class="sub">30包3,240円</span></td><td>単一成分（英国Quali-C原料）</td></tr>
-<tr><td class="name"><span class="mk">ORTIC</span><b>タイムリリーストリプルVC24</b></td><td><span class="na">記載なし</span></td><td><span class="chip tech">タイムリリース</span> 粉末</td><td>1包</td><td class="num"><span class="na">未取得※2</span></td><td class="num"><span class="na">—</span></td><td class="num"><b>約118.1円</b><span class="sub">32包3,780円</span></td><td>3種VC段階配合</td></tr>
-<tr><td class="name"><span class="mk">KYBソリューションズ</span><b>タイムリリースC1000 with B+P</b></td><td><span class="na">記載なし</span></td><td><span class="chip tech">タイムリリース</span> 顆粒</td><td>1〜2包</td><td class="num"><b>1,000〜2,000mg</b></td><td class="num">1000〜2000%</td><td class="num"><b>約198円〜</b><span class="sub">30包5,940円(1日1包時)</span></td><td>ルチン28.5mg・B群・ローズヒップ</td></tr>
-<tr><td class="name"><span class="mk">LivOn Labs（正規輸入）</span><b>リポスフェリック ビタミンC</b></td><td><span class="na">VC含有食品</span></td><td><span class="chip tech">リポソーム</span> ジェル状</td><td>1〜2包</td><td class="num"><b>1,000〜2,000mg</b></td><td class="num">1000〜2000%</td><td class="num"><b>約206円〜</b><span class="sub">30包6,180円(1日1包時)</span></td><td>大豆レシチン・米国製</td></tr>
-<tr><td class="name"><span class="mk">スピック</span><b>Lypo-C リポ・カプセル ビタミンC</b></td><td><span class="na">VC含有食品</span></td><td><span class="chip tech">リポソーム</span> 液状</td><td>1〜3包</td><td class="num"><b>1,000〜3,000mg</b></td><td class="num">1000〜3000%</td><td class="num"><b>約259円〜</b><span class="sub">30包7,776円(1日1包時)</span></td><td>大豆レシチン・国内GMP工場</td></tr>
-<tr><td class="name"><span class="mk">ダイケンバイオメディカル</span><b>コラーゲン&amp;ビタミンC</b></td><td><span class="na">記載なし</span></td><td>パウダー</td><td>1袋</td><td class="num"><b>300mg</b></td><td class="num">300%</td><td class="num"><b>約265円</b><span class="sub">定価・15日分3,980円</span></td><td>コラーゲン5,500mg・ヒアルロン酸</td></tr>
-<tr><td class="name"><span class="mk">オリヒロ</span><b>ビタミンC粒</b></td><td><span class="na">記載なし</span></td><td>粒</td><td>10粒</td><td class="num"><b>1,000mg</b></td><td class="num">1000%</td><td class="num"><span class="na">オープン価格</span></td><td>B2</td></tr>
-<tr><td class="name"><span class="mk">UHA味覚糖</span><b>UHAグミサプリ ビタミンC</b></td><td><span class="chip">栄養機能食品</span></td><td>グミ</td><td>2粒</td><td class="num"><b>500mg</b></td><td class="num">500%</td><td class="num"><span class="na">未取得</span></td><td>B2 1.1mg・コラーゲン200mg</td></tr>
-<tr><td class="name"><span class="mk">井藤漢方製薬</span><b>ビタミンC1200</b></td><td><span class="na">記載なし</span></td><td>顆粒</td><td>1袋</td><td class="num"><b>1,200mg</b></td><td class="num">1200%</td><td class="num"><span class="na">未取得</span></td><td>B2 0.6mg</td></tr>
-</tbody>
-</table>
-</div>
-<p class="note" style="margin-top:12px">価格は2026年8月14日時点の公式サイト表示（税表記のないものは税込）。「約◯円」は価格÷日数の機械計算。リポソーム・持続型など製剤の型が異なる商品は単純な価格比較になじまない場合があります（型の違いは事実として表示するのみで、優劣の評価はしません）。<br>
-※1 ワカサプリは公式ページに1日目安量の明記がなく「1包＝1日分」を示唆する記載のみ。 ※2 ORTICは1包あたりのVC量の栄養成分表示を確認できていません。</p>
-
-<section class="notes"><div class="note">
-<b style="color:var(--ink)">調査中の商品</b>：ヘルシーパス チュアブルVC／ユニマットリケン ZOO持続型VC・こどもD&amp;C／医食同源 VCチュアブル／養命酒 グミ×サプリ／NOW C-1000／Solgar Ester-C／California Gold／Naturecan／Blackmores／SINTO／ELLISS ほか — 収集が完了し照合が済み次第、順次追加します。ビタミンCには耐容上限量が設定されていません（日本人の食事摂取基準2025年版）。詳細は「<a class="src" href="about-data.html">データの集め方</a>」へ。
-</div></section>
-</div>
-
-<footer><div class="wrap legal">
-出典：各商品のメーカー公式サイト・公式通販ページ（2026年8月14日調査）。価格・仕様は変動します。本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。摂取目安量を守り、薬を服用中の方・妊娠中の方は医師・薬剤師にご相談ください。
-</div></footer>
+  document.getElementById("youbtns").addEventListener("click", function(e){
+    var b=e.target.closest("button"); if(!b) return;
+    state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
+    save(); renderYou(); render();
+  });
+  function syncMsort(){
+    document.querySelectorAll("#msort button").forEach(function(b){
+      var on=b.dataset.s===state.sort;
+      b.classList.toggle("on", on);
+      b.textContent=(b.dataset.s==="price"?"価格/日":"摂れる量")+(on?(state.dir===1?" ▲":" ▼"):"");
+    });
+  }
+  document.querySelectorAll("#msort button").forEach(function(b){
+    b.addEventListener("click", function(){
+      if(state.sort===b.dataset.s){ state.dir=-state.dir; } else { state.sort=b.dataset.s; state.dir=1; }
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent=(x.dataset.s===state.sort)?(state.dir===1?"▲":"▼"):"";
+      });
+      syncMsort(); render();
+    });
+  });
+  document.querySelectorAll("th.sortable").forEach(function(th){
+    th.addEventListener("click", function(){
+      if(state.sort===th.dataset.s){ state.dir=-state.dir; } else { state.sort=th.dataset.s; state.dir=1; }
+      syncMsort();
+      document.querySelectorAll("th.sortable").forEach(function(x){
+        x.classList.toggle("on",x.dataset.s===state.sort);
+        x.querySelector(".arr").textContent = (x.dataset.s===state.sort) ? (state.dir===1?"▲":"▼") : "";
+      });
+      render();
+    });
+  });
+  document.querySelectorAll(".flt input").forEach(function(i){
+    i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
+  });
+  document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
+  buildMk(); buildIng(); renderYou(); render();
+})();
+</script>
 </body>
 </html>
