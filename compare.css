@@ -421,6 +421,24 @@ details.guide .gbody { border-top:1px solid var(--line); }
 
 table.cmp caption .count { float:right; font-size:12.5px; font-weight:700; color:var(--ink2); margin:0; }
 
+/* ================================================================
+   ゾーンの余白リズム（2026-08-14 案D・竹森氏承認）
+   ページは3ゾーン: ①基準を決める(栄養素ピル+1日に必要な栄養素) ②学ぶ(基礎知識) ③選ぶ(絞り込み+比較表)
+   改修前は「学ぶ→絞り込み」16px < 「絞り込み→比較表」26px と逆転しており、
+   性質の違うもの同士が近く、同じ作業のもの同士が離れていた（実測）。
+   **ゾーン境界は56px・ゾーン内は12〜32px**にして階層を作る。線や見出しは足さない
+   （トップページが線を使わず余白だけでセクションを分ける作法のため。DESIGN §3）
+   ※.controlsはstickyなので、境界の余白はpaddingでなくmarginで外側に取る
+     （paddingにすると固定表示時に画面上端へ白帯が出る）
+   ================================================================ */
+details.guide { margin-top:34px; margin-bottom:0; }   /* header下22px + 34 = 56px */
+.controls { margin-top:44px; }                        /* 0 + 44 + padding12 = 56px */
+main { padding-top:18px; }                            /* + tablewrap 2px = 20px（ゾーン内なので詰める） */
+@media (max-width:600px){
+  details.guide { margin-top:14px; }                  /* 22 + 14 = 36px */
+  .controls { margin-top:24px; }                      /* 24 + 12 = 36px */
+}
+
 /* 「この表示のリンクをコピー」は絞り込み(ピル型)と別の働きなので、見た目の族を変える:
    ピルでなく文字リンク調にして件数の左に置く（2026-08-14 竹森氏指示） */
 table.cmp caption .sharebtn {
