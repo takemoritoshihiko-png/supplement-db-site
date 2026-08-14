@@ -4,13 +4,18 @@
   var GOAL=NUT.goal, UL=NUT.ul, UNIT=NUT.unit, DEC=NUT.dec||0;
   var DIET=NUT.diet||null;
   var LSKEY="sdb-"+NUT.slug;
-  var state = { sort:"price", dir:1, f:{ onsale:true }, mk:"", ing:"", you:{sex:null,age:null}, picked:{}, open:{} };
+  var state = { sort:"price", dir:1, f:{ onsale:true }, mk:"", ing:"", you:{sex:null,age:null}, picked:{}, open:{}, sharedView:false };
   (NUT.chips||[]).forEach(function(c){ state.f[c.f]=false; });
   try { var sv = JSON.parse(localStorage.getItem(LSKEY)||"{}"); if(sv.picked) state.picked=sv.picked; } catch(e){}
   try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex||sy.age){ state.you={sex:sy.sex||null, age:sy.age||null}; } } catch(e){}
 
+  var ownKeys = pickedKeys(state.picked);
   applyHash();
-  function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({picked:state.picked})); localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
+  /* A5: 保存の分離（共有URL閲覧中は受け手のpickedを上書きしない） */
+  function pickedKeys(o){ return Object.keys(o||{}).filter(function(k){ return o[k]; }).sort(); }
+  function loadOwnPicked(){ try{ var s=JSON.parse(localStorage.getItem(LSKEY)||"{}"); return s.picked||{}; }catch(e){ return {}; } }
+  function savePicked(){ if(state.sharedView) return; try{ localStorage.setItem(LSKEY, JSON.stringify({picked:state.picked})); }catch(e){} }
+  function saveYou(){ try{ localStorage.setItem("sdb-you", JSON.stringify({sex:state.you.sex, age:state.you.age})); }catch(e){} }
   function toArr(v){ if(v==null) return []; return Array.isArray(v) ? v : [v]; }
   /* B21: URL状態共有 — 状態をハッシュに自動反映(共有URLで再現可能) */
   function applyHash(){
@@ -20,7 +25,12 @@
     if(q.ing) state.ing=q.ing; if(q.mk) state.mk=q.mk;
     if(q.sort){ var p=q.sort.split('.'); if(p[0]) state.sort=p[0]; state.dir=(p[1]==='d')?-1:1; }
     if(q.f!==undefined){ Object.keys(state.f).forEach(function(k){ state.f[k]=false; }); q.f.split(',').forEach(function(k){ if(k in state.f) state.f[k]=true; }); }
-    if(q.p){ state.picked={}; q.p.split(',').forEach(function(id){ if(id) state.picked[id]=true; }); }
+    if(q.p){
+      var np={}; q.p.split(',').forEach(function(id){ if(id) np[id]=true; });
+      /* 自分の保存リストと同じ内容（＝自分のURLの再読込）なら閲覧モードにしない */
+      if(pickedKeys(np).join(',')!==ownKeys.join(',')) state.sharedView=true;
+      state.picked=np;
+    }
   }
   function updateHash(){
     var parts=[];
@@ -38,6 +48,26 @@
   function fnum(x){ return (x>=1000)?x.toLocaleString():String(x); }
   function dietAvg(){ return (DIET && state.you.sex && state.you.age) ? DIET[state.you.sex][state.you.age] : null; }
   function fdec(x){ return DEC>0 ? x.toFixed(DEC) : fnum(Math.round(x)); }
+  /* B1: 充足%が200%以上のときは「約◯.◯倍」表記に切り替える */
+  function pctPair(min,max){
+    if(Math.max(min,max)>=200){
+      var a=(Math.round(min/10)/10).toFixed(1), b=(Math.round(max/10)/10).toFixed(1);
+      return "約"+(a===b?a:a+"〜"+b)+"倍";
+    }
+    return "約"+(min===max?fnum(min):fnum(min)+"〜"+fnum(max))+"%";
+  }
+  /* A2: 列ヘッダーのsticky位置を絞り込みバーの実高に追従させる */
+  function syncCtrlH(){
+    var c=document.querySelector(".controls"); if(!c) return;
+    var h=(window.innerWidth<=600)?0:c.offsetHeight;
+    document.documentElement.style.setProperty("--ctrlh", h+"px");
+  }
+  /* A4: 下部バーの実高に合わせて本文下端の余白を調整する */
+  function syncBarPad(){
+    var b=document.getElementById("sumbar");
+    var on=!!(b && b.classList.contains("show"));
+    document.body.style.paddingBottom=(on ? b.offsetHeight+24 : 130)+"px";
+  }
   /* DESIGN v1.0: 半円アークゲージ(pct=0〜100で弧が伸びる) */
   function gaugeSvg(pct,size,sw){
     var r=(size-sw-2)/2, c=size/2, h=c+sw/2+1, len=Math.PI*r;
@@ -173,7 +203,7 @@
   function renderSum(){
     var bar=document.getElementById("sumbar");
     var ids=Object.keys(state.picked).filter(function(k){return state.picked[k] && findP(k);});
-    if(ids.length===0){ bar.classList.remove("show"); return; }
+    if(ids.length===0){ bar.classList.remove("show"); bar.classList.remove("expanded"); syncBarPad(); return; }
     bar.classList.add("show");
     var sMin=0,sMax=0,otherNote=0,naNote=0;
     ids.forEach(function(id){ var p=findP(id); if(!p) return; if(p.amtMax==null){ naNote++; return; } sMin+=p.amtMin; sMax+=p.amtMax; if((p.others||0)>0||toArr(p.ings).length>0) otherNote++; });
@@ -202,9 +232,16 @@
     if(costMiss) costNotes.push('価格未取得'+costMiss+'品を除く');
     if(taxN) costNotes.push('税抜'+taxN+'品を含む');
     var costTxt = costCore ? '　｜　'+costCore+(costNotes.length?'<span style="font-size:10.5px;color:var(--ink3)">（'+costNotes.join('・')+'）</span>':'') : '';
+    /* A1: スマホ用のコンパクト1行 */
+    var cpTxt='飲む予定リスト '+ids.length+'品　・　合計 '+totTxt;
+    if(cMin>0) cpTxt+='　・　約'+(Math.round(cMin)===Math.round(cMax)?fy(cMin):fy(cMin)+'〜'+fy(cMax))+'円/日';
+    var cpMark=(cls==="warn")?"⚠":(cls==="ok"?"✓":"");
+    document.getElementById("sumcompact").innerHTML =
+      '<span class="ct">'+cpTxt+'</span>'+(cpMark?'<span class="cv '+cls+'">'+cpMark+'</span>':'')
+      +'<span class="cx">'+(bar.classList.contains("expanded")?"▾":"▴")+'</span>';
     document.getElementById("sumline").innerHTML =
       '<a href="javascript:void(0)" id="pltoggle">飲む予定リスト '+ids.length+'品 '+(document.getElementById("picklist").classList.contains("open")?"▾":"▴")+'</a>　｜　'+dietTxt+'サプリの'+NUT.name+'合計 '+(sMin===sMax?fnum(sMin):fnum(sMin)+"〜"+fnum(sMax))+UNIT+' ＝ <b>1日合計 '+totTxt+'</b>'
-      +'（'+NUT.goalLabel+'の約'+(pctMin===pctMax?fnum(pctMin):fnum(pctMin)+'〜'+fnum(pctMax))+'%）'+costTxt+'　<span class="verdict '+cls+'">'+verdict+'</span>';
+      +'（'+NUT.goalLabel+'の'+pctPair(pctMin,pctMax)+'）'+costTxt+'　<span class="verdict '+cls+'">'+verdict+'</span>';
     var viz=document.getElementById("sumbarviz");
     var scale=(UL!=null)?Math.max(UL, totMax):Math.max(GOAL, totMax);
     viz.classList.toggle("over", over);
@@ -214,7 +251,7 @@
     viz.querySelector(".goalmark").style.left=(GOAL/scale*100)+"%";
     var note;
     if(DIET){
-      note = (diet==null?"上の「あなたの基準で見る」で性別・年代を選ぶと、食事の平均摂取分も足して判定します。":"食事分は公的統計の平均値です（あなた自身の食事ではありません）。")
+      note = (diet==null?"上の「1日に必要な栄養素」で性別・年代を選ぶと、食事の平均摂取分も足して判定します。":"食事分は公的統計の平均値です（あなた自身の食事ではありません）。")
         + " バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+(scale===UL?"（耐容上限）":"")+"。"+(UL==null?(NUT.sumStaticNote||""):"");
     } else {
       note = "バーの緑線＝"+NUT.goalLabel+fdec(GOAL)+UNIT+"・右端＝"+fnum(scale)+UNIT+"。"+(NUT.sumStaticNote||"");
@@ -222,6 +259,7 @@
     if(otherNote>0) note += " 選択には"+NUT.name+"以外の配合成分を含む商品があります（他成分の合算は今後対応）。";
     if(naNote>0) note += " 選択には"+NUT.name+"量が未取得の商品があり、合算に含まれていません。";
     document.getElementById("sumnote").textContent=note;
+    syncBarPad();
   }
 
   function detailHtml(p){
@@ -261,6 +299,15 @@
     h+='<div class="meta"><a href="'+p.url+'" target="_blank" rel="noopener">出典（商品ページ）↗</a>　確認日 '+NUT.confirm+'</div>';
     return h;
   }
+  /* A5: 共有URLで開いたときの閲覧モードバナー */
+  function renderSharedBanner(){
+    var el=document.getElementById("sharedbanner"); if(!el) return;
+    if(!state.sharedView){ el.style.display="none"; el.innerHTML=""; return; }
+    el.style.display="";
+    el.innerHTML='<span class="sbt">🔗 共有されたリストを表示しています（あなたの保存リストには影響しません）</span>'
+      +'<button type="button" id="sbadopt">自分のリストに取り込む</button>'
+      +'<button type="button" id="sbclose">共有リストを閉じる</button>';
+  }
   function render(){
     var items=PRODUCTS.slice();
     if(state.f.onsale) items=items.filter(isOnSale);
@@ -289,7 +336,7 @@
     items.forEach(function(p){
       var bp=p._bp, on=!!state.picked[p.id], op=!!state.open[p.id];
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
-      var pctTxt=(pct==null)?null:((p.amtMin!==p.amtMax)?(Math.round(p.amtMin/GOAL*100)+"〜"+pct):String(pct));
+      var pctTxt=(pct==null)?null:pctPair(Math.round(p.amtMin/GOAL*100), pct);
       var tags="";
       if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
       (NUT.badges||[]).forEach(function(bg){ if(chipTest(bg,p)) tags+='<span class="b '+(bg.cls||'')+'">'+bg.label+'</span>'; });
@@ -322,14 +369,14 @@
       if(state.ing){
         var na=p._na;
         amtShort=state.ing+" "+((na&&na.min!=null)?((na.min===na.max?na.min:na.min+"〜"+na.max)+na.unit):"未取得");
-      } else { amtShort=fmtAmt(p)+((pctTxt!=null)?'（'+pctTxt+'%）':''); }
+      } else { amtShort=fmtAmt(p)+((pctTxt!=null)?'（'+pctTxt+'）':''); }
       packCell+='<span class="m-extra">'+(doseShort?"・"+doseShort:"")+"・"+amtShort+'</span>';
       var amtCell;
       if(state.ing){
         amtCell=fmtNut(p._na!==undefined?p._na:nutAmt(p,state.ing));
       } else {
         amtCell=(p.amtMin!=null)
-          ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+NUT.goalLabel+'の約'+pctTxt+'%</span>'
+          ? '<b>'+fmtAmt(p)+'</b><span class="pc">'+NUT.goalLabel+'の'+pctTxt+'</span>'
           : '<span style="color:var(--ink3)">未取得</span>';
       }
       var priceCell = bp
@@ -350,7 +397,7 @@
       b.addEventListener("click", function(ev){
         ev.stopPropagation();
         state.picked[b.dataset.id]=!state.picked[b.dataset.id];
-        save(); render();
+        savePicked(); render();
       });
     });
     el.querySelectorAll("tr.main").forEach(function(tr){
@@ -366,6 +413,7 @@
         render();
       });
     });
+    renderSharedBanner();
     renderSum();
     updateHash();
   }
@@ -426,7 +474,7 @@
   document.getElementById("youbtns").addEventListener("click", function(e){
     var b=e.target.closest("button"); if(!b) return;
     state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
-    save(); renderYou(); render();
+    saveYou(); renderYou(); render();
   });
   function syncMsort(){
     document.querySelectorAll("#msort button").forEach(function(b){
@@ -459,11 +507,25 @@
   document.querySelectorAll(".flt input").forEach(function(i){
     i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
   });
-  document.getElementById("clearpick").addEventListener("click", function(){ state.picked={}; save(); render(); });
+  /* B5: 「すべて外す」は2段階（1回目=武装・3秒で解除、2回目=実行） */
+  var clearBtn=document.getElementById("clearpick"), clearTid=null;
+  function disarmClear(){ if(clearTid){ clearTimeout(clearTid); clearTid=null; } clearBtn.classList.remove("arm"); clearBtn.textContent="すべて外す"; }
+  clearBtn.addEventListener("click", function(){
+    if(!clearBtn.classList.contains("arm")){
+      clearBtn.classList.add("arm"); clearBtn.textContent="もう一度押すと全て外します";
+      if(clearTid) clearTimeout(clearTid);
+      clearTid=setTimeout(disarmClear, 3000);
+      return;
+    }
+    disarmClear();
+    state.picked={}; savePicked(); render();
+  });
   document.getElementById("sumbar").addEventListener("click", function(ev){
     var t=ev.target;
     if(t.id==="pltoggle"){ var pl=document.getElementById("picklist"); var open=pl.classList.toggle("open"); t.textContent=t.textContent.replace(open?"▴":"▾", open?"▾":"▴"); }
-    if(t.classList.contains("plx")){ state.picked[t.dataset.id]=false; save(); render(); var pl2=document.getElementById("picklist"); if(pl2&&Object.keys(state.picked).some(function(k){return state.picked[k];})) pl2.classList.add("open"); }
+    if(t.classList.contains("plx")){ state.picked[t.dataset.id]=false; savePicked(); render(); var pl2=document.getElementById("picklist"); if(pl2&&Object.keys(state.picked).some(function(k){return state.picked[k];})) pl2.classList.add("open"); }
+    /* A1: スマホの畳み／展開トグル */
+    if(t.id==="sumcompact"||t.closest("#sumcompact")){ document.getElementById("sumbar").classList.toggle("expanded"); renderSum(); }
   });
   buildMk(); buildIng();
   /* URL/保存状態をUIへ反映 */
@@ -482,5 +544,20 @@
       (navigator.clipboard?navigator.clipboard.writeText(location.href):Promise.reject()).then(function(){ sb.textContent='コピーしました ✓'; setTimeout(function(){ sb.textContent=t; },1500); },function(){ prompt('このURLをコピーしてください', location.href); });
     });
   })();
+  /* A5: バナーの操作 */
+  (function(){
+    var el=document.getElementById("sharedbanner"); if(!el) return;
+    el.addEventListener("click", function(ev){
+      var t=ev.target;
+      if(t.id==="sbadopt"){
+        state.sharedView=false; savePicked(); ownKeys=pickedKeys(state.picked); render();
+      } else if(t.id==="sbclose"){
+        state.picked=loadOwnPicked(); state.sharedView=false; ownKeys=pickedKeys(state.picked); render();
+      }
+    });
+  })();
+  /* A2/A4: 幅・高さの変化に追従 */
+  window.addEventListener("resize", function(){ syncCtrlH(); syncBarPad(); });
   renderYou(); render();
+  syncCtrlH(); syncBarPad();
 })();

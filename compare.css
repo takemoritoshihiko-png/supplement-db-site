@@ -1,5 +1,5 @@
   :root {
-    --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#8B92A3;
+    --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#667080;
     --line:#E2E5EB; --track:#EEF0F4;
     --g1:#20304F; --g1-soft:#E4E9F4; --g1-line:#CBD5E8;
     --g2:#C25E2E; --g2-soft:#F7E7DA; --g2-line:#E8C9B2;
@@ -11,7 +11,7 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg:#15161A; --surface:#1D1F25; --ink:#ECEDF0; --ink2:#9AA0AC; --ink3:#6E7480;
+      --bg:#15161A; --surface:#1D1F25; --ink:#ECEDF0; --ink2:#9AA0AC; --ink3:#8A91A0;
       --line:#2A2D35; --track:#262932;
       --g1:#5E7FD1; --g1-soft:#1D2434; --g1-line:#31405E;
       --g2:#C97B3E; --g2-soft:#2A2018; --g2-line:#4A3521;
@@ -143,7 +143,7 @@
     table.cmp caption { display:block; }
     table.cmp thead { display:none; }
     table.cmp tbody { display:block; }
-    table.cmp tr.main { display:grid; grid-template-columns:34px 1fr 92px; grid-template-rows:auto auto; align-items:center; gap:2px 8px; padding:12px 2px; border-bottom:1px solid var(--line); cursor:pointer; }
+    table.cmp tr.main { display:grid; grid-template-columns:44px 1fr 92px; grid-template-rows:auto auto; align-items:center; gap:2px 8px; padding:12px 2px; border-bottom:1px solid var(--line); cursor:pointer; }
     table.cmp tr.main td { display:block; padding:0; border-bottom:none; }
     table.cmp td.pcol { grid-column:1; grid-row:1 / span 2; }
     table.cmp td.prod { grid-column:2; grid-row:1; min-width:0; }
@@ -181,9 +181,8 @@
   .ingline { font-size:11px; color:var(--g2); font-weight:700; }
   td.packc { white-space:normal; font-size:11.5px; line-height:1.5; max-width:118px; }
   /* 統一ルール: 入りきらない文字は列を広げず小さく表示 */
-  td.packc .sub { font-size:9px; }
   td.packc b { font-weight:800; font-size:13px; }
-  td.packc .sub { display:block; font-size:9.5px; color:var(--ink3); }
+  td.packc .sub { display:block; font-size:10.5px; color:var(--ink3); }
   .rowchips .b { font-size:10px; padding:2px 8px; }
   tr.detail { display:none; background:var(--surface); }
   tr.detail.open { display:table-row; }
@@ -224,7 +223,7 @@
   .stt.ok2 { border-color:var(--ok); background:var(--ok-soft); }
   .stt.ok2 .v { color:var(--ok); }
   .you .t { display:flex; align-items:baseline; flex-wrap:wrap; gap:8px; }
-  .you .tnote { font-size:10px; font-weight:400; color:var(--ink3); letter-spacing:0; line-height:1.6; }
+  .you .tnote { font-size:11px; font-weight:400; color:var(--ink3); letter-spacing:0; line-height:1.6; }
   .you .caveat { font-size:11.5px; color:var(--ink3); margin-top:8px; line-height:1.7; }
   details.gloss { border:1px solid var(--line); background:var(--surface); border-radius:12px; margin-bottom:16px; font-size:13px; color:var(--ink2); line-height:1.9; }
   details.gloss summary { cursor:pointer; padding:12px 18px; list-style:none; }
@@ -236,10 +235,10 @@
   details.gloss dd { margin:0 0 2px 0; }
 
 /* B21: 共有ボタン */
-.sharebtn { border:1px solid var(--line); background:var(--card); color:var(--ink2); border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer; font-family:inherit; white-space:nowrap; }
-.sharebtn:hover { border-color:var(--blue); color:var(--blue); }
+.sharebtn { border:1px solid var(--line); background:var(--surface); color:var(--ink2); border-radius:8px; padding:6px 12px; font-size:12px; cursor:pointer; font-family:inherit; white-space:nowrap; }
+.sharebtn:hover { border-color:var(--g1); color:var(--g1); }
 /* B15: sumbarから横断合算表への入口 */
-.mtxlink { font-size:12px; color:var(--blue); text-decoration:none; white-space:nowrap; margin-left:10px; float:right; }
+.mtxlink { font-size:12px; color:var(--g1); text-decoration:none; white-space:nowrap; margin-left:10px; float:right; }
 .mtxlink:hover { text-decoration:underline; }
 
 /* 飲む予定リストの一覧+削除(sumbar内・「飲む予定リスト N品」クリックで開閉) */
@@ -247,16 +246,16 @@
 #picklist.open { display:block; }
 #picklist .pli { display:flex; align-items:center; gap:10px; padding:5px 2px; font-size:12.5px; border-bottom:1px dashed var(--line); }
 #picklist .pli:last-child { border-bottom:none; }
-#picklist .plx { border:1px solid var(--line); background:var(--card); color:var(--red,#c02626); border-radius:6px; width:22px; height:22px; line-height:1; cursor:pointer; font-size:11px; flex:none; }
-#picklist .plx:hover { border-color:var(--red,#c02626); }
+#picklist .plx { border:1px solid var(--line); background:var(--surface); color:var(--warn); border-radius:6px; width:22px; height:22px; line-height:1; cursor:pointer; font-size:11px; flex:none; }
+#picklist .plx:hover { border-color:var(--warn); }
 #picklist .pln { font-weight:700; }
 #picklist .plm { color:var(--ink3); font-size:11px; }
 #picklist .pla { color:var(--ink2); font-size:11.5px; margin-left:auto; }
 #picklist .pla + .pla { margin-left:10px; flex:none; }
-#pltoggle { color:var(--blue); text-decoration:none; font-weight:700; }
+#pltoggle { color:var(--g1); text-decoration:none; font-weight:700; }
 /* matrixの列ヘッダー削除ボタン */
-table.mtx th.ph .mtxdel { border:1px solid var(--line); background:var(--card); color:var(--red,#c02626); border-radius:6px; width:20px; height:20px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
-table.mtx th.ph .mtxdel:hover { border-color:var(--red,#c02626); }
+table.mtx th.ph .mtxdel { border:1px solid var(--line); background:var(--surface); color:var(--warn); border-radius:6px; width:20px; height:20px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
+table.mtx th.ph .mtxdel:hover { border-color:var(--warn); }
 
 
 /* ================================================================
@@ -314,9 +313,12 @@ details.gloss[open] summary::after { content:"−" !important; }
 .sharebtn { border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); border-radius:100px; padding:8px 16px; }
 
 /* --- 比較表: 行カード化 + ネイビーヘッダー帯 --- */
-.tablewrap { border:none; border-radius:0; overflow-x:auto; padding:2px; }
+/* overflowを既定visibleにしないとthのsticky(ビューポート基準)が効かない。
+   表の最小幅640pxが収まらない601〜720pxの帯だけ横スクロールに切り替える */
+.tablewrap { border:none; border-radius:0; overflow-x:visible; padding:2px; }
+@media (min-width:601px) and (max-width:720px){ .tablewrap { overflow-x:auto; } }
 table.cmp { border-collapse:separate; border-spacing:0 12px; }
-table.cmp th { position:static; background:var(--g1); color:#fff; border-bottom:none; font-size:12px; letter-spacing:.04em; padding:12px 12px; }
+table.cmp th { position:sticky; top:var(--ctrlh,0px); z-index:5; background:var(--g1); color:#fff; border-bottom:none; font-size:12px; letter-spacing:.04em; padding:12px 12px; }
 table.cmp th:first-child { border-radius:14px 0 0 14px; }
 table.cmp th:last-child { border-radius:0 14px 14px 0; }
 table.cmp th.sortable.on { color:#fff; }
@@ -335,7 +337,8 @@ table.cmp caption { padding-bottom:12px !important; }
 table.cmp caption b { font-size:16px !important; }
 
 /* チェックボックス(旧+ボタン) */
-.addb { width:26px; height:26px; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); color:transparent; font-size:13px; }
+.addb { width:30px; height:30px; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink3); font-size:14px; position:relative; }
+.addb::before { content:""; position:absolute; inset:-8px; }
 .addb:hover { border-color:var(--g1); }
 .addb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 
@@ -355,6 +358,42 @@ td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
   table.cmp tr.main td { background:var(--surface); }
   #msort button.on { background:var(--g1); color:#fff; border-color:var(--g1); }
 }
+
+/* A5: 共有リストの閲覧モードバナー */
+.sharedbanner { display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; background:var(--g1-soft); border:1px solid var(--g1-line); border-radius:12px; padding:10px 14px; margin-bottom:12px; font-size:13px; color:var(--ink2); line-height:1.7; }
+.sharedbanner .sbt { flex:1 1 220px; min-width:0; }
+.sharedbanner button { font-size:12px; font-weight:700; padding:6px 12px; border-radius:100px; border:1px solid var(--g1-line); background:var(--surface); color:var(--g1); cursor:pointer; font-family:inherit; white-space:nowrap; }
+.sharedbanner button:hover { border-color:var(--g1); }
+
+/* B5: 「すべて外す」の2段階確認 */
+#sumbar .clear.arm { color:var(--warn); font-weight:800; }
+
+/* A1: スマホの下部バーを1行に畳む */
+#sumcompact { display:none; }
+@media (max-width:600px){
+  .controls { position:static; }
+  #sumcompact { display:flex; align-items:baseline; gap:6px; font-size:12.5px; font-weight:700; color:var(--ink2); line-height:1.7; cursor:pointer; }
+  #sumcompact .ct { flex:1 1 auto; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #sumcompact .cv { flex:none; font-weight:800; }
+  #sumcompact .cv.ok { color:var(--ok); }
+  #sumcompact .cv.warn { color:var(--warn); }
+  #sumcompact .cx { flex:none; color:var(--ink3); }
+  #sumbar .l1, #sumbar .bar, #sumbar .l2, #sumbar #picklist, #sumbar .clear, #sumbar .mtxlink { display:none; }
+  #sumbar.expanded .l1 { display:flex; }
+  #sumbar.expanded .bar { display:block; }
+  #sumbar.expanded .l2 { display:block; }
+  #sumbar.expanded .clear { display:block; }
+  #sumbar.expanded .mtxlink { display:inline; }
+  #sumbar.expanded #picklist.open { display:block; }
+}
+
+/* C4: サイト共通ヘッダー */
+.sitebar { border-bottom:1px solid var(--line); background:var(--bg); }
+.sitebar .sb-in { display:flex; align-items:center; justify-content:space-between; padding-top:13px; padding-bottom:13px; }
+.slogo { font-size:15px; font-weight:900; color:var(--ink); text-decoration:none; letter-spacing:.02em; display:inline-flex; align-items:center; gap:8px; }
+.snav a { font-size:12.5px; font-weight:700; color:var(--ink2); text-decoration:none; margin-left:18px; }
+.snav a:hover { color:var(--g1); }
+@media (max-width:600px){ .snav a { margin-left:12px; font-size:12px; } }
 
 .capnote { display:block; margin-top:4px; font-size:12px; color:var(--ink2); font-weight:400; }
 

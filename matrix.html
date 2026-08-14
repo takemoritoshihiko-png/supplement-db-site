@@ -1,10 +1,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
-<title>飲む予定リスト — 合計量・費用・充足率</title>
+<title>飲む予定リスト | サプリ比較サイト</title>
 <link rel="stylesheet" href="compare.css">
 <style>
 /* このページ専用の最小スタイル(共通はcompare.css) */
+.sitebar .sb-in { max-width:1100px; margin:0 auto; padding-left:16px; padding-right:16px; }
 .mtxwrap { max-width:1100px; margin:0 auto; padding:20px 16px 60px; }
 .mtxwrap .back { font-size:13px; color:var(--g1); text-decoration:none; }
 .mtxwrap h1 { font-size:26px; margin:14px 0 6px; letter-spacing:.02em; font-weight:900; }
@@ -32,7 +33,8 @@ table.mtx td .sub2 { display:block; font-size:10px; color:var(--ink3); font-weig
 table.mtx tr.costrow td { border-top:2px solid var(--line); font-weight:700; }
 table.mtx tr.costrow td.tot { color:var(--g1); }
 table.mtx td.na { color:var(--ink3); font-size:11px; font-weight:400; }
-table.mtx th.ph .mtxdel { border:1px solid rgba(255,255,255,.4); background:transparent; color:#fff; border-radius:6px; width:20px; height:20px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
+table.mtx th.ph .mtxdel { position:relative; border:1px solid rgba(255,255,255,.4); background:transparent; color:#fff; border-radius:6px; width:26px; height:26px; line-height:1; cursor:pointer; font-size:10px; margin-left:6px; vertical-align:middle; }
+table.mtx th.ph .mtxdel::before { content:""; position:absolute; inset:-9px; }
 table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
 .mtxempty { border:1px dashed var(--line); border-radius:16px; padding:28px 20px; text-align:center; color:var(--ink2); font-size:14px; margin-top:18px; line-height:2; }
 .mtxempty a { color:var(--g1); }
@@ -40,6 +42,7 @@ table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
 .mtxpages { margin-top:10px; font-size:12.5px; }
 .mtxpages a { color:var(--g1); text-decoration:none; margin-right:14px; font-weight:700; }
 </style>
+<div class="sitebar"><div class="sb-in"><a class="slogo" href="index.html">サプリ比較サイト</a><nav class="snav"><a href="matrix.html">飲む予定リスト</a><a href="about-data.html">データの集め方</a></nav></div></div>
 <div class="mtxwrap">
   <a class="back" href="index.html">← トップへ戻る</a>
   <h1>飲む予定リスト</h1>
@@ -154,63 +157,79 @@ table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
     return rows[b].tmax-rows[a].tmax;
   });
 
-  var h='<div class="mtxtablewrap"><table class="mtx"><thead><tr><th class="rowh">栄養素・成分</th>';
+  var mobileFirst = window.matchMedia('(max-width:600px)').matches;
+  var headColsH='';
   cols.forEach(function(c){
-    h+='<th class="ph"><a href="'+c.nut.file+'" title="'+esc(c.p.maker)+' '+esc(c.p.name)+'">'+esc(c.p.name)+'<span class="mk">'+esc(mkName(c.p.maker))+'・'+c.nut.name+'ページ</span></a><button class="mtxdel" data-slug="'+c.nut.slug+'" data-id="'+c.p.id+'" title="リストから外す" aria-label="リストから外す">✕</button></th>';
+    headColsH+='<th class="ph"><a href="'+c.nut.file+'" title="'+esc(c.p.maker)+' '+esc(c.p.name)+'">'+esc(c.p.name)+'<span class="mk">'+esc(mkName(c.p.maker))+'・'+c.nut.name+'ページ</span></a><button class="mtxdel" data-slug="'+c.nut.slug+'" data-id="'+c.p.id+'" title="リストから外す" aria-label="リストから外す">✕</button></th>';
   });
-  h+='<th>合計/日</th><th>基準値</th><th>充足の目安</th></tr></thead><tbody>';
+  var headSummaryH='<th>合計/日</th><th>基準値</th><th>充足の目安</th>';
+  var h='<div class="mtxtablewrap"><table class="mtx"><thead><tr><th class="rowh">栄養素・成分</th>'
+    +(mobileFirst?(headSummaryH+headColsH):(headColsH+headSummaryH))
+    +'</tr></thead><tbody>';
   order.forEach(function(key){
     var r=rows[key];
     var main=mainByName[key];
     var std = main ? {goal:main.goal, unit:main.unit, label:main.goalLabel, ul:main.ul, diet:main.diet} : NSTD[r.name];
     var stdOk = std && std.unit===r.unit && std.goal!=null;
-    h+='<tr><td class="rowh">'+r.name+'</td>';
+    var colsH='';
     cols.forEach(function(c,ci){
       var cell=r.cells[ci];
-      if(!cell){ h+='<td class="na">—</td>'; return; }
+      if(!cell){ colsH+='<td class="na">—</td>'; return; }
       var v=(cell.min===cell.max)?fmt(cell.min,r.unit):(fmt(cell.min,r.unit)+"〜"+fmt(cell.max,r.unit));
-      h+='<td>'+v+'<span class="u">'+r.unit+'</span></td>';
+      colsH+='<td>'+v+'<span class="u">'+r.unit+'</span></td>';
     });
     var tv=(r.tmin===r.tmax)?fmt(r.tmin,r.unit):(fmt(r.tmin,r.unit)+"〜"+fmt(r.tmax,r.unit));
-    h+='<td class="tot">'+tv+'<span class="u">'+r.unit+'</span></td>';
+    var summaryH='<td class="tot">'+tv+'<span class="u">'+r.unit+'</span></td>';
     if(stdOk){
-      h+='<td>'+fmt(std.goal,r.unit)+'<span class="u">'+r.unit+'・'+(std.label||"基準値")+'</span></td>';
+      summaryH+='<td>'+fmt(std.goal,r.unit)+'<span class="u">'+r.unit+'・'+(std.label||"基準値")+'</span></td>';
       var diet = (hasYou && std.diet && std.diet[you.sex]) ? std.diet[you.sex][you.age] : null;
       var base = diet!=null ? diet : 0;
       var pmin=Math.round((base+r.tmin)/std.goal*100), pmax=Math.round((base+r.tmax)/std.goal*100);
-      var pt=(pmin===pmax)?("約"+pmin+"%"):("約"+pmin+"〜"+pmax+"%");
+      var pt;
+      if(pmin>=200 || pmax>=200){
+        var bmin=Math.round(pmin/10)/10, bmax=Math.round(pmax/10)/10;
+        pt=(bmin===bmax)?("約"+bmin+"倍"):("約"+bmin+"〜"+bmax+"倍");
+      } else {
+        pt=(pmin===pmax)?("約"+pmin+"%"):("約"+pmin+"〜"+pmax+"%");
+      }
       if(std.ul!=null && (base+r.tmax)>=std.ul){
-        h+='<td class="pct warn">⚠ 上限'+fmt(std.ul,r.unit)+r.unit+'以上'+(diet!=null?'<span class="sub2">食事平均を含む</span>':'')+'</td>';
+        summaryH+='<td class="pct warn">⚠ 上限'+fmt(std.ul,r.unit)+r.unit+'以上'+(diet!=null?'<span class="sub2">食事平均を含む</span>':'')+'</td>';
       } else if(diet!=null){
         var wasShort = diet < std.goal;
         var nowMet = (base+r.tmin) >= std.goal;
         var badge = (wasShort && nowMet) ? '<span class="done">不足を解消 ✓</span>' : '';
-        h+='<td class="pct '+(nowMet?"ok":"")+'">'+pt+badge+'<span class="sub2">食事'+fmt(diet,r.unit)+r.unit+'＋リスト分</span></td>';
+        summaryH+='<td class="pct '+(nowMet?"ok":"")+'">'+pt+badge+'<span class="sub2">食事'+fmt(diet,r.unit)+r.unit+'＋リスト分</span></td>';
       } else {
-        h+='<td class="pct '+(pmin>=100?"ok":"")+'">'+pt+'<span class="sub2">サプリ分のみ</span></td>';
+        summaryH+='<td class="pct '+(pmin>=100?"ok":"")+'">'+pt+'<span class="sub2">サプリ分のみ</span></td>';
       }
     } else {
-      h+='<td class="na">整備中</td><td class="na">量のみ表示</td>';
+      summaryH+='<td class="na">整備中</td><td class="na">量のみ表示</td>';
     }
-    h+='</tr>';
+    h+='<tr><td class="rowh">'+r.name+'</td>'
+      +(mobileFirst?(summaryH+colsH):(colsH+summaryH))
+      +'</tr>';
   });
   /* 費用/日の行(幅dose商品は最小〜最大のコスト幅) */
   var cMin=0, cMax=0, costMiss=0, taxN=0, priced=0;
   function fy(x){ return (Math.round(x*10)/10).toLocaleString(); }
-  h+='<tr class="costrow"><td class="rowh">費用/日</td>';
+  var costColsH='';
   cols.forEach(function(c){
     var cr=costRange(c.p);
-    if(cr==null){ costMiss++; h+='<td class="na">価格なし</td>'; return; }
+    if(cr==null){ costMiss++; costColsH+='<td class="na">価格なし</td>'; return; }
     priced++; cMin+=cr.min; cMax+=cr.max; if(cr.tax) taxN++;
-    h+='<td>約'+(Math.round(cr.min)===Math.round(cr.max)?fy(cr.min):fy(cr.min)+'〜'+fy(cr.max))+'<span class="u">円'+(cr.tax?'・税抜':'')+'</span></td>';
+    costColsH+='<td>約'+(Math.round(cr.min)===Math.round(cr.max)?fy(cr.min):fy(cr.min)+'〜'+fy(cr.max))+'<span class="u">円'+(cr.tax?'・税抜':'')+'</span></td>';
   });
+  var costSummaryH;
   if(priced===0){
-    h+='<td class="tot">—</td><td class="na">—</td><td class="na">全品価格未取得</td></tr>';
+    costSummaryH='<td class="tot">—</td><td class="na">—</td><td class="na">全品価格未取得</td>';
   } else {
     var dayTxt=(Math.round(cMin)===Math.round(cMax))?fy(cMin):fy(cMin)+'〜'+fy(cMax);
     var moTxt=(Math.round(cMin*30)===Math.round(cMax*30))?Math.round(cMin*30).toLocaleString():Math.round(cMin*30).toLocaleString()+'〜'+Math.round(cMax*30).toLocaleString();
-    h+='<td class="tot">約'+dayTxt+'<span class="u">円/日</span></td><td class="na">—</td><td class="na">月 約'+moTxt+'円</td></tr>';
+    costSummaryH='<td class="tot">約'+dayTxt+'<span class="u">円/日</span></td><td class="na">—</td><td class="na">月 約'+moTxt+'円</td>';
   }
+  h+='<tr class="costrow"><td class="rowh">費用/日</td>'
+    +(mobileFirst?(costSummaryH+costColsH):(costColsH+costSummaryH))
+    +'</tr>';
   h+='</tbody></table></div>';
   body.innerHTML=h;
 
