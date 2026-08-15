@@ -17,6 +17,7 @@
   .boardhead .lede b { color:var(--ink); font-weight:800; }
 
   .ctl { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:24px; }
+  .ctl .lbl em.multi { font-style:normal; font-weight:700; color:var(--ink3); font-size:10px; letter-spacing:0; margin-left:5px; }
   .ctl .lbl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; margin-right:2px; }
   .ctl button { font-size:12.5px; font-weight:700; height:36px; padding:0 16px; border-radius:100px;
     border:1px solid var(--line); background:var(--surface); box-shadow:var(--shadow-sm); color:var(--ink2); cursor:pointer; font-family:inherit; }
@@ -25,12 +26,14 @@
 
   /* 凡例（同梱成分のドットの意味） */
   .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--ink2); }
-  .legend span { display:inline-flex; align-items:center; gap:5px; }
-  .legend i { width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .legend span { display:inline-flex; align-items:center; gap:4px; }
+  .legend .lhint { color:var(--ink3); }
+  .legend .dot { cursor:default; }
+  .legend i { display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
 
   /* ボード本体: 画面幅いっぱいを使って「横に一気に」並べる */
   .boardwrap { margin-top:18px; overflow-x:auto; overflow-y:visible; padding:2px 0 10px; -webkit-overflow-scrolling:touch; }
-  .board { border-collapse:separate; border-spacing:0; font-size:12.5px; }
+  .board { border-collapse:separate; border-spacing:0; font-size:12.5px; table-layout:fixed; }
   .board th, .board td { padding:0; vertical-align:middle; }
 
   /* 左端の項目名列は固定 */
@@ -41,12 +44,12 @@
   .board tr.sec .rh, .board tr.sec td { padding-top:14px; }
   .board tr.sec .rh { color:var(--ink); font-size:12px; }
 
-  .board td.c { width:118px; min-width:118px; padding:6px 10px; border-right:1px solid var(--line); text-align:left; }
+  .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
   .board tr:hover td.c { background:var(--g1-soft); }
 
   /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
   .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
-  .prod .ph { width:56px; height:56px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
+  .prod .ph { width:74px; height:74px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
     display:flex; align-items:center; justify-content:center; overflow:hidden; }
   .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
   .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; }
@@ -73,13 +76,15 @@
   .oneline { display:block; font-size:10px; color:var(--ink3); line-height:1.35; margin-top:3px;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  /* 同梱成分: 色つきドット1行に集約。詳細はカーソルを合わせると出る */
-  .dots { display:flex; gap:4px; align-items:center; min-height:18px; cursor:default; }
-  .dots i { width:9px; height:9px; border-radius:50%; flex:none; }
-  .dots .none { color:var(--line); font-size:12px; }
-  .d1 { background:var(--g1); }      /* ビタミン・ミネラル */
-  .d2 { background:var(--g2); }      /* ビタミンCを補う成分 */
-  .d3 { background:var(--ok); }      /* 美容・その他 */
+  /* 群ごとの印。中身はカーソルを合わせた時だけ吹き出しで出す（行の高さを印1つ分に固定するため） */
+  .dot { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+    font-size:15px; line-height:1; color:var(--g1); background:none; cursor:help; transition:background .1s; }
+  .dot.no { color:var(--line); cursor:default; font-size:13px; }
+  .dot:not(.no):hover { background:var(--g1-soft); color:var(--g2); }
+  #tip { position:fixed; z-index:60; max-width:280px; padding:7px 11px; border-radius:8px; pointer-events:none;
+    background:var(--ink); color:#fff; font-size:11.5px; font-weight:700; line-height:1.55; letter-spacing:.01em;
+    box-shadow:0 6px 20px rgba(0,0,0,.22); opacity:0; transition:opacity .08s; }
+  #tip.on { opacity:1; }
 
   .note { max-width:1040px; margin:26px auto 0; padding:0 20px; font-size:12px; color:var(--ink3); line-height:1.95; }
   .note a { color:var(--g1); font-weight:700; }
@@ -88,13 +93,9 @@
   .golink { font-size:11px; font-weight:700; color:var(--g1); text-decoration:none; }
   .golink:hover { text-decoration:underline; }
 
-  /* 成分名: ホバーが効かない端末でも読めるよう1行省略で併記。ぎっしり表示のみ省く */
-  .board.dense .ingnames { display:none; }
-  @media (max-width:600px){ .board.dense .ingnames { display:block; } }
-
   /* ぎっしり表示 */
-  .board.dense td.c { width:82px; min-width:82px; padding:5px 6px; }
-  .board.dense .prod .ph { width:44px; height:44px; }
+  .board.dense td.c { padding:5px 6px; }
+  .board.dense .prod .ph { width:56px; height:56px; }
   .board.dense .prod .nm { font-size:10px; }
   .board.dense .prod .mk { font-size:9px; }
   .board.dense .v { font-size:13.5px; }
@@ -103,7 +104,7 @@
 
   @media (max-width:600px){
     .board .rh { width:108px; min-width:108px; padding-left:14px; }
-    .board td.c { width:104px; min-width:104px; }
+
   }
 </style>
 </head>
@@ -118,25 +119,21 @@
   <div class="ctl" id="ctl">
     <span class="lbl">並び替え</span>
     <button data-sort="perRDA" class="on">1日分あたりが安い順</button>
-    <button data-sort="price">1日の費用が安い順</button>
     <button data-sort="amt">1日に摂れる量が多い順</button>
     <span class="sep"></span>
-    <span class="lbl">タイプ</span>
-    <button data-type="" class="on">すべて</button>
+    <span class="lbl">タイプ<em class="multi">複数選べます</em></span>
     <button data-type="通常">通常</button>
     <button data-type="持続型">持続型</button>
     <button data-type="リポソーム">リポソーム</button>
-    <button data-type="飲みやすさ">飲みやすさ重視</button>
     <span class="sep"></span>
     <span class="lbl">表示</span>
     <button data-dense="0" class="on">ゆったり</button>
     <button data-dense="1">ぎっしり</button>
   </div>
   <div class="legend">
-    <span><i class="d1"></i>ほかのビタミン・ミネラル</span>
-    <span><i class="d2"></i>ビタミンCを補う成分</span>
-    <span><i class="d3"></i>美容・その他の成分</span>
-    <span style="color:var(--ink3)">※点の色は配合成分の種類です</span>
+    <span><i class="dot">●</i>入っています</span>
+    <span><i class="dot no">−</i>入っていません</span>
+    <span class="lhint">※ ● にカーソルを合わせる（スマホは押す）と、何が入っているかが出ます</span>
   </div>
   <p class="scrollhint" id="hint" style="padding:0;margin-top:12px"></p>
 </div>
@@ -172,22 +169,25 @@
     var s=(p.tech||"")+" "+(p.form||"")+" "+(p.name||"");
     if(/リポソーム|リポスフェリック|リポ・カプセル/.test(s)) return "リポソーム";
     if(/タイムリリース|持続型|徐放/.test(s)) return "持続型";
-    if(/グミ|チュアブル|粉末|パウダー|スティック|顆粒/.test(s)) return "飲みやすさ";
     return "通常";
   }
-  /* 同梱成分は3系統に束ねる（5分割は該当2商品の行が1行133pxを占めるなど空きが多すぎた・実測） */
-  var KIND=[
-    {cls:"d1", label:"ほかのビタミン・ミネラル", re:/ビタミンB|ナイアシン|パントテン酸|ビタミンD|カルシウム|亜鉛|鉄|マグネシウム/},
-    {cls:"d2", label:"ビタミンCを補う成分",     re:/ルチン|ヘスペリジン|バイオフラボノイド|ローズヒップ|アセロラ/},
-    {cls:"d3", label:"美容・その他の成分",       re:/./}
+  /* 配合成分は5つの群に分ける。各マスは印だけ置き、中身はカーソルを合わせた時だけ吹き出しで出す */
+  var GROUPS=[
+    {key:"ビタミンB群",    re:/ビタミンB|ナイアシン|パントテン酸/},
+    {key:"フラボノイド類",  re:/ルチン|ヘスペリジン|バイオフラボノイド/},
+    {key:"天然ビタミンC源", re:/ローズヒップ|アセロラ/},
+    {key:"美容系の成分",    re:/コラーゲン|ヒアルロン酸|セラミド|プロテオグリカン|エラスチン/},
+    {key:"その他の成分",    re:/./}
   ];
-  function kindsOf(p){
-    var names=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].trim(); }).filter(Boolean);
-    var map={};
-    names.forEach(function(n){
-      for(var i=0;i<KIND.length;i++){ if(KIND[i].re.test(n)){ (map[KIND[i].cls]=map[KIND[i].cls]||[]).push(n); break; } }
+  function ingGroups(p){
+    var names=(p.ings||[]).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].trim(); }).filter(Boolean);
+    var res={};
+    names.forEach(function(nm){
+      for(var i=0;i<GROUPS.length;i++){
+        if(GROUPS[i].re.test(nm)){ (res[GROUPS[i].key]=res[GROUPS[i].key]||[]).push(nm); break; }
+      }
     });
-    return {map:map, all:names};
+    return res;
   }
   function fnum(x){ return x>=1000 ? x.toLocaleString() : String(x); }
   function yen(x){ return x<10 ? (Math.round(x*10)/10).toFixed(1) : String(Math.round(x)); }
@@ -195,22 +195,21 @@
   var rows = PRODUCTS.map(function(p){
     var price = bestPrice(p);
     var amt = (p.amtMax!=null) ? p.amtMax : null;
-    var k = kindsOf(p);
+    var ig = ingGroups(p);
     return {
       p:p, price:price, amt:amt,
       perRDA: (price!=null && amt) ? price/(amt/RDA) : null,
-      type: typeOf(p), kinds:k.map, ings:k.all,
+      type: typeOf(p), ig:ig,
       dose: (p.doseMin!=null) ? (p.doseMin===p.doseMax? p.doseMin : p.doseMin+"〜"+p.doseMax) : null,
       unit: p.doseUnit||"粒"
     };
   });
 
-  var state={ sort:"perRDA", type:"", dense:false };
+  var state={ sort:"perRDA", types:[], dense:false };
 
   function view(){
-    var list = rows.filter(function(r){ return !state.type || r.type===state.type; });
+    var list = rows.filter(function(r){ return !state.types.length || state.types.indexOf(r.type)>=0; });
     if(state.sort==="perRDA") list.sort(function(a,b){ return (a.perRDA==null?1e9:a.perRDA)-(b.perRDA==null?1e9:b.perRDA); });
-    if(state.sort==="price")  list.sort(function(a,b){ return (a.price==null?1e9:a.price)-(b.price==null?1e9:b.price); });
     if(state.sort==="amt")    list.sort(function(a,b){ return (b.amt==null?-1:b.amt)-(a.amt==null?-1:a.amt); });
     return list;
   }
@@ -261,7 +260,7 @@
     })+'</tr>';
 
     h+='<tr class="sec"><th class="rh">タイプ</th>'+cells(function(r){
-      var cls=r.type==="リポソーム"?"t2":(r.type==="持続型"?"t1":(r.type==="飲みやすさ"?"t3":""));
+      var cls=r.type==="リポソーム"?"t2":(r.type==="持続型"?"t1":"");
       return '<td class="c"><span class="tag '+cls+'">'+r.type+'</span></td>';
     })+'</tr>';
 
@@ -270,14 +269,13 @@
       return '<td class="c"><span class="oneline" title="'+esc(t)+'" style="margin-top:0">'+esc(t)+'</span></td>';
     })+'</tr>';
 
-    h+='<tr class="sec"><th class="rh">ほかの配合成分</th>'+cells(function(r){
-      if(!r.ings.length) return '<td class="c"><span class="dots"><span class="none">−</span></span></td>';
-      var d="";
-      KIND.forEach(function(k){ if(r.kinds[k.cls]) d+='<i class="'+k.cls+'"></i>'; });
-      var names=esc(r.ings.join("・"));
-      return '<td class="c"><span class="dots" title="'+names+'">'+d+'</span>'+
-        '<span class="oneline ingnames" title="'+names+'">'+names+'</span></td>';
-    })+'</tr>';
+    GROUPS.forEach(function(g,gi){
+      h+='<tr'+(gi===0?' class="sec"':'')+'><th class="rh">'+g.key+'</th>'+cells(function(r){
+        var v=r.ig[g.key];
+        if(!v||!v.length) return '<td class="c"><span class="dot no">−</span></td>';
+        return '<td class="c"><span class="dot" data-tip="'+esc(v.join("・"))+'">●</span></td>';
+      })+'</tr>';
+    });
 
     h+='<tr><th class="rh">食品区分</th>'+cells(function(r){
       var l=(r.p.legal||"—").split("（")[0].split("(")[0];
@@ -290,7 +288,11 @@
 
     var bd=document.getElementById("board");
     bd.className="board"+(state.dense?" dense":"");
-    bd.innerHTML=h;
+    var cw = state.dense?82:118, lw = (window.innerWidth<=600?108:128);
+    var cg = '<colgroup><col style="width:'+lw+'px">' +
+      new Array(list.length+1).join('<col style="width:'+cw+'px">') + '</colgroup>';
+    bd.style.width = (lw + cw*list.length) + "px";
+    bd.innerHTML=cg+h;
     document.getElementById("hint").textContent =
       list.length+"商品を横に並べています。左の項目名は固定されているので、そのまま横にスクロールして見比べてください。";
   }
@@ -299,12 +301,36 @@
     var b=e.target.closest("button"); if(!b) return;
     if(b.dataset.sort){ state.sort=b.dataset.sort;
       document.querySelectorAll("#ctl button[data-sort]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
-    if(b.dataset.type!==undefined){ state.type=b.dataset.type;
-      document.querySelectorAll("#ctl button[data-type]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
+    if(b.dataset.type!==undefined){ var v=b.dataset.type, i=state.types.indexOf(v);
+      if(i>=0) state.types.splice(i,1); else state.types.push(v);
+      b.classList.toggle("on", state.types.indexOf(v)>=0); }
     if(b.dataset.dense!==undefined){ state.dense=(b.dataset.dense==="1");
       document.querySelectorAll("#ctl button[data-dense]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
     render();
   });
+
+  /* カーソルを合わせた時だけ出す吹き出し。外れたら即消える。
+     行の高さを印1つ分に固定したまま中身を読めるようにするための仕掛け */
+  var tip=document.createElement("div"); tip.id="tip"; document.body.appendChild(tip);
+  function showTip(el){
+    var txt=el.getAttribute("data-tip"); if(!txt) return;
+    tip.textContent=txt; tip.classList.add("on");
+    var r=el.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight;
+    var x=r.left+r.width/2-w/2, y=r.top-h-8;
+    if(x<8) x=8; if(x+w>window.innerWidth-8) x=window.innerWidth-w-8;
+    if(y<8) y=r.bottom+8;              /* 上に置けない時は下へ回す */
+    tip.style.left=Math.round(x)+"px"; tip.style.top=Math.round(y)+"px";
+  }
+  function hideTip(){ tip.classList.remove("on"); }
+  var bdEl=document.getElementById("board");
+  bdEl.addEventListener("mouseover", function(e){ var d=e.target.closest("[data-tip]"); if(d) showTip(d); });
+  bdEl.addEventListener("mouseout",  function(e){ if(e.target.closest("[data-tip]")) hideTip(); });
+  /* スマホは押している間だけ表示（ホバーが無いため） */
+  bdEl.addEventListener("touchstart", function(e){ var d=e.target.closest("[data-tip]"); if(d) showTip(d); }, {passive:true});
+  bdEl.addEventListener("touchend", hideTip);
+  bdEl.addEventListener("touchcancel", hideTip);
+  document.querySelector(".boardwrap").addEventListener("scroll", hideTip, {passive:true});
+  window.addEventListener("scroll", hideTip, {passive:true});
 
   render();
 })();
