@@ -95,7 +95,6 @@ window.BoardView = (function(){
       return {
         p:p, day:day, amt:amt,
         perGoal:(day!=null&&amt)? day/(amt/GOAL) : null,
-        pct:(amt!=null)? amt/GOAL*100 : null,
         over:(UL!=null && amt!=null && amt>=UL),
         ig:groupsOf(p),
         dose:(p.doseMin!=null)?(p.doseMin===p.doseMax? p.doseMin : p.doseMin+"〜"+p.doseMax):null,
@@ -129,12 +128,10 @@ window.BoardView = (function(){
         '<div class="bar"><i style="width:'+logw(r.day,sDay.min,sDay.max)+'%"></i></div></td>';
     })+'</tr>';
 
-    h+='<tr>'+rh('amt','1日に摂れる量', NUT.goalLabel+'に対する％')+cells(function(r){
+    h+='<tr>'+rh('amt','1日に摂れる量')+cells(function(r){
       if(r.amt==null) return '<td class="c"><span class="v na">未取得</span></td>';
-      var lo=Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), hi=Math.round(r.pct);
-      var pctTxt=(lo===hi? lo.toLocaleString() : lo.toLocaleString()+'〜'+hi.toLocaleString())+'%';
       return '<td class="c'+(r.over?" over":"")+'"><span class="v">'+C.fmtAmtPlain(r.p)+'<small>'+UNIT+'</small></span>'+
-        '<span class="oneline pct">'+pctTxt+'</span></td>';
+        '</td>';
     })+'</tr>';
 
     if(UL!=null && rows.some(function(r){ return r.over; })){
