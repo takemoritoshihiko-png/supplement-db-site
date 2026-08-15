@@ -303,12 +303,12 @@
     <p class="body">栄養素から選んで、国内外の主要商品を<strong>「1日あたりの量と価格」</strong>に統一した比較表で比べられます。コストも成分量も、同じ基準です。</p>
     <div class="dbgrid">
       <a class="dbc" href="matrix.html"><span class="st open">NEW</span><h3>飲む予定リスト</h3><p>チェックした商品の栄養素の合計・1日の費用・不足に対する充足率をまとめて確認。</p><span class="go">リストを見る →</span></a>
-      <a class="dbc" href="vitamin-d.html"><span class="st open">公開中</span><h3>ビタミンD</h3><p>30商品。絞り込み・上限チェック・飲む予定リスト対応の詳細比較。</p><span class="go">比較表を見る →</span></a>
       
-      <a class="dbc" href="vitamin-c.html"><span class="st open">公開中・NEW</span><h3>ビタミンC</h3><p>25商品。定番からリポソーム・持続型まで型ごとに比較。</p><span class="go">比較表を見る →</span></a><a class="dbc" href="calcium.html"><span class="st open">公開中・NEW</span><h3>カルシウム</h3><p>29商品。子ども向け・妊娠授乳期向けから海外品まで。</p><span class="go">比較表を見る →</span></a>
-      <div class="dbc soon2"><span class="st">調査中</span><h3>マグネシウム</h3><p>候補23商品の市場調査が完了。データ収集の準備中です。</p></div>
-      <div class="dbc soon2"><span class="st">調査中</span><h3>鉄</h3><p>候補50商品超の市場調査が完了。データ収集の準備中です。</p></div>
+      
+      <a class="dbc" href="vitamin-c.html"><span class="st open">公開中・NEW</span><h3>ビタミンC</h3><p>25商品。定番からリポソーム・持続型まで型ごとに比較。</p><span class="go">比較表を見る →</span></a><a class="dbc" href="vitamin-d.html"><span class="st open">公開中</span><h3>ビタミンD</h3><p>30商品。絞り込み・上限チェック・飲む予定リスト対応の詳細比較。</p><span class="go">比較表を見る →</span></a><a class="dbc" href="calcium.html"><span class="st open">公開中・NEW</span><h3>カルシウム</h3><p>29商品。子ども向け・妊娠授乳期向けから海外品まで。</p><span class="go">比較表を見る →</span></a>
       <div class="dbc soon2"><span class="st">調査中</span><h3>亜鉛</h3><p>候補40商品の市場調査が完了。データ収集の準備中です。</p></div>
+      <div class="dbc soon2"><span class="st">調査中</span><h3>鉄</h3><p>候補50商品超の市場調査が完了。データ収集の準備中です。</p></div>
+      <div class="dbc soon2"><span class="st">調査中</span><h3>マグネシウム</h3><p>候補23商品の市場調査が完了。データ収集の準備中です。</p></div>
     </div>
     <p class="note" style="margin-top:18px">一部の項目は確認中です（表内に「未確認」「未取得」と表示しています）。収集方法と二重チェックの仕組みは「<a href="about-data.html" style="color:var(--g1);font-weight:700">データの集め方</a>」で公開しています。</p>
   </div>
@@ -330,7 +330,7 @@
   var ORDER = ["ビタミンD","カルシウム","マグネシウム","鉄","亜鉛","ビタミンA","ビタミンE","ビタミンK","ビタミンB1","ビタミンB2","ナイアシン","ビタミンB6","ビタミンB12","葉酸","パントテン酸","ビオチン","ビタミンC","ナトリウム","カリウム","リン","銅","マンガン","ヨウ素","セレン","クロム","モリブデン"];
   var IKEY = {"ナイアシン":"ナイアシン当量","ナトリウム":"食塩相当量"};
   var DN = {"ナトリウム":"塩分（食塩相当量）"};
-  var LINKS = {"ビタミンD":"vitamin-d.html","カルシウム":"calcium.html","ビタミンC":"vitamin-c.html"};
+  var LINKS = {"ビタミンC":"vitamin-c.html","ビタミンD":"vitamin-d.html","カルシウム":"calcium.html"};
   var SOON = ["マグネシウム","鉄","亜鉛"];
   var state = { sex:null, age:null };
   try { var sy = JSON.parse(localStorage.getItem("sdb-you")||"{}"); if(sy.sex) state.sex=sy.sex; if(sy.age) state.age=sy.age; } catch(e){}

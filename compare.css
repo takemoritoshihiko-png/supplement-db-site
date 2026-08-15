@@ -1,5 +1,5 @@
   :root {
-    --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#667080;
+    --bg:#FFFFFF; --surface:#FFFFFF; --ink:#1B2333; --ink2:#5A6172; --ink3:#667080; --grey:#70747A;
     --line:#E2E5EB; --track:#EEF0F4;
     --g1:#20304F; --g1-soft:#E4E9F4; --g1-line:#CBD5E8;
     --g2:#C25E2E; --g2-soft:#F7E7DA; --g2-line:#E8C9B2;
@@ -11,7 +11,7 @@
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg:#15161A; --surface:#1D1F25; --ink:#ECEDF0; --ink2:#9AA0AC; --ink3:#8A91A0;
+      --bg:#15161A; --surface:#1D1F25; --ink:#ECEDF0; --ink2:#9AA0AC; --ink3:#8A91A0; --grey:#969AA1;
       --line:#2A2D35; --track:#262932;
       --g1:#5E7FD1; --g1-soft:#1D2434; --g1-line:#31405E;
       --g2:#C97B3E; --g2-soft:#2A2018; --g2-line:#4A3521;
@@ -512,7 +512,9 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
     border:1px solid var(--line); background:var(--surface); color:var(--ink2); cursor:pointer; font-family:inherit; }
   .bctl button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
   /* 並べ替えできる行の見出し（縦の列見出しと同じ見た目の約束） */
-  .board .oneline.pct { font-weight:700; color:var(--ink3); }
+  .board .oneline.pct { font-weight:700; color:var(--grey); }
+  .board th[data-s="amt"] small,
+  .board th[data-s="amt"].on small { color:var(--grey); }
   .board .rh.sortable { cursor:pointer; }
   .board .rh.sortable:hover { color:var(--ink); }
   .board .rh.sortable.on { color:var(--g1); }
