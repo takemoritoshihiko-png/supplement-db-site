@@ -85,6 +85,9 @@
   .note a { color:var(--g1); font-weight:700; }
   .scrollhint { max-width:1040px; margin:0 auto; padding:0 20px; font-size:12px; color:var(--ink2); }
 
+  .golink { font-size:11px; font-weight:700; color:var(--g1); text-decoration:none; }
+  .golink:hover { text-decoration:underline; }
+
   /* 成分名: ホバーが効かない端末でも読めるよう1行省略で併記。ぎっしり表示のみ省く */
   .board.dense .ingnames { display:none; }
   @media (max-width:600px){ .board.dense .ingnames { display:block; } }
@@ -139,6 +142,7 @@
 </div>
 
 <div class="boardwrap"><table class="board" id="board"></table></div>
+<p class="note" style="margin-top:14px">全容量ごとの価格・メーカーの飲み方の原文・出典は <a href="vitamin-c.html" style="color:var(--g1);font-weight:700">ビタミンCの比較表</a> で見られます。</p>
 
 <p class="note">
   ※「1日分あたりの価格」は <b>1日の費用 ÷（1日に摂れるビタミンC量 ÷ 100mg）</b> で計算した参考値です。100mgは成人のビタミンCの推奨量であり、商品パッケージの%表示の基準（栄養素等表示基準値）とも同じ値です。
@@ -280,8 +284,8 @@
       return '<td class="c"><span class="oneline" title="'+esc(r.p.legal||"")+'" style="margin-top:0">'+esc(l)+'</span></td>';
     })+'</tr>';
 
-    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(){
-      return '<td class="c"><a href="vitamin-c.html" style="font-size:11px;font-weight:700;color:var(--g1);text-decoration:none">比較表 →</a></td>';
+    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r){
+      return '<td class="c"><a class="golink" href="'+esc(r.p.url)+'" target="_blank" rel="noopener">公式ページ →</a></td>';
     })+'</tr>';
 
     var bd=document.getElementById("board");
