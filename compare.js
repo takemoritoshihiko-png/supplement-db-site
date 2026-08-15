@@ -519,6 +519,20 @@
       ? (d!=null ? '' : (NUT.youUnselectedText||''))
       : (NUT.youStaticText||'');
     el.innerHTML='<div class="statgrid">'+tiles+'</div>'+(caveat?'<div class="caveat">'+caveat+'</div>':'');
+    /* 畳んだ状態の1行。数字は消さず、強調度だけ下げる */
+    var sm=document.getElementById("yousum");
+    if(sm){
+      var s=NUT.goalLabel+" "+fdec(GOAL)+UNIT+"/日";
+      if(DIET){
+        if(d!=null){
+          var g=GOAL-d;
+          s+="　／　あなたの年代の平均 "+fdec(d)+UNIT+(g>0? "・あと"+fdec(g)+UNIT : "・達しています");
+        } else {
+          s+="　／　性別・年代を選ぶと、食事の平均と不足分も出ます";
+        }
+      }
+      sm.textContent=s;
+    }
   }
   document.getElementById("youbtns").addEventListener("click", function(e){
     var b=e.target.closest("button"); if(!b) return;
@@ -575,6 +589,11 @@
     /* A1: スマホの畳み／展開トグル */
     if(t.id==="sumcompact"||t.closest("#sumcompact")){ document.getElementById("sumbar").classList.toggle("expanded"); renderSum(); }
   });
+  /* 栄養素の切り替え（ヘッダーのプルダウン） */
+  (function(){
+    var s=document.getElementById("nutsel"); if(!s) return;
+    s.addEventListener("change", function(){ if(s.value) location.href=s.value; });
+  })();
   document.querySelectorAll("[data-view]").forEach(function(b){
     b.addEventListener("click", function(){ state.view=b.dataset.view; render(); });
   });

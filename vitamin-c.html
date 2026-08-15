@@ -9,31 +9,35 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://takemoritoshihiko-png.github.io/supplement-db-site/vitamin-c.html">
 <meta name="twitter:card" content="summary">
-<title>ビタミンC 商品比較（25商品・1日あたりで比べる） | サプリ比較サイト</title>
-<link rel="stylesheet" href="compare.css?v=202608150354">
+<title>ビタミンC 商品比較（25商品・1日あたりで比べる） | 栄養素ごとにサプリメントを比較</title>
+<link rel="stylesheet" href="compare.css?v=202608150504">
 </head>
 <body>
-<div class="sitebar"><div class="wrap sb-in"><a class="slogo" href="index.html"><span class="icap"></span>サプリ比較サイト</a><nav class="snav"><a href="matrix.html">飲む予定リスト</a><a href="about-data.html">データの集め方</a></nav></div></div>
+<div class="sitebar"><div class="wrap sb-in"><h1 class="slogo-h"><a class="slogo" href="index.html"><span class="icap"></span>栄養素ごとにサプリメントを比較</a></h1><label class="nutpick"><span class="npl">栄養素を選ぶ</span><select id="nutsel" aria-label="栄養素を選ぶ"><option value="vitamin-c.html" selected>ビタミンC</option><option value="vitamin-d.html">ビタミンD</option><option value="calcium.html">カルシウム</option><option value="" disabled>亜鉛（調査中）</option><option value="" disabled>鉄（調査中）</option><option value="" disabled>マグネシウム（調査中）</option></select></label><nav class="snav"><a href="matrix.html">飲む予定リスト</a><a href="about-data.html">データの集め方</a></nav></div></div>
 <header class="page">
   <div class="wrap">
     <a class="back" href="index.html">← トップへ戻る</a>
-    <h1 style="margin-top:14px">栄養素ごとにサプリメントを比較</h1>
-    <div class="nutswitch"><a class="on" href="vitamin-c.html">ビタミンC</a><a href="vitamin-d.html">ビタミンD</a><a href="calcium.html">カルシウム</a><span class="ns soon">亜鉛<i>調査中</i></span><span class="ns soon">鉄<i>調査中</i></span><span class="ns soon">マグネシウム<i>調査中</i></span></div>
-    <div class="you">
-      <div class="t"><span class="icap"></span>1日に必要な栄養素<span class="tnote">※平均は公的統計の値で、あなた自身の食事ではありません。商品を＋で選ぶと、食事平均との合算を下のバーに表示します。</span></div>
-      <div class="btns" id="youbtns">
-        <button data-k="sex" data-v="m">男性</button>
-        <button data-k="sex" data-v="f">女性</button>
-        <span style="width:8px"></span>
-        <button data-k="age" data-v="20">20代</button>
-        <button data-k="age" data-v="30">30代</button>
-        <button data-k="age" data-v="40">40代</button>
-        <button data-k="age" data-v="50">50代</button>
-        <button data-k="age" data-v="60">60代</button>
-        <button data-k="age" data-v="70">70代</button>
-        <button data-k="age" data-v="80">80代〜</button>
+    <!-- 基準値は既定で1行に畳む。商品1日分は不足分の18〜91倍（C/D）あり、
+         「あと◯mg」を大きく出す価値が薄いため（2026-08-15竹森氏指示・案A） -->
+    <details class="you" id="youbox">
+      <summary><span class="icap"></span><span class="yousum" id="yousum"></span></summary>
+      <div class="youbody">
+        <div class="tnote">※平均は公的統計の値で、あなた自身の食事ではありません。商品を＋で選ぶと、食事平均との合算を下のバーに表示します。</div>
+        <div class="btns" id="youbtns">
+          <button data-k="sex" data-v="m">男性</button>
+          <button data-k="sex" data-v="f">女性</button>
+          <span style="width:8px"></span>
+          <button data-k="age" data-v="20">20代</button>
+          <button data-k="age" data-v="30">30代</button>
+          <button data-k="age" data-v="40">40代</button>
+          <button data-k="age" data-v="50">50代</button>
+          <button data-k="age" data-v="60">60代</button>
+          <button data-k="age" data-v="70">70代</button>
+          <button data-k="age" data-v="80">80代〜</button>
+        </div>
+        <div class="stat" id="youstat"></div>
       </div>
-      <div class="stat" id="youstat"></div>
+    </details>
     </div>
   </div>
 </header>
@@ -121,9 +125,9 @@
   </div>
 </footer>
 
-<script src="data-vc.js?v=202608150354"></script>
+<script src="data-vc.js?v=202608150504"></script>
 <script>window.NUT = {"slug":"vc","name":"ビタミンC","shortLabel":"C","unit":"mg","dec":0,"goal":100,"ul":null,"goalLabel":"基準値","goalLabelFull":"栄養素等表示基準値","goalSuffix":"","confirm":"2026-08-14","diet":{"m":{"20":66,"30":67,"40":66,"50":78,"60":96,"70":113,"80":127},"f":{"20":65,"30":66,"40":71,"50":78,"60":99,"70":128,"80":126}},"chips":[{"f":"lipo","label":"リポソーム","kind":"tech","pattern":"リポソーム"},{"f":"tr","label":"持続型・タイムリリース","kind":"tech","pattern":"タイムリリース|持続型"},{"f":"single","label":"単一成分のみ","kind":"comp"}],"badges":[{"kind":"tech","pattern":"リポソーム","label":"リポソーム","cls":"k2"},{"kind":"tech","pattern":"タイムリリース|持続型","label":"持続型","cls":"k2"},{"kind":"comp","label":"単一成分","cls":"d3"},{"kind":"chew","label":"グミ","cls":""}],"ingFallbacks":[],"ingGroups":[{"key":"ビタミンB群","pattern":"ビタミンB|ナイアシン|パントテン酸"},{"key":"フラボノイド類","pattern":"ルチン|ヘスペリジン|バイオフラボノイド"},{"key":"天然ビタミンC源","pattern":"ローズヒップ|アセロラ"},{"key":"美容系の成分","pattern":"コラーゲン|ヒアルロン酸|セラミド|プロテオグリカン|エラスチン"},{"key":"その他の成分","pattern":"."}],"youUnselectedText":"未選択のときは栄養素等表示基準値 <b>100mg/日</b>（パッケージの%表示と同じ物差し）を基準に表示します。耐容上限量は設定されていません（食事摂取基準）。","youStaticText":"表の%はこの基準値（パッケージの%表示と同じ物差し）に対する割合です。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。","sumStaticNote":"ビタミンCには耐容上限量は設定されていません（食事摂取基準）。"};</script>
-<script src="board.js?v=202608150354"></script>
-<script src="compare.js?v=202608150354"></script>
+<script src="board.js?v=202608150504"></script>
+<script src="compare.js?v=202608150504"></script>
 </body>
 </html>

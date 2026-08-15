@@ -404,7 +404,29 @@ td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 .slogo { font-size:15px; font-weight:900; color:var(--ink); text-decoration:none; letter-spacing:.02em; display:inline-flex; align-items:center; gap:8px; }
 .snav a { font-size:12.5px; font-weight:700; color:var(--ink2); text-decoration:none; margin-left:18px; }
 .snav a:hover { color:var(--g1); }
-@media (max-width:600px){ .snav a { margin-left:12px; font-size:12px; } }
+.slogo-h { font-size:inherit; font-weight:inherit; margin:0; flex:none; }
+/* 栄養素の選択。切替ピルを廃止しヘッダーのプルダウンに集約（2026-08-15竹森氏指示） */
+.nutpick { display:inline-flex; align-items:center; gap:8px; margin-left:20px; margin-right:auto; }
+.nutpick .npl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; white-space:nowrap; }
+.nutpick select { font-family:inherit; font-size:13px; font-weight:800; color:var(--ink); cursor:pointer;
+  height:34px; padding:0 30px 0 13px; border:1px solid var(--line); border-radius:100px; background:var(--surface);
+  box-shadow:var(--shadow-sm); appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2320304F' stroke-width='3' stroke-linecap='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat; background-position:right 12px center; }
+.nutpick select:hover { border-color:var(--g1); }
+.nutpick select:focus-visible { outline:2px solid var(--g2); outline-offset:2px; }
+header.page .back { display:inline-block; margin-bottom:2px; }
+@media (max-width:600px){
+  .snav a { margin-left:12px; font-size:12px; }
+  .sitebar .sb-in { flex-wrap:wrap; gap:9px 0; }
+  .slogo { font-size:13.5px; }
+  .slogo-h { flex-basis:100%; }          /* サイト名だけで1段 */
+  .nutpick { margin-left:0; margin-right:auto; flex-basis:auto; }
+  .nutpick .npl { display:none; }        /* 選択中の栄養素が出るのでラベルは省く */
+  .nutpick select { height:32px; font-size:12.5px; }
+  .snav { flex:none; flex-basis:100%; }
+  .snav a:first-child { margin-left:0; }
+}
 
 .capnote { display:block; margin-top:4px; font-size:12px; color:var(--ink2); font-weight:400; }
 
@@ -466,6 +488,22 @@ details.guide[open] summary::after { content:"−"; }
 details.guide summary:hover b { text-decoration:underline; }
 details.guide summary:focus-visible { outline:2px solid var(--g2); outline-offset:4px; border-radius:4px; }
 details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margin-top:12px; }
+
+/* 基準値の行: 既定は1行に畳む。押すと性別・年代と数字タイルが開く（基礎知識と同じ作法） */
+details.you { margin-top:32px; }
+details.you summary { cursor:pointer; list-style:none; display:flex; align-items:center;
+  font-size:13.5px; font-weight:700; color:var(--ink2); padding:0; }
+details.you summary::-webkit-details-marker { display:none; }
+details.you summary::after { content:"＋"; margin-left:10px; font-size:15px; font-weight:700;
+  color:var(--g1); line-height:1; flex:none; }
+details.you[open] summary::after { content:"−"; }
+details.you summary:hover .yousum { text-decoration:underline; }
+details.you summary:focus-visible { outline:2px solid var(--g2); outline-offset:4px; border-radius:4px; }
+details.you summary .icap { flex:none; }
+.yousum { min-width:0; }
+details.you .youbody { padding:14px 0 0; border-top:1px solid var(--line); margin-top:12px; }
+details.you .tnote { display:block; flex-basis:auto; margin:0 0 10px; font-size:11.5px; color:var(--ink3); line-height:1.7; font-weight:600; }
+@media (max-width:600px){ details.you summary { font-size:12.5px; align-items:flex-start; } }
 
 /* 比較表の見出し行（2026-08-14 竹森氏指示で絞り込みの上へ移動）
    セクション名（比較表）→ そのセクションの操作（絞り込み）→ 結果（表）の順にする。
@@ -551,6 +589,10 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
 
   .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
   .board td.gc { text-align:center; }
+  /* 成分の群と食品区分は中身が印か短い文字だけなので行を20%詰める（2026-08-15竹森氏指示） */
+  .board tr.ing td.c, .board tr.ing .rh { padding-top:2px; padding-bottom:2px; }
+  .board tr.ing.sec td.c, .board tr.ing.sec .rh { padding-top:11px; }
+  .board .dot { width:20px; height:20px; }
   .board td.gc .tag { margin:1px auto; }
   .board td.gc .oneline { text-align:center; }
   .board tr:last-child td.c, .board tr:last-child .rh { padding-bottom:12px; }

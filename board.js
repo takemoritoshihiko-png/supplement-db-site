@@ -182,14 +182,14 @@ window.BoardView = (function(){
       return rows.some(function(r){ return r.ig[g.key] && r.ig[g.key].length; });
     });
     G.forEach(function(g,gi){
-      h+='<tr'+(gi===0?' class="sec"':'')+'><th class="rh">'+esc(g.key)+'</th>'+cells(function(r){
+      h+='<tr class="ing'+(gi===0?' sec':'')+'"><th class="rh">'+esc(g.key)+'</th>'+cells(function(r){
         var v=r.ig[g.key];
         if(!v||!v.length) return '<td class="c gc"><span class="dot no">−</span></td>';
         return '<td class="c gc"><span class="dot" data-tip="'+esc(v.join("・"))+'">●</span></td>';
       })+'</tr>';
     });
 
-    h+='<tr class="sec"><th class="rh">食品区分</th>'+cells(function(r){
+    h+='<tr class="ing sec"><th class="rh">食品区分</th>'+cells(function(r){
       var l=(r.p.legal||"—").split("（")[0].split("(")[0];
       return '<td class="c gc"><span class="oneline" title="'+esc(r.p.legal||"")+'">'+esc(l)+'</span></td>';
     })+'</tr>';
