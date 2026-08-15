@@ -549,6 +549,8 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
 
   .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
   .board td.gc { text-align:center; }
+  .board td.gc .tag { margin:1px auto; }
+  .board td.gc .oneline { text-align:center; }
   .board tr:last-child td.c, .board tr:last-child .rh { padding-bottom:12px; }
   .board tr:first-child td.c, .board tr:first-child .rh { padding-top:12px; }
   .board tr:hover td.c { background:var(--g1-soft); }

@@ -153,19 +153,19 @@ window.BoardView = (function(){
     })+'</tr>';
 
     h+='<tr class="sec"><th class="rh">1日の量</th>'+cells(function(r){
-      return '<td class="c"><span class="oneline">'+esc(r.dose? r.dose+r.unit : "—")+'</span></td>';
+      return '<td class="c gc"><span class="oneline">'+esc(r.dose? r.dose+r.unit : "—")+'</span></td>';
     })+'</tr>';
 
     h+='<tr><th class="rh">剤形</th>'+cells(function(r){
       var v=r.p.form||"—";
-      return '<td class="c"><span class="oneline" title="'+esc(v)+'">'+esc(v)+'</span></td>';
+      return '<td class="c gc"><span class="oneline" title="'+esc(v)+'">'+esc(v)+'</span></td>';
     })+'</tr>';
 
     h+='<tr><th class="rh">特徴</th>'+cells(function(r){
       var t="";
       (NUT.badges||[]).forEach(function(b){ if(C.chipTest(b,r.p)) t+='<span class="tag t1">'+esc(b.label)+'</span>'; });
       if(!C.isOnSale(r.p)) t+='<span class="tag end">販売終了</span>';
-      return '<td class="c">'+(t||'<span class="none">—</span>')+'</td>';
+      return '<td class="c gc">'+(t||'<span class="none">—</span>')+'</td>';
     })+'</tr>';
 
     /* 基準値あたりの費用（栄養素をまたいで比べられる唯一の物差し） */
@@ -192,7 +192,7 @@ window.BoardView = (function(){
 
     h+='<tr class="sec"><th class="rh">食品区分</th>'+cells(function(r){
       var l=(r.p.legal||"—").split("（")[0].split("(")[0];
-      return '<td class="c"><span class="oneline" title="'+esc(r.p.legal||"")+'">'+esc(l)+'</span></td>';
+      return '<td class="c gc"><span class="oneline" title="'+esc(r.p.legal||"")+'">'+esc(l)+'</span></td>';
     })+'</tr>';
     h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r,i){
       return '<td class="c gc"><button class="openb" data-open="'+i+'">開く →</button></td>';
