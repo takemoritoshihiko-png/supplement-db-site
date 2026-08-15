@@ -499,11 +499,13 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
    商品＝列 / 項目＝行。縦ビューと同じデータ・同じ絞り込みを、並べ方だけ変えて見せる。
    最重要: 長い文字が列幅を押し広げると並びがガタガタになるため、列幅は colgroup で確定させる
    （正本: docs/DESIGN.md §5-16） */
-  .vsw { display:inline-flex; gap:4px; margin-left:14px; padding:3px; border-radius:100px;
+  .vsw { display:inline-flex; gap:4px; margin-left:12px; margin-right:auto; padding:3px; border-radius:100px;
     border:1px solid var(--line); background:var(--surface); }
+  @media (max-width:600px){ .vsw { display:none; } }   /* スマホは縦固定 */
   .vsw button { font-size:12px; font-weight:800; height:28px; padding:0 13px; border-radius:100px;
     border:none; background:none; color:var(--ink3); cursor:pointer; font-family:inherit; }
   .vsw button.on { background:var(--g1); color:#fff; }
+  .tablehead .sharebtn { margin-left:0; }
   .bctl { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:4px 0 12px; }
   .bctl .lbl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; }
   .bctl button { font-size:12.5px; font-weight:700; height:34px; padding:0 15px; border-radius:100px;

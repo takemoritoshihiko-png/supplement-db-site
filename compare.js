@@ -328,7 +328,10 @@
       +'<button type="button" id="sbadopt">自分のリストに取り込む</button>'
       +'<button type="button" id="sbclose">共有リストを閉じる</button>';
   }
+  function isNarrow(){ return window.innerWidth<=600; }
   function render(){
+    /* スマホは縦固定。#view=board のURLを受け取っても、狭い画面では縦で開く */
+    if(isNarrow()) state.view="list";
     var items=PRODUCTS.slice();
     if(state.f.onsale) items=items.filter(isOnSale);
     (NUT.chips||[]).forEach(function(c){ if(state.f[c.f]) items=items.filter(function(p){ return chipTest(c,p); }); });
