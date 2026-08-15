@@ -347,12 +347,12 @@
         items.sort(function(a,b){var x=(a.amtMax==null)?-1:a.amtMax,y=(b.amtMax==null)?-1:b.amtMax;return (y-x)*state.dir;});
       }
     }
-    document.querySelector('th[data-s="amt"] .tl').textContent = state.ing ? (state.ing+"/日") : (NUT.name+"/日");
-    document.querySelector('th[data-s="price"] .tl').textContent = state.ing ? "価格/日(商品全体)" : "価格/日";
+    document.querySelector('th[data-s="amt"] .tl').textContent = state.ing ? ("1日に摂れる量（"+state.ing+"）") : "1日に摂れる量";
+    document.querySelector('th[data-s="price"] .tl').textContent = state.ing ? "1日の費用（商品全体）" : "1日の費用";
     var inote=document.getElementById("ingnote");
     if(state.ing){
       inote.style.display="";
-      inote.innerHTML='「<b>'+state.ing+'</b>」で絞り込み中 — 「'+state.ing+'/日」列は各商品の'+state.ing+'の量です。<b>価格/日は'+NUT.name+'商品全体の価格</b>で、'+state.ing+'だけの単価ではありません。';
+      inote.innerHTML='「<b>'+state.ing+'</b>」で絞り込み中 — 「'+state.ing+'/日」列は各商品の'+state.ing+'の量です。<b>1日の費用は'+NUT.name+'商品全体の価格</b>で、'+state.ing+'だけの単価ではありません。';
     } else { inote.style.display="none"; }
     document.getElementById("count").textContent=items.length+"件 / 全"+PRODUCTS.length+"件";
     /* ここまでが両ビュー共通（絞り込み・並び替え・件数）。以降は描き方だけが違う */
@@ -372,7 +372,7 @@
       var pct=(p.amtMax!=null)?Math.round(p.amtMax/GOAL*100):null;
       var pctTxt=(pct==null)?null:pctPair(Math.round(p.amtMin/GOAL*100), pct);
       var tags="";
-      if(p.id===bestId) tags+='<span class="b best">価格/日 最安</span>';
+      if(p.id===bestId) tags+='<span class="b best">1日の費用 最安</span>';
       (NUT.badges||[]).forEach(function(bg){ if(chipTest(bg,p)) tags+='<span class="b '+(bg.cls||'')+'">'+bg.label+'</span>'; });
       if(UL!=null && p.amtMax!=null && p.amtMax>=UL) tags+='<span class="b warn">上限量に注意</span>';
       if(!isOnSale(p)) tags+='<span class="b end">販売終了・在庫切れ</span>';
@@ -522,13 +522,14 @@
     /* 畳んだ状態の1行。数字は消さず、強調度だけ下げる */
     var sm=document.getElementById("yousum");
     if(sm){
-      var s=NUT.goalLabel+" "+fdec(GOAL)+UNIT+"/日";
+      var s="1日の摂取"+NUT.goalLabel+" "+fdec(GOAL)+UNIT;
       if(DIET){
         if(d!=null){
           var g=GOAL-d;
-          s+="　／　あなたの年代の平均 "+fdec(d)+UNIT+(g>0? "・あと"+fdec(g)+UNIT : "・達しています");
+          s+="　／　あなたの年代の平均摂取量 "+fdec(d)+UNIT;
+          s+= (g>0) ? "　／　不足分 "+fdec(g)+UNIT : "　／　不足なし（基準に達しています）";
         } else {
-          s+="　／　性別・年代を選ぶと、食事の平均と不足分も出ます";
+          s+="　／　性別・年代を選ぶと、あなたの年代の平均摂取量と不足分も表示されます";
         }
       }
       sm.textContent=s;

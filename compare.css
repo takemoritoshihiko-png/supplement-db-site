@@ -405,6 +405,20 @@ td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 .snav a { font-size:12.5px; font-weight:700; color:var(--ink2); text-decoration:none; margin-left:18px; }
 .snav a:hover { color:var(--g1); }
 .slogo-h { font-size:inherit; font-weight:inherit; margin:0; flex:none; }
+
+/* 薬マークの横に出る文字は大きさ・太さを統一する（サイト名／基準値／基礎知識／比較表）*/
+.slogo, details.you summary, details.guide summary b, .tablehead .th-title,
+details.you summary .yousum { font-size:16px; font-weight:800; letter-spacing:.01em; }
+.slogo { color:var(--ink); }
+details.you summary { color:var(--ink); }
+
+/* 機能の絞り込み（栄養素ごとのチップ）は、成分・メーカー・販売中より一回り小さくする。
+   開始位置は「絞り込み」ラベルの下ではなく、成分ドロップダウンの真下にそろえる */
+.controls .row1 .lbl { display:inline-block; width:52px; flex:none; white-space:nowrap; }
+.controls #dchips { flex-basis:100%; display:flex; flex-wrap:wrap; gap:8px; margin-left:63px; }
+@media (max-width:600px){ .controls #dchips { margin-left:0; flex-basis:100%; } }
+.controls #dchips label.flt { height:28px; line-height:26px; padding:0 12px; font-size:11px; }
+.controls #dchips label.flt input { width:13px; height:13px; }
 /* 栄養素の選択。切替ピルを廃止しヘッダーのプルダウンに集約（2026-08-15竹森氏指示） */
 .nutpick { display:inline-flex; align-items:center; gap:8px; margin-left:20px; margin-right:auto; }
 .nutpick .npl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; white-space:nowrap; }

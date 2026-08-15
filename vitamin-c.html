@@ -10,13 +10,12 @@
 <meta property="og:url" content="https://takemoritoshihiko-png.github.io/supplement-db-site/vitamin-c.html">
 <meta name="twitter:card" content="summary">
 <title>ビタミンC 商品比較（25商品・1日あたりで比べる） | 栄養素ごとにサプリメントを比較</title>
-<link rel="stylesheet" href="compare.css?v=202608150504">
+<link rel="stylesheet" href="compare.css?v=202608150516">
 </head>
 <body>
-<div class="sitebar"><div class="wrap sb-in"><h1 class="slogo-h"><a class="slogo" href="index.html"><span class="icap"></span>栄養素ごとにサプリメントを比較</a></h1><label class="nutpick"><span class="npl">栄養素を選ぶ</span><select id="nutsel" aria-label="栄養素を選ぶ"><option value="vitamin-c.html" selected>ビタミンC</option><option value="vitamin-d.html">ビタミンD</option><option value="calcium.html">カルシウム</option><option value="" disabled>亜鉛（調査中）</option><option value="" disabled>鉄（調査中）</option><option value="" disabled>マグネシウム（調査中）</option></select></label><nav class="snav"><a href="matrix.html">飲む予定リスト</a><a href="about-data.html">データの集め方</a></nav></div></div>
+<div class="sitebar"><div class="wrap sb-in"><h1 class="slogo-h"><a class="slogo" href="index.html"><span class="icap"></span>栄養素ごとにサプリメントを比較</a></h1><label class="nutpick"><span class="npl">栄養素を選ぶ</span><select id="nutsel" aria-label="栄養素を選ぶ"><option value="vitamin-c.html" selected>ビタミンC</option><option value="vitamin-d.html">ビタミンD</option><option value="calcium.html">カルシウム</option><option value="" disabled>亜鉛（調査中）</option><option value="" disabled>鉄（調査中）</option><option value="" disabled>マグネシウム（調査中）</option></select></label><nav class="snav"><a href="matrix.html">飲む予定リスト</a><a href="about-data.html">データの集め方</a><a href="index.html">トップへ戻る</a></nav></div></div>
 <header class="page">
   <div class="wrap">
-    <a class="back" href="index.html">← トップへ戻る</a>
     <!-- 基準値は既定で1行に畳む。商品1日分は不足分の18〜91倍（C/D）あり、
          「あと◯mg」を大きく出す価値が薄いため（2026-08-15竹森氏指示・案A） -->
     <details class="you" id="youbox">
@@ -78,14 +77,14 @@
     <label class="flt"><input type="checkbox" data-f="tr">持続型・タイムリリース</label>
     <label class="flt"><input type="checkbox" data-f="single">単一成分のみ</label>
     </span>
-    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">価格/日 ▲</button><button data-s="perGoal">基準値あたり</button><button data-s="amt">摂れる量</button></div>
+    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">1日の費用 ▲</button><button data-s="perGoal">基準値あたりの費用</button><button data-s="amt">1日に摂れる量</button></div>
   </div>
 </div>
 
 <main><div class="wrap">
 <div id="sharedbanner" class="sharedbanner" style="display:none"></div>
 <div id="ingnote" style="display:none;border:1px solid var(--g1-line);background:var(--g1-soft);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink2)"></div>
-<div id="listview"><div class="tablewrap"><table class="cmp" aria-labelledby="cmptitle"><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">ビタミンC/日</span> <span class="arr"></span></th><th class="num sortable goalh" data-s="perGoal"><span class="tl">基準値あたり</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div>
+<div id="listview"><div class="tablewrap"><table class="cmp" aria-labelledby="cmptitle"><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">1日の量</th><th class="num sortable wrapok" data-s="amt"><span class="tl">1日に摂れる量</span> <span class="arr"></span></th><th class="num sortable goalh wrapok" data-s="perGoal"><span class="tl">基準値あたりの費用</span> <span class="arr"></span></th><th class="num sortable wrapok on" data-s="price"><span class="tl">1日の費用</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div>
 <div id="boardview" hidden>
   <p class="scrollhint" id="bhint"></p>
   <div class="boardwrap"><table class="board" id="board"></table></div>
@@ -125,9 +124,9 @@
   </div>
 </footer>
 
-<script src="data-vc.js?v=202608150504"></script>
+<script src="data-vc.js?v=202608150516"></script>
 <script>window.NUT = {"slug":"vc","name":"ビタミンC","shortLabel":"C","unit":"mg","dec":0,"goal":100,"ul":null,"goalLabel":"基準値","goalLabelFull":"栄養素等表示基準値","goalSuffix":"","confirm":"2026-08-14","diet":{"m":{"20":66,"30":67,"40":66,"50":78,"60":96,"70":113,"80":127},"f":{"20":65,"30":66,"40":71,"50":78,"60":99,"70":128,"80":126}},"chips":[{"f":"lipo","label":"リポソーム","kind":"tech","pattern":"リポソーム"},{"f":"tr","label":"持続型・タイムリリース","kind":"tech","pattern":"タイムリリース|持続型"},{"f":"single","label":"単一成分のみ","kind":"comp"}],"badges":[{"kind":"tech","pattern":"リポソーム","label":"リポソーム","cls":"k2"},{"kind":"tech","pattern":"タイムリリース|持続型","label":"持続型","cls":"k2"},{"kind":"comp","label":"単一成分","cls":"d3"},{"kind":"chew","label":"グミ","cls":""}],"ingFallbacks":[],"ingGroups":[{"key":"ビタミンB群","pattern":"ビタミンB|ナイアシン|パントテン酸"},{"key":"フラボノイド類","pattern":"ルチン|ヘスペリジン|バイオフラボノイド"},{"key":"天然ビタミンC源","pattern":"ローズヒップ|アセロラ"},{"key":"美容系の成分","pattern":"コラーゲン|ヒアルロン酸|セラミド|プロテオグリカン|エラスチン"},{"key":"その他の成分","pattern":"."}],"youUnselectedText":"未選択のときは栄養素等表示基準値 <b>100mg/日</b>（パッケージの%表示と同じ物差し）を基準に表示します。耐容上限量は設定されていません（食事摂取基準）。","youStaticText":"表の%はこの基準値（パッケージの%表示と同じ物差し）に対する割合です。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。","sumStaticNote":"ビタミンCには耐容上限量は設定されていません（食事摂取基準）。"};</script>
-<script src="board.js?v=202608150504"></script>
-<script src="compare.js?v=202608150504"></script>
+<script src="board.js?v=202608150516"></script>
+<script src="compare.js?v=202608150516"></script>
 </body>
 </html>

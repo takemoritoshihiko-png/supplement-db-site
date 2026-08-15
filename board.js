@@ -129,10 +129,9 @@ window.BoardView = (function(){
         '<div class="bar"><i style="width:'+logw(r.day,sDay.min,sDay.max)+'%"></i></div></td>';
     })+'</tr>';
 
-    h+='<tr>'+rh('amt','1日に摂れる量', NUT.goalLabel+'に対する％')+cells(function(r){
+    h+='<tr>'+rh('amt','1日に摂れる量', NUT.goalLabel+'と比べて')+cells(function(r){
       if(r.amt==null) return '<td class="c"><span class="v na">未取得</span></td>';
-      var lo=Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), hi=Math.round(r.pct);
-      var pctTxt=(lo===hi? lo.toLocaleString() : lo.toLocaleString()+'〜'+hi.toLocaleString())+'%';
+      var pctTxt=C.pctPair(Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), Math.round(r.pct));
       return '<td class="c'+(r.over?" over":"")+'"><span class="v">'+C.fmtAmtPlain(r.p)+'<small>'+UNIT+'</small></span>'+
         '<span class="oneline pct">'+pctTxt+'</span></td>';
     })+'</tr>';
@@ -145,7 +144,7 @@ window.BoardView = (function(){
       })+'</tr>';
     }
 
-    h+='<tr>'+rh('perGoal', NUT.goalLabel+'あたり', C.fdec(GOAL)+UNIT+'の費用')+cells(function(r){
+    h+='<tr>'+rh('perGoal', NUT.goalLabel+'あたりの費用', C.fdec(GOAL)+UNIT+'ぶん')+cells(function(r){
       if(r.perGoal==null) return '<td class="c"><span class="v na">—</span></td>';
       return '<td class="c"><span class="v">'+yen(r.perGoal)+'<small>円</small></span>'+
         '<div class="bar"><i class="acc" style="width:'+logw(r.perGoal,sRDA.min,sRDA.max)+'%"></i></div></td>';
