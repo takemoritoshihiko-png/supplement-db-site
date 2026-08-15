@@ -144,7 +144,7 @@ window.BoardView = (function(){
       })+'</tr>';
     }
 
-    h+='<tr>'+rh('perGoal', NUT.goalLabel+'あたりの費用', C.fdec(GOAL)+UNIT+'ぶん')+cells(function(r){
+    h+='<tr>'+rh('perGoal', NUT.goalLabel+'あたりの費用')+cells(function(r){
       if(r.perGoal==null) return '<td class="c"><span class="v na">—</span></td>';
       return '<td class="c"><span class="v">'+yen(r.perGoal)+'<small>円</small></span>'+
         '<div class="bar"><i class="acc" style="width:'+logw(r.perGoal,sRDA.min,sRDA.max)+'%"></i></div></td>';

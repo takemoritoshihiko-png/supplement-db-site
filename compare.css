@@ -414,8 +414,8 @@ details.you summary { color:var(--ink); }
 
 /* 機能の絞り込み（栄養素ごとのチップ）は、成分・メーカー・販売中より一回り小さくする。
    開始位置は「絞り込み」ラベルの下ではなく、成分ドロップダウンの真下にそろえる */
-.controls .row1 .lbl { display:inline-block; width:52px; flex:none; white-space:nowrap; }
-.controls #dchips { flex-basis:100%; display:flex; flex-wrap:wrap; gap:8px; margin-left:63px; }
+.controls .row1 .lbl { display:inline-block; width:75px; flex:none; white-space:nowrap; }
+.controls #dchips { flex-basis:100%; display:flex; flex-wrap:wrap; gap:8px; margin-left:86px; }
 @media (max-width:600px){ .controls #dchips { margin-left:0; flex-basis:100%; } }
 .controls #dchips label.flt { height:28px; line-height:26px; padding:0 12px; font-size:11px; }
 .controls #dchips label.flt input { width:13px; height:13px; }
@@ -595,10 +595,10 @@ details.you .tnote { display:block; flex-basis:auto; margin:0 0 10px; font-size:
 
   /* 左端の項目名列は固定 */
   .board .rh { position:sticky; left:0; z-index:3; background:var(--bg); text-align:left;
-    width:128px; min-width:128px; padding:6px 12px 6px 20px; font-size:11.5px; font-weight:800; color:var(--ink3);
+    width:128px; min-width:128px; padding:6px 6px 6px 12px; font-size:11.5px; font-weight:800; color:var(--ink3);
     letter-spacing:.04em; border-right:1px solid var(--line); }
   .board .rh small { display:block; font-weight:600; color:var(--ink3); font-size:10px; letter-spacing:0; margin-top:1px; }
-  .board tr.sec .rh, .board tr.sec td { padding-top:14px; }
+  .board tr.sec .rh, .board tr.sec td { padding-top:10px; }
   .board tr.sec .rh { color:var(--ink); font-size:12px; }
 
   .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
@@ -614,12 +614,12 @@ details.you .tnote { display:block; flex-basis:auto; margin:0 0 10px; font-size:
   .board tr:hover td.c { background:var(--g1-soft); }
 
   /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
-  .board .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
+  .board .prod { display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; }
   .board .prod .ph { width:100%; aspect-ratio:1/1; height:auto; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
     display:flex; align-items:center; justify-content:center; overflow:hidden; }
   .board .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
-  .board .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; height:2.6em;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .board .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; height:1.3em;
+    display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
   .board .prod .nm { font-size:11px; font-weight:700; color:var(--ink); line-height:1.35; height:2.7em; overflow:hidden;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
   .rank { display:inline-block; font-size:9.5px; font-weight:800; color:#fff; background:var(--g1);
@@ -630,7 +630,7 @@ details.you .tnote { display:block; flex-basis:auto; margin:0 0 10px; font-size:
   .v { font-size:16px; font-weight:800; color:var(--g1); font-variant-numeric:tabular-nums; line-height:1.2; }
   .v small { font-size:10px; font-weight:700; color:var(--ink3); margin-left:2px; }
   .v.na { font-size:11.5px; color:var(--ink3); font-weight:600; }
-  .bar { position:relative; height:5px; border-radius:3px; background:var(--track); margin-top:5px; }
+  .bar { position:relative; height:5px; border-radius:3px; background:var(--track); margin-top:3px; }
   .bar i { position:absolute; inset:0 auto 0 0; border-radius:3px; background:var(--g1); }
   .bar i.acc { background:var(--g2); }
 
@@ -661,7 +661,7 @@ details.you .tnote { display:block; flex-basis:auto; margin:0 0 10px; font-size:
   .golink:hover { text-decoration:underline; }
 
   /* ぎっしり表示 */
-  .board.dense td.c { padding:5px 6px; }
+  .board.dense td.c { padding:3px 6px; }
 
   .board.dense .prod .nm { font-size:10px; }
   .board.dense .prod .mk { font-size:9px; }
