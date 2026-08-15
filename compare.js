@@ -461,6 +461,7 @@
       bestPrice:bestPrice, perGoal:perGoal, chipTest:chipTest, isOnSale:isOnSale,
       mkName:mkName, dispUnit:dispUnit, fmtAmtPlain:fmtAmtPlain, fdec:fdec, fnum:fnum,
       pctPair:pctPair, detailHtml:detailHtml,
+      setSort:setSort,
       togglePick:function(id){ state.picked[id]=!state.picked[id]; savePicked(); render(); },
       rerender:render
     };
@@ -524,6 +525,19 @@
     state.you[b.dataset.k]=(state.you[b.dataset.k]===b.dataset.v)?null:b.dataset.v;
     saveYou(); renderYou(); render();
   });
+  function syncSortUI(){
+    document.querySelectorAll("th.sortable").forEach(function(x){
+      var on=x.dataset.s===state.sort;
+      x.classList.toggle("on", on);
+      var a=x.querySelector(".arr"); if(a) a.textContent = on ? (state.dir===1?"▲":"▼") : "";
+    });
+    syncMsort();
+  }
+  /* 並び替えの入口は3つ（縦の列見出し／スマホのバー／横の行見出し）。処理はここ1本に通す */
+  function setSort(k){
+    if(state.sort===k){ state.dir=-state.dir; } else { state.sort=k; state.dir=1; }
+    syncSortUI(); render();
+  }
   function syncMsort(){
     document.querySelectorAll("#msort button").forEach(function(b){
       var on=b.dataset.s===state.sort;
@@ -533,25 +547,10 @@
     });
   }
   document.querySelectorAll("#msort button").forEach(function(b){
-    b.addEventListener("click", function(){
-      if(state.sort===b.dataset.s){ state.dir=-state.dir; } else { state.sort=b.dataset.s; state.dir=1; }
-      document.querySelectorAll("th.sortable").forEach(function(x){
-        x.classList.toggle("on",x.dataset.s===state.sort);
-        x.querySelector(".arr").textContent=(x.dataset.s===state.sort)?(state.dir===1?"▲":"▼"):"";
-      });
-      syncMsort(); render();
-    });
+    b.addEventListener("click", function(){ setSort(b.dataset.s); });
   });
   document.querySelectorAll("th.sortable").forEach(function(th){
-    th.addEventListener("click", function(){
-      if(state.sort===th.dataset.s){ state.dir=-state.dir; } else { state.sort=th.dataset.s; state.dir=1; }
-      syncMsort();
-      document.querySelectorAll("th.sortable").forEach(function(x){
-        x.classList.toggle("on",x.dataset.s===state.sort);
-        x.querySelector(".arr").textContent = (x.dataset.s===state.sort) ? (state.dir===1?"▲":"▼") : "";
-      });
-      render();
-    });
+    th.addEventListener("click", function(){ setSort(th.dataset.s); });
   });
   document.querySelectorAll(".flt input").forEach(function(i){
     i.addEventListener("change", function(){ state.f[i.dataset.f]=i.checked; render(); });
@@ -585,11 +584,7 @@
     var isel=document.getElementById('ingsel'); if(state.ing){ isel.value=state.ing; isel.classList.add('on'); var box=document.getElementById('dchips'); if(box) box.style.display='none'; }
     var msel=document.getElementById('mksel'); if(state.mk){ msel.value=state.mk; msel.classList.add('on'); }
     document.querySelectorAll('.flt input').forEach(function(i){ i.checked=!!state.f[i.dataset.f]; });
-    document.querySelectorAll('th.sortable').forEach(function(x){
-      var on=x.dataset.s===state.sort; x.classList.toggle('on',on);
-      x.querySelector('.arr').textContent=on?(state.dir===1?'▲':'▼'):'';
-    });
-    syncMsort();
+    syncSortUI();
     var sb=document.getElementById('sharebtn');
     if(sb) sb.addEventListener('click', function(){
       var t=sb.textContent;

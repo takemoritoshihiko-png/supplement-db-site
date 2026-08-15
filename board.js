@@ -73,6 +73,14 @@ window.BoardView = (function(){
   }
 
   /* ---- 本体の描画 ---- */
+  /* 並べ替えできる行の見出し。押すたびに昇順・降順が入れ替わる（縦の列見出しと同じ挙動） */
+  function rh(key, label, sub){
+    var on = C.state.sort===key;
+    var arr = on ? (C.state.dir===1 ? '▲' : '▼') : '';
+    return '<th class="rh sortable'+(on?' on':'')+'" data-s="'+key+'" role="button" tabindex="0" '+
+      'title="押すと並び替えます（もう一度押すと逆順）">'+esc(label)+
+      '<span class="arr">'+arr+'</span>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</th>';
+  }
   function render(items, ctx){
     C = ctx;
     viewList = items;
@@ -117,20 +125,20 @@ window.BoardView = (function(){
     })+'</tr>';
 
     /* 基準値あたりの費用（栄養素をまたいで比べられる唯一の物差し） */
-    h+='<tr class="sec"><th class="rh">'+esc(NUT.goalLabel)+'あたり<small>'+C.fdec(GOAL)+UNIT+'の費用</small></th>'+cells(function(r){
+    h+='<tr class="sec">'+rh('perGoal', NUT.goalLabel+'あたり', C.fdec(GOAL)+UNIT+'の費用')+cells(function(r){
       if(r.perGoal==null) return '<td class="c"><span class="v na">—</span></td>';
       return '<td class="c"><span class="v">'+yen(r.perGoal)+'<small>円</small></span>'+
         '<div class="bar"><i class="acc" style="width:'+logw(r.perGoal,sRDA.min,sRDA.max)+'%"></i></div></td>';
     })+'</tr>';
 
-    h+='<tr><th class="rh">1日の費用</th>'+cells(function(r){
+    h+='<tr>'+rh('price','1日の費用')+cells(function(r){
       if(r.day==null) return '<td class="c"><span class="v na">—</span></td>';
       return '<td class="c"><span class="v">'+yen(r.day)+'<small>円</small></span>'+
         '<div class="bar"><i style="width:'+logw(r.day,sDay.min,sDay.max)+'%"></i></div></td>';
     })+'</tr>';
 
     /* 1日に摂れる量 ＋「基準値の◯%／◯倍」＝縦ビューと同じ表現 */
-    h+='<tr><th class="rh">1日に摂れる量</th>'+cells(function(r){
+    h+='<tr>'+rh('amt','1日に摂れる量')+cells(function(r){
       if(r.amt==null) return '<td class="c"><span class="v na">未取得</span></td>';
       var pctTxt=C.pctPair(Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), Math.round(r.pct));
       return '<td class="c'+(r.over?" over":"")+'"><span class="v">'+C.fmtAmtPlain(r.p)+'<small>'+UNIT+'</small></span>'+
@@ -217,6 +225,8 @@ window.BoardView = (function(){
     window.addEventListener("scroll", hideTip, {passive:true});
 
     bd.addEventListener("click", function(e){
+      var so=e.target.closest("th.sortable");
+      if(so){ ctx.setSort(so.dataset.s); return; }
       var pk=e.target.closest("[data-pick]");
       if(pk){ ctx.togglePick(pk.dataset.pick); return; }
       var el=e.target.closest("[data-open]");
@@ -224,6 +234,8 @@ window.BoardView = (function(){
     });
     bd.addEventListener("keydown", function(e){
       if(e.key!=="Enter" && e.key!==" ") return;
+      var so=e.target.closest("th.sortable");
+      if(so){ e.preventDefault(); ctx.setSort(so.dataset.s); return; }
       var el=e.target.closest("[data-open]"); if(!el) return;
       e.preventDefault(); openDetail(Number(el.dataset.open));
     });

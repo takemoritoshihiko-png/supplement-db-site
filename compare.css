@@ -511,6 +511,11 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
   .bctl button { font-size:12.5px; font-weight:700; height:34px; padding:0 15px; border-radius:100px;
     border:1px solid var(--line); background:var(--surface); color:var(--ink2); cursor:pointer; font-family:inherit; }
   .bctl button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
+  /* 並べ替えできる行の見出し（縦の列見出しと同じ見た目の約束） */
+  .board .rh.sortable { cursor:pointer; }
+  .board .rh.sortable:hover { color:var(--ink); }
+  .board .rh.sortable.on { color:var(--g1); }
+  .board .rh .arr { margin-left:4px; font-size:10px; }
   .board td.c.over .v { color:var(--warn); }
   .tag.warn { border-color:var(--warn); background:var(--warn-soft); color:var(--warn); }
   .tag.end { border-color:var(--line); background:var(--surface); color:var(--ink3); }
