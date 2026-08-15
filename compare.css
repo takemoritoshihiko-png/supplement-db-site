@@ -335,7 +335,7 @@ table.cmp th:last-child { border-radius:0 14px 14px 0; }
 table.cmp th.sortable.on { color:#fff; }
 table.cmp th.sortable:hover { color:#fff; opacity:.9; }
 th .arr { color:#F0B27A; }
-table.cmp td { border-bottom:none; background:var(--surface); padding:14px 10px; }
+table.cmp td { border-bottom:none; background:var(--surface); padding:11px 10px; }
 table.cmp tr.main { box-shadow:0 0 0 1px var(--line), var(--shadow); border-radius:16px; }
 table.cmp tr.main td:first-child { border-radius:16px 0 0 16px; padding-left:16px; }
 table.cmp tr.main td:last-child { border-radius:0 16px 16px 0; }
@@ -354,7 +354,7 @@ table.cmp caption b { font-size:16px !important; }
 .addb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
 
 /* サムネ・バッジ・数値セル */
-.thumb { border:1px solid var(--line); background:#fff; box-shadow:none; width:84px; height:84px; border-radius:14px; }
+.thumb { border:1px solid var(--line); background:#fff; box-shadow:none; width:68px; height:68px; border-radius:12px; }
 .b.best { background:var(--g2); border:none; color:#fff; }
 td.amtc b, td.pricec b { color:var(--g1); font-size:15.5px; font-weight:800; }
 .amtflex { display:inline-flex; align-items:center; gap:6px; }
@@ -512,6 +512,7 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
     border:1px solid var(--line); background:var(--surface); color:var(--ink2); cursor:pointer; font-family:inherit; }
   .bctl button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
   /* 並べ替えできる行の見出し（縦の列見出しと同じ見た目の約束） */
+  .board .oneline.pct { font-weight:700; color:var(--ink3); }
   .board .rh.sortable { cursor:pointer; }
   .board .rh.sortable:hover { color:var(--ink); }
   .board .rh.sortable.on { color:var(--g1); }
@@ -523,7 +524,7 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
   .baddb { position:absolute; top:0; right:0; width:24px; height:24px; border-radius:100px; font-size:13px;
     font-weight:800; border:1px solid var(--line); background:var(--surface); color:var(--ink3); cursor:pointer; font-family:inherit; }
   .baddb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
-  .prod { position:relative; }
+  .board .prod { position:relative; }
   /* 凡例（同梱成分のドットの意味） */
   .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--ink2); }
   .legend span { display:inline-flex; align-items:center; gap:4px; }
@@ -553,13 +554,13 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
   .board tr:hover td.c { background:var(--g1-soft); }
 
   /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
-  .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
-  .prod .ph { width:74px; height:74px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
+  .board .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
+  .board .prod .ph { width:100%; aspect-ratio:1/1; height:auto; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
     display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
-  .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; height:2.6em;
+  .board .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .board .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; height:2.6em;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .prod .nm { font-size:11px; font-weight:700; color:var(--ink); line-height:1.35; height:2.7em; overflow:hidden;
+  .board .prod .nm { font-size:11px; font-weight:700; color:var(--ink); line-height:1.35; height:2.7em; overflow:hidden;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
   .rank { display:inline-block; font-size:9.5px; font-weight:800; color:#fff; background:var(--g1);
     border-radius:100px; padding:1px 8px; }
@@ -601,7 +602,7 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
 
   /* ぎっしり表示 */
   .board.dense td.c { padding:5px 6px; }
-  .board.dense .prod .ph { width:56px; height:56px; }
+
   .board.dense .prod .nm { font-size:10px; }
   .board.dense .prod .mk { font-size:9px; }
   .board.dense .v { font-size:13.5px; }
@@ -663,11 +664,11 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
   .dtxt { font-size:12.5px; }
   .dtxt.small { font-size:11.5px; color:var(--ink3); }
   /* 表の中の「詳しく見る」ボタン */
-  .openb { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:800; color:var(--g1);
+  .openb { display:inline-flex; align-items:center; gap:3px; white-space:nowrap; font-size:11px; font-weight:800; color:var(--g1);
     background:none; border:1px solid var(--g1-line); border-radius:100px; padding:3px 9px; cursor:pointer; }
   .openb:hover { background:var(--g1-soft); }
-  .prod { cursor:pointer; }
-  .prod:hover .nm { text-decoration:underline; }
+  .board .prod { cursor:pointer; }
+  .board .prod:hover .nm { text-decoration:underline; }
   @media (max-width:600px){
     .dlg { padding:0; }
     .dlgbox { max-width:none; max-height:100vh; height:100vh; border-radius:0; border:none; }

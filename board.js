@@ -8,7 +8,7 @@
    このモジュール専用の状態は「表示密度」だけ。それ以外は compare.js の state を読む   */
 window.BoardView = (function(){
   var C = null;              /* compare.js から渡される文脈 */
-  var dense = false;
+  var dense = true;   /* 表示は「ぎっしり」固定（切替UIは廃止・2026-08-15竹森氏指示） */
   var viewList = [], viewIdx = -1, lastFocus = null;
 
   function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
@@ -123,30 +123,21 @@ window.BoardView = (function(){
         '<span class="nm" data-open="'+i+'" role="button" tabindex="0" title="押すと調べた内容が開きます">'+esc(p.name)+'</span>'+
         '</div></td>';
     })+'</tr>';
-
-    /* 基準値あたりの費用（栄養素をまたいで比べられる唯一の物差し） */
-    h+='<tr class="sec">'+rh('perGoal', NUT.goalLabel+'あたり', C.fdec(GOAL)+UNIT+'の費用')+cells(function(r){
-      if(r.perGoal==null) return '<td class="c"><span class="v na">—</span></td>';
-      return '<td class="c"><span class="v">'+yen(r.perGoal)+'<small>円</small></span>'+
-        '<div class="bar"><i class="acc" style="width:'+logw(r.perGoal,sRDA.min,sRDA.max)+'%"></i></div></td>';
-    })+'</tr>';
-
-    h+='<tr>'+rh('price','1日の費用')+cells(function(r){
+    h+='<tr class="sec">'+rh('price','1日の費用')+cells(function(r){
       if(r.day==null) return '<td class="c"><span class="v na">—</span></td>';
       return '<td class="c"><span class="v">'+yen(r.day)+'<small>円</small></span>'+
         '<div class="bar"><i style="width:'+logw(r.day,sDay.min,sDay.max)+'%"></i></div></td>';
     })+'</tr>';
 
-    /* 1日に摂れる量 ＋「基準値の◯%／◯倍」＝縦ビューと同じ表現 */
-    h+='<tr>'+rh('amt','1日に摂れる量')+cells(function(r){
+    h+='<tr>'+rh('amt','1日に摂れる量', NUT.goalLabel+'に対する％')+cells(function(r){
       if(r.amt==null) return '<td class="c"><span class="v na">未取得</span></td>';
-      var pctTxt=C.pctPair(Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), Math.round(r.pct));
+      var lo=Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), hi=Math.round(r.pct);
+      var pctTxt=(lo===hi? lo.toLocaleString() : lo.toLocaleString()+'〜'+hi.toLocaleString())+'%';
       return '<td class="c'+(r.over?" over":"")+'"><span class="v">'+C.fmtAmtPlain(r.p)+'<small>'+UNIT+'</small></span>'+
-        '<span class="oneline">'+esc(NUT.goalLabel)+'の'+pctTxt+'</span>'+
+        '<span class="oneline pct">'+pctTxt+'</span>'+
         '<div class="bar"><i style="width:'+logw(r.amt,sAmt.min,sAmt.max)+'%"></i></div></td>';
     })+'</tr>';
 
-    /* 耐容上限がある栄養素だけ、警告の行を出す（ビタミンDで5商品が該当） */
     if(UL!=null && rows.some(function(r){ return r.over; })){
       h+='<tr><th class="rh">上限量<small>'+C.fdec(UL)+UNIT+'/日</small></th>'+cells(function(r){
         return r.over
@@ -155,21 +146,37 @@ window.BoardView = (function(){
       })+'</tr>';
     }
 
-    /* 特徴＝縦ビューのバッジと同じ NUT.badges 駆動 */
-    h+='<tr class="sec"><th class="rh">特徴</th>'+cells(function(r){
-      var t="";
-      (NUT.badges||[]).forEach(function(b){ if(C.chipTest(b,r.p)) t+='<span class="tag t1">'+esc(b.label)+'</span>'; });
-      if(!C.isOnSale(r.p)) t+='<span class="tag end">販売終了</span>';
-      return '<td class="c">'+(t||'<span class="none">—</span>')+'</td>';
+    h+='<tr>'+rh('perGoal', NUT.goalLabel+'あたり', C.fdec(GOAL)+UNIT+'の費用')+cells(function(r){
+      if(r.perGoal==null) return '<td class="c"><span class="v na">—</span></td>';
+      return '<td class="c"><span class="v">'+yen(r.perGoal)+'<small>円</small></span>'+
+        '<div class="bar"><i class="acc" style="width:'+logw(r.perGoal,sRDA.min,sRDA.max)+'%"></i></div></td>';
+    })+'</tr>';
+
+    h+='<tr class="sec"><th class="rh">1日の量</th>'+cells(function(r){
+      return '<td class="c"><span class="oneline">'+esc(r.dose? r.dose+r.unit : "—")+'</span></td>';
     })+'</tr>';
 
     h+='<tr><th class="rh">剤形</th>'+cells(function(r){
       var v=r.p.form||"—";
       return '<td class="c"><span class="oneline" title="'+esc(v)+'">'+esc(v)+'</span></td>';
     })+'</tr>';
-    h+='<tr><th class="rh">1日の量</th>'+cells(function(r){
-      return '<td class="c"><span class="oneline">'+esc(r.dose? r.dose+r.unit : "—")+'</span></td>';
+
+    h+='<tr><th class="rh">特徴</th>'+cells(function(r){
+      var t="";
+      (NUT.badges||[]).forEach(function(b){ if(C.chipTest(b,r.p)) t+='<span class="tag t1">'+esc(b.label)+'</span>'; });
+      if(!C.isOnSale(r.p)) t+='<span class="tag end">販売終了</span>';
+      return '<td class="c">'+(t||'<span class="none">—</span>')+'</td>';
     })+'</tr>';
+
+    /* 基準値あたりの費用（栄養素をまたいで比べられる唯一の物差し） */
+
+
+    /* 1日に摂れる量 ＋「基準値の◯%／◯倍」＝縦ビューと同じ表現 */
+
+    /* 耐容上限がある栄養素だけ、警告の行を出す（ビタミンDで5商品が該当） */
+
+    /* 特徴＝縦ビューのバッジと同じ NUT.badges 駆動 */
+
 
     /* 同梱成分の群。中身が1件も無い群は行ごと出さない（栄養素を変えても空行が並ばない） */
     var G=(NUT.ingGroups||[]).filter(function(g){
@@ -188,18 +195,27 @@ window.BoardView = (function(){
       return '<td class="c"><span class="oneline" title="'+esc(r.p.legal||"")+'">'+esc(l)+'</span></td>';
     })+'</tr>';
     h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r,i){
-      return '<td class="c gc"><button class="openb" data-open="'+i+'">調べた内容 →</button></td>';
+      return '<td class="c gc"><button class="openb" data-open="'+i+'">開く →</button></td>';
     })+'</tr>';
 
-    /* 標準状態（スクロールしていない状態）で商品が半端に切れないよう列幅を割り出す。
-       端数は左の項目名列に足す */
+    /* 標準で横に9商品が収まる幅にする（2026-08-15竹森氏指示）。
+       スクロールしていない状態で商品が半端に切れないよう、端数は左の項目名列に足す */
+    var COLS=9, MINW=70, BASEW=110;
     var wrap=document.querySelector(".boardwrap");
     var lw=(window.innerWidth<=600?108:128);
-    var target=dense?82:118;
     var avail=(wrap?wrap.clientWidth:1000)-lw;
-    var fit=Math.max(1, Math.min(rows.length, Math.round(avail/target)));
-    var cw=(rows.length<=fit)? target : Math.floor(avail/fit);
-    if(rows.length>fit) lw += (avail - cw*fit);
+    var fit=Math.max(1, Math.min(rows.length, COLS));
+    var cw;
+    if(rows.length<COLS){
+      cw=BASEW;                                   /* 商品が少ないときは広げすぎない */
+    } else {
+      cw=Math.floor(avail/fit);
+      if(cw<MINW){                                /* 画面が狭くて9列だと潰れる場合だけ列数を減らす */
+        fit=Math.max(1, Math.floor(avail/MINW));
+        cw=Math.floor(avail/fit);
+      }
+      lw += (avail - cw*fit);
+    }
     var cg='<colgroup><col style="width:'+lw+'px">'+
       new Array(rows.length+1).join('<col style="width:'+cw+'px">')+'</colgroup>';
     bd.className="board"+(dense?" dense":"");
