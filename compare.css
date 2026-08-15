@@ -25,7 +25,7 @@
   * { margin:0; padding:0; box-sizing:border-box; }
   body { background:var(--bg); color:var(--ink); font-weight:500; font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Noto Sans JP","Meiryo",sans-serif; font-size:15px; line-height:1.8; -webkit-font-smoothing:antialiased; font-feature-settings:"palt"; padding-bottom:130px; }
   .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
-  header.page { padding:40px 0 22px; border-bottom:1px solid var(--line); }
+  header.page { padding:28px 0 16px; border-bottom:1px solid var(--line); }
   .back { font-size:13px; font-weight:700; color:var(--g1); text-decoration:none; }
   .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.16em; color:var(--ink3); margin:14px 0 8px; }
   header .tagline { font-size:16.5px; font-weight:700; color:var(--g1); margin-top:8px; }
@@ -467,8 +467,8 @@ details.guide .gbody { border-top:1px solid var(--line); }
    ※.controlsはstickyなので、境界の余白はpaddingでなくmarginで外側に取る
      （paddingにすると固定表示時に画面上端へ白帯が出る）
    ================================================================ */
-details.guide { margin-top:34px; margin-bottom:0; }   /* header下22px + 34 = 56px */
-.tablehead { margin-top:56px; }                       /* ゾーン境界（比較表セクションの始まり） */
+details.guide { margin-top:22px; margin-bottom:0; }   /* header下16px + 22 = 38px */
+.tablehead { margin-top:40px; }                       /* ゾーン境界（比較表セクションの始まり・他より広めに保つ） */
 .controls { margin-top:4px; }                         /* 4 + padding12 = 16px（ゾーン内） */
 main { padding-top:18px; }                            /* + tablewrap 2px = 20px（ゾーン内なので詰める） */
 @media (max-width:600px){
@@ -504,7 +504,7 @@ details.guide summary:focus-visible { outline:2px solid var(--g2); outline-offse
 details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margin-top:12px; }
 
 /* 基準値の行: 既定は1行に畳む。押すと性別・年代と数字タイルが開く（基礎知識と同じ作法） */
-details.you { margin-top:32px; }
+details.you { margin-top:20px; }
 details.you summary { cursor:pointer; list-style:none; display:flex; align-items:center;
   font-size:13.5px; font-weight:700; color:var(--ink2); padding:0; }
 details.you summary::-webkit-details-marker { display:none; }
