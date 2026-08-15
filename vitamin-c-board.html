@@ -36,8 +36,8 @@
 
   /* ボード本体: 画面幅いっぱいを使って「横に一気に」並べる */
   .boardouter { max-width:1040px; margin:18px auto 0; padding:0 20px; }
-  .boardwrap { overflow-x:auto; overflow-y:visible; padding:2px 0 10px; -webkit-overflow-scrolling:touch;
-    border-left:1px solid var(--line); border-right:1px solid var(--line); border-radius:2px; }
+  .boardwrap { overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
+    border:1px solid var(--line); border-radius:14px; background:var(--bg); }
   .board { border-collapse:separate; border-spacing:0; font-size:12.5px; table-layout:fixed; }
   .board th, .board td { padding:0; vertical-align:middle; }
 
@@ -50,6 +50,9 @@
   .board tr.sec .rh { color:var(--ink); font-size:12px; }
 
   .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
+  .board td.gc { text-align:center; }
+  .board tr:last-child td.c, .board tr:last-child .rh { padding-bottom:12px; }
+  .board tr:first-child td.c, .board tr:first-child .rh { padding-top:12px; }
   .board tr:hover td.c { background:var(--g1-soft); }
 
   /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
@@ -112,6 +115,67 @@
     .board .rh { width:108px; min-width:108px; padding-left:14px; }
 
   }
+  /* 商品の詳細パネル: 情報量が多く吹き出しでは収まらないため、クリックで開く重ねパネルにする。
+     ← → で隣の商品へそのまま送れるので、閉じずに読み比べられる */
+  .dlg { position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
+  .dlg[hidden] { display:none; }
+  .dlgbd { position:absolute; inset:0; background:rgba(16,22,38,.42); }
+  .dlgbox { position:relative; width:100%; max-width:680px; max-height:calc(100vh - 48px); overflow:auto;
+    background:var(--bg); border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 60px rgba(0,0,0,.28); }
+  .dlghd { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:12px; padding:16px 18px 14px;
+    background:var(--bg); border-bottom:1px solid var(--line); }
+  .dlghd .ph { width:56px; height:56px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .dlghd .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .dlghd .who { flex:1; min-width:0; }
+  .dlghd .mk { font-size:11px; font-weight:800; color:var(--ink3); }
+  .dlghd h2 { font-size:16px; font-weight:900; line-height:1.4; margin-top:2px; }
+  .dlgnav { width:34px; height:34px; flex:none; border-radius:100px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink2); font-size:14px; font-weight:800; cursor:pointer; }
+  .dlgnav:hover:not(:disabled) { background:var(--g1-soft); color:var(--g1); border-color:var(--g1-line); }
+  .dlgnav:disabled { opacity:.35; cursor:default; }
+  .dlgx { width:34px; height:34px; flex:none; border-radius:100px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink2); font-size:17px; line-height:1; cursor:pointer; }
+  .dlgx:hover { background:var(--warn-soft); color:var(--warn); border-color:var(--warn); }
+  .dlgbody { padding:16px 18px 22px; font-size:13px; color:var(--ink2); line-height:1.85; }
+  .dsec { margin-top:16px; }
+  .dsec:first-child { margin-top:0; }
+  .dsec > b { display:block; font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; margin-bottom:6px; }
+  .dnum { display:flex; flex-wrap:wrap; gap:8px; }
+  .dnum div { flex:1 1 128px; border:1px solid var(--line); border-radius:10px; padding:8px 12px; background:var(--surface); }
+  .dnum span { display:block; font-size:10.5px; font-weight:700; color:var(--ink3); }
+  .dnum strong { font-size:17px; font-weight:900; color:var(--g1); font-variant-numeric:tabular-nums; }
+  .dnum strong small { font-size:10.5px; font-weight:700; color:var(--ink3); margin-left:2px; }
+  /* 買う導線 */
+  .buy { display:flex; flex-direction:column; gap:7px; }
+  .buy a, .buy span { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:9px 13px; border-radius:10px;
+    font-size:12.5px; text-decoration:none; font-variant-numeric:tabular-nums; }
+  .buy a { border:1px solid var(--g1-line); background:var(--g1-soft); color:var(--ink); font-weight:700; }
+  .buy a:hover { border-color:var(--g1); }
+  .buy span { border:1px dashed var(--line); background:var(--surface); color:var(--ink3); }
+  .buy .sel { font-size:10.5px; font-weight:800; color:var(--ink3); }
+  .buy .amt { font-weight:900; }
+  .buy .per { font-size:11px; color:var(--ink3); font-weight:600; }
+  .buy .go { margin-left:auto; font-size:11px; font-weight:800; color:var(--g1); }
+  .refnote { margin-top:7px; font-size:11.5px; color:var(--warn); background:var(--warn-soft);
+    border:1px solid var(--warn); border-radius:8px; padding:7px 11px; line-height:1.7; }
+  /* 公式ページ導線（買う場所ではなく、情報の出どころ） */
+  .official { margin-top:18px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3); }
+  .official a { color:var(--g1); font-weight:800; text-decoration:none; }
+  .official a:hover { text-decoration:underline; }
+  .dtxt { font-size:12.5px; }
+  .dtxt.small { font-size:11.5px; color:var(--ink3); }
+  /* 表の中の「詳しく見る」ボタン */
+  .openb { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:800; color:var(--g1);
+    background:none; border:1px solid var(--g1-line); border-radius:100px; padding:3px 9px; cursor:pointer; }
+  .openb:hover { background:var(--g1-soft); }
+  .prod { cursor:pointer; }
+  .prod:hover .nm { text-decoration:underline; }
+  @media (max-width:600px){
+    .dlg { padding:0; }
+    .dlgbox { max-width:none; max-height:100vh; height:100vh; border-radius:0; border:none; }
+  }
+
 </style>
 </head>
 <body>
@@ -125,7 +189,8 @@
   <div class="ctl" id="ctl">
     <div class="ctlrow">
       <span class="lbl">並び替え</span>
-      <button data-sort="perRDA" class="on">1日分あたりが安い順</button>
+      <button data-sort="perRDA" class="on">100mgあたりの費用が安い順</button>
+      <button data-sort="price">1日の費用が安い順</button>
       <button data-sort="amt">1日に摂れる量が多い順</button>
     </div>
     <div class="ctlrow">
@@ -159,6 +224,19 @@
   <br>本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。
 </p>
 
+<div class="dlg" id="dlg" hidden>
+  <div class="dlgbd"></div>
+  <div class="dlgbox" role="dialog" aria-modal="true" aria-labelledby="dlgttl">
+    <div class="dlghd">
+      <div class="ph" id="dlgph"></div>
+      <div class="who"><div class="mk" id="dlgmk"></div><h2 id="dlgttl"></h2></div>
+      <button class="dlgnav" data-nav="-1" title="前の商品" aria-label="前の商品">←</button>
+      <button class="dlgnav" data-nav="1" title="次の商品" aria-label="次の商品">→</button>
+      <button class="dlgx" title="閉じる" aria-label="閉じる">×</button>
+    </div>
+    <div class="dlgbody" id="dlgbody"></div>
+  </div>
+</div>
 <script src="data-vc.js"></script>
 <script>
 (function(){
@@ -199,6 +277,7 @@
     });
     return res;
   }
+  function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
   function fnum(x){ return x>=1000 ? x.toLocaleString() : String(x); }
   function yen(x){ return x<10 ? (Math.round(x*10)/10).toFixed(1) : String(Math.round(x)); }
 
@@ -220,6 +299,7 @@
   function view(){
     var list = rows.filter(function(r){ return !state.types.length || state.types.indexOf(r.type)>=0; });
     if(state.sort==="perRDA") list.sort(function(a,b){ return (a.perRDA==null?1e9:a.perRDA)-(b.perRDA==null?1e9:b.perRDA); });
+    if(state.sort==="price")  list.sort(function(a,b){ return (a.price==null?1e9:a.price)-(b.price==null?1e9:b.price); });
     if(state.sort==="amt")    list.sort(function(a,b){ return (b.amt==null?-1:b.amt)-(a.amt==null?-1:a.amt); });
     return list;
   }
@@ -239,14 +319,15 @@
     }
     function w(v,max){ if(v==null||!max) return 0; return Math.max(4, Math.sqrt(v/max)*100); }
     function cells(fn){ return list.map(fn).join(""); }
-    function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
+    viewList = list;
 
     var h="";
 
     h+='<tr><th class="rh">商品</th>'+cells(function(r,i){
       var img=r.p.img?'<img src="'+esc(r.p.img)+'" alt="">':'';
       var rk=(state.sort==="perRDA")?'<span class="rank'+(i<3?' top':'')+'">'+(i+1)+'位</span>':'';
-      return '<td class="c"><div class="prod"><div class="ph">'+img+'</div>'+rk+
+      return '<td class="c"><div class="prod" data-open="'+i+'" role="button" tabindex="0" title="押すと調べた内容が開きます"><div class="ph">'+img+'</div>'+rk+
         '<span class="mk">'+esc((r.p.maker||"").split("(")[0].split("（")[0])+'</span>'+
         '<span class="nm" title="'+esc(r.p.name)+'">'+esc(r.p.name)+'</span></div></td>';
     })+'</tr>';
@@ -287,8 +368,8 @@
     GROUPS.forEach(function(g,gi){
       h+='<tr'+(gi===0?' class="sec"':'')+'><th class="rh">'+g.key+'</th>'+cells(function(r){
         var v=r.ig[g.key];
-        if(!v||!v.length) return '<td class="c"><span class="dot no">−</span></td>';
-        return '<td class="c"><span class="dot" data-tip="'+esc(v.join("・"))+'">●</span></td>';
+        if(!v||!v.length) return '<td class="c gc"><span class="dot no">−</span></td>';
+        return '<td class="c gc"><span class="dot" data-tip="'+esc(v.join("・"))+'">●</span></td>';
       })+'</tr>';
     });
 
@@ -297,13 +378,20 @@
       return '<td class="c"><span class="oneline" title="'+esc(r.p.legal||"")+'" style="margin-top:0">'+esc(l)+'</span></td>';
     })+'</tr>';
 
-    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r){
-      return '<td class="c"><a class="golink" href="'+esc(r.p.url)+'" target="_blank" rel="noopener">公式ページ →</a></td>';
+    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r,i){
+      return '<td class="c gc"><button class="openb" data-open="'+i+'">調べた内容 →</button></td>';
     })+'</tr>';
 
     var bd=document.getElementById("board");
     bd.className="board"+(state.dense?" dense":"");
-    var cw = state.dense?82:118, lw = (window.innerWidth<=600?108:128);
+    /* スクロールしていない標準状態で商品が半端に切れないよう、表示幅にちょうど収まる列幅を割り出す */
+    var lw = (window.innerWidth<=600?108:128);
+    var target = state.dense?82:118;
+    var avail = document.querySelector(".boardwrap").clientWidth - lw;
+    var fit = Math.max(1, Math.min(list.length, Math.round(avail/target)));
+    var cw = (list.length<=fit) ? target : Math.floor(avail/fit);
+    /* 端数は左の項目名列に足す。そうしないと次の商品が数pxだけ覗いて「見切れ」に見える */
+    if(list.length>fit) lw += (avail - cw*fit);
     var cg = '<colgroup><col style="width:'+lw+'px">' +
       new Array(list.length+1).join('<col style="width:'+cw+'px">') + '</colgroup>';
     bd.style.width = (lw + cw*list.length) + "px";
@@ -346,6 +434,129 @@
   bdEl.addEventListener("touchcancel", hideTip);
   document.querySelector(".boardwrap").addEventListener("scroll", hideTip, {passive:true});
   window.addEventListener("scroll", hideTip, {passive:true});
+
+  /* ============ 商品の詳細パネル ============
+     「買う」と「公式ページ」は役割が違うので節を分ける。
+     - 買う   = その値段で実際に買える販売ページ（容量ごと）
+     - 公式   = メーカーの商品ページ。情報の出どころであって買う場所ではない
+     販売元名に「参考／希望小売／定価」が入るものはメーカーが示した価格で、
+     その値段で買える保証がないため、購入リンクとしては出さず注記に回す。 */
+  var REFSELLER = /参考|希望小売|定価/;
+  var CONFIRM = "2026年8月14日";
+
+  function money(x){ return x.toLocaleString(); }
+  function packLine(v){
+    var qty = (v.qty!=null? v.qty+(v.unit||"") : "");
+    var days = (v.days!=null? "・約"+v.days+"日分" : "");
+    var per = (v.reg!=null && v.days) ? '<span class="per">1日 約'+(Math.round(v.reg/v.days*10)/10)+'円</span>' : '';
+    var price = (v.reg!=null) ? '<span class="amt">'+money(v.reg)+'円</span>'
+                              + (v.sub!=null? '<span class="per">定期 '+money(v.sub)+'円</span>':'') : '';
+    return '<span class="sel">'+esc((v.seller||"").split("(")[0])+'</span>'+esc(qty+days)+' '+price+per;
+  }
+
+  function detailHtml(r){
+    var p=r.p, h='';
+
+    h+='<div class="dsec"><b>この商品の数字</b><div class="dnum">'
+      + '<div><span>1日分(100mg)あたり</span><strong>'+(r.perRDA!=null? yen(r.perRDA)+'<small>円</small>':'—')+'</strong></div>'
+      + '<div><span>1日の費用</span><strong>'+(r.price!=null? yen(r.price)+'<small>円</small>':'—')+'</strong></div>'
+      + '<div><span>1日に摂れる量</span><strong>'+(r.amt!=null? fnum(r.amt)+'<small>mg</small>':'—')+'</strong></div>'
+      + '</div></div>';
+
+    var ings=(p.ings||[]).map(function(g){
+      var v=(g.a1==null)?"量未確認":((g.a1===g.a2? g.a1 : g.a1+"〜"+g.a2)+(g.u||""));
+      return esc(g.n)+' '+esc(v);
+    });
+    h+='<div class="dsec"><b>配合成分の量（1日目安量あたり）</b><div class="dtxt">ビタミンC '
+      + (r.amt!=null? fnum(r.amt)+'mg':'—')
+      + (ings.length? '　'+ings.join('　') : '　（ビタミンCのみ）') + '</div></div>';
+
+    /* --- 買う --- */
+    var live=(p.variants||[]).filter(function(v){ return !isDead(v); });
+    var buy=[], ref=[];
+    live.forEach(function(v){ (v.url && !REFSELLER.test(v.seller||"")) ? buy.push(v) : ref.push(v); });
+    h+='<div class="dsec"><b>買う（容量ごとの価格）</b><div class="buy">';
+    if(buy.length){
+      buy.forEach(function(v){
+        h+='<a href="'+esc(v.url)+'" target="_blank" rel="noopener">'+packLine(v)+'<span class="go">この容量を買う ↗</span></a>';
+      });
+    }
+    ref.forEach(function(v){
+      var why = REFSELLER.test(v.seller||"") ? "メーカーが示した価格" : "販売ページ未取得";
+      h+='<span>'+packLine(v)+'<span class="go" style="color:var(--ink3)">'+why+'</span></span>';
+    });
+    h+='</div>';
+    if(!buy.length) h+='<div class="refnote">この商品は、表示している価格で買える販売ページをまだ確認できていません。'
+      + '上の価格はメーカーが示した価格や参考値です。実際の販売価格は下の公式ページや販売店でご確認ください。</div>';
+    h+='</div>';
+
+    if(p.intake) h+='<div class="dsec"><b>メーカーの飲み方（原文）</b><div class="dtxt">「'+esc(p.intake)+'」</div></div>';
+
+    var prof=[];
+    prof.push('剤形: '+esc(p.form||"—"));
+    if(r.dose) prof.push('1日の量: '+esc(r.dose+r.unit));
+    if(p.tech) prof.push('製剤技術: '+esc(p.tech));
+    if(p.legal && p.legal.indexOf("未確認")<0) prof.push('食品区分: '+esc(p.legal.split("（")[0].split("(")[0]));
+    if(p.cert) prof.push('製造・認証: '+esc(p.cert));
+    if(p.target) prof.push('対象者: '+esc(p.target));
+    if(p.allergen) prof.push('アレルギー物質: '+esc(p.allergen));
+    if(p.animal) prof.push('動物由来原料: '+esc(p.animal));
+    h+='<div class="dsec"><b>品質・仕様</b><div class="dtxt">'+prof.join('　/　')+'</div></div>';
+
+    if(p.raw) h+='<div class="dsec"><b>原材料名（原文）</b><div class="dtxt small">'+esc(p.raw)+'</div></div>';
+    if(p.caution) h+='<div class="dsec"><b>パッケージの注意書き（抜粋）</b><div class="dtxt small">'+esc(p.caution)+'</div></div>';
+
+    /* --- 公式ページ（買う場所ではなく情報の出どころ） --- */
+    var sameAsOfficial = buy.length && buy.every(function(v){ return v.url===p.url; });
+    h+='<div class="official">'+(sameAsOfficial? 'このメーカーは公式ページで直接販売しているため、買う場所と情報の出どころが同じページです。<br>':'')
+      + 'この内容の出どころ: <a href="'+esc(p.url)+'" target="_blank" rel="noopener">'
+      + esc(p.maker)+'の公式ページ ↗</a>　確認日 '+CONFIRM+'</div>';
+    return h;
+  }
+
+  var dlg=document.getElementById("dlg"), dlgBody=document.getElementById("dlgbody");
+  var viewList=[], viewIdx=-1, lastFocus=null;
+
+  function openDetail(i){
+    if(i<0||i>=viewList.length) return;
+    viewIdx=i; var r=viewList[i], p=r.p;
+    document.getElementById("dlgph").innerHTML = p.img? '<img src="'+esc(p.img)+'" alt="">' : '';
+    document.getElementById("dlgmk").textContent = p.maker||"";
+    document.getElementById("dlgttl").textContent = p.name||"";
+    dlgBody.innerHTML = detailHtml(r);
+    dlgBody.scrollTop=0; dlg.scrollTop=0;
+    document.querySelector('.dlgbox').scrollTop=0;
+    document.querySelector('[data-nav="-1"]').disabled = (i===0);
+    document.querySelector('[data-nav="1"]').disabled  = (i===viewList.length-1);
+    if(dlg.hidden){ lastFocus=document.activeElement; dlg.hidden=false; document.body.style.overflow="hidden"; }
+    document.querySelector(".dlgx").focus();
+  }
+  function closeDetail(){
+    dlg.hidden=true; document.body.style.overflow="";
+    if(lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  dlg.addEventListener("click", function(e){
+    if(e.target.classList.contains("dlgbd") || e.target.closest(".dlgx")) { closeDetail(); return; }
+    var nav=e.target.closest("[data-nav]");
+    if(nav) openDetail(viewIdx + Number(nav.dataset.nav));
+  });
+  document.addEventListener("keydown", function(e){
+    if(dlg.hidden) return;
+    if(e.key==="Escape") closeDetail();
+    if(e.key==="ArrowLeft")  openDetail(viewIdx-1);
+    if(e.key==="ArrowRight") openDetail(viewIdx+1);
+  });
+  document.getElementById("board").addEventListener("click", function(e){
+    var el=e.target.closest("[data-open]"); if(!el) return;
+    openDetail(Number(el.dataset.open));
+  });
+  document.getElementById("board").addEventListener("keydown", function(e){
+    if(e.key!=="Enter" && e.key!==" ") return;
+    var el=e.target.closest("[data-open]"); if(!el) return;
+    e.preventDefault(); openDetail(Number(el.dataset.open));
+  });
+
+  var rt; window.addEventListener("resize", function(){ clearTimeout(rt); rt=setTimeout(render,150); });
 
   render();
 })();
