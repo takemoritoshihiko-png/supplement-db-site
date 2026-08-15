@@ -106,7 +106,7 @@ window.BoardView = (function(){
       var v=rows.map(function(r){return r[k];}).filter(function(x){return x!=null;});
       return {min:Math.min.apply(null,v), max:Math.max.apply(null,v)};
     }
-    var sRDA=span("perGoal"), sDay=span("day"), sAmt=span("amt");
+    var sRDA=span("perGoal"), sDay=span("day");
     function cells(fn){ return rows.map(fn).join(""); }
 
     var h="";
@@ -134,8 +134,7 @@ window.BoardView = (function(){
       var lo=Math.round((r.p.amtMin!=null?r.p.amtMin:r.amt)/GOAL*100), hi=Math.round(r.pct);
       var pctTxt=(lo===hi? lo.toLocaleString() : lo.toLocaleString()+'〜'+hi.toLocaleString())+'%';
       return '<td class="c'+(r.over?" over":"")+'"><span class="v">'+C.fmtAmtPlain(r.p)+'<small>'+UNIT+'</small></span>'+
-        '<span class="oneline pct">'+pctTxt+'</span>'+
-        '<div class="bar"><i style="width:'+logw(r.amt,sAmt.min,sAmt.max)+'%"></i></div></td>';
+        '<span class="oneline pct">'+pctTxt+'</span></td>';
     })+'</tr>';
 
     if(UL!=null && rows.some(function(r){ return r.over; })){
