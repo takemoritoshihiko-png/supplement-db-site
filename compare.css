@@ -115,6 +115,8 @@
   td.packc, th.packh { width:73px; }
   td.dosec { width:45px; }
   td.amtc { width:76px; }
+  td.goalc { width:70px; }
+  td.goalc b { font-weight:800; font-size:14px; }
   td.pricec { width:82px; white-space:nowrap; }
   table.cmp th { position:sticky; top:0; background:var(--surface); font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); white-space:nowrap; }
   table.cmp th.num, table.cmp td.num { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
@@ -150,7 +152,7 @@
     table.cmp td.pricec { grid-column:3; grid-row:1 / span 2; text-align:right; width:auto; }
     table.cmp td.packc { grid-column:2; grid-row:2; text-align:left; width:auto; font-size:12px; white-space:normal; }
     table.cmp td.packc .sub { display:inline; margin-left:4px; }
-    table.cmp tr.main td.dosec, table.cmp tr.main td.amtc { display:none; }
+    table.cmp tr.main td.dosec, table.cmp tr.main td.amtc, table.cmp tr.main td.goalc { display:none; }
     td.packc .m-extra { display:inline; font-size:11px; color:var(--ink3); }
     table.cmp tr.main td.chev { display:none; }
     tr.detail { display:none; }
@@ -325,7 +327,7 @@ details.gloss[open] summary::after { content:"−" !important; }
 /* overflowを既定visibleにしないとthのsticky(ビューポート基準)が効かない。
    表の最小幅640pxが収まらない601〜720pxの帯だけ横スクロールに切り替える */
 .tablewrap { border:none; border-radius:0; overflow-x:visible; padding:2px; }
-@media (min-width:601px) and (max-width:720px){ .tablewrap { overflow-x:auto; } }
+@media (min-width:601px) and (max-width:880px){ .tablewrap { overflow-x:auto; } }
 table.cmp { border-collapse:separate; border-spacing:0 12px; }
 table.cmp th { position:sticky; top:var(--ctrlh,0px); z-index:5; background:var(--g1); color:#fff; border-bottom:none; font-size:12px; letter-spacing:.04em; padding:12px 12px; }
 table.cmp th:first-child { border-radius:14px 0 0 14px; }
@@ -491,3 +493,177 @@ details.guide .gbody { padding:14px 0 0; border-top:1px solid var(--line); margi
   .tablehead .sharebtn { margin:6px 0 0; order:3; flex-basis:100%; }
   .tablehead .count { margin-left:auto; }
 }
+
+
+/* ===== 横ビュー（検討ボード）=====
+   商品＝列 / 項目＝行。縦ビューと同じデータ・同じ絞り込みを、並べ方だけ変えて見せる。
+   最重要: 長い文字が列幅を押し広げると並びがガタガタになるため、列幅は colgroup で確定させる
+   （正本: docs/DESIGN.md §5-16） */
+  .vsw { display:inline-flex; gap:4px; margin-left:14px; padding:3px; border-radius:100px;
+    border:1px solid var(--line); background:var(--surface); }
+  .vsw button { font-size:12px; font-weight:800; height:28px; padding:0 13px; border-radius:100px;
+    border:none; background:none; color:var(--ink3); cursor:pointer; font-family:inherit; }
+  .vsw button.on { background:var(--g1); color:#fff; }
+  .bctl { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:4px 0 12px; }
+  .bctl .lbl { font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.08em; }
+  .bctl button { font-size:12.5px; font-weight:700; height:34px; padding:0 15px; border-radius:100px;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink2); cursor:pointer; font-family:inherit; }
+  .bctl button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
+  .board td.c.over .v { color:var(--warn); }
+  .tag.warn { border-color:var(--warn); background:var(--warn-soft); color:var(--warn); }
+  .tag.end { border-color:var(--line); background:var(--surface); color:var(--ink3); }
+  .board .none { color:var(--ink3); font-size:12px; }
+  .baddb { position:absolute; top:0; right:0; width:24px; height:24px; border-radius:100px; font-size:13px;
+    font-weight:800; border:1px solid var(--line); background:var(--surface); color:var(--ink3); cursor:pointer; font-family:inherit; }
+  .baddb.on { background:var(--g1); border-color:var(--g1); color:#fff; }
+  .prod { position:relative; }
+  /* 凡例（同梱成分のドットの意味） */
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--ink2); }
+  .legend span { display:inline-flex; align-items:center; gap:4px; }
+  .legend .lhint { color:var(--ink3); }
+  .legend .dot { cursor:default; }
+  .legend i { display:inline-flex; align-items:center; justify-content:center; font-style:normal; }
+
+  /* ボード本体: 画面幅いっぱいを使って「横に一気に」並べる */
+  .boardouter { max-width:1040px; margin:18px auto 0; padding:0 20px; }
+  .boardwrap { overflow-x:auto; overflow-y:visible; -webkit-overflow-scrolling:touch;
+    border:1px solid var(--line); border-radius:14px; background:var(--bg); }
+  .board { border-collapse:separate; border-spacing:0; font-size:12.5px; table-layout:fixed; }
+  .board th, .board td { padding:0; vertical-align:middle; }
+
+  /* 左端の項目名列は固定 */
+  .board .rh { position:sticky; left:0; z-index:3; background:var(--bg); text-align:left;
+    width:128px; min-width:128px; padding:6px 12px 6px 20px; font-size:11.5px; font-weight:800; color:var(--ink3);
+    letter-spacing:.04em; border-right:1px solid var(--line); }
+  .board .rh small { display:block; font-weight:600; color:var(--ink3); font-size:10px; letter-spacing:0; margin-top:1px; }
+  .board tr.sec .rh, .board tr.sec td { padding-top:14px; }
+  .board tr.sec .rh { color:var(--ink); font-size:12px; }
+
+  .board td.c { padding:6px 10px; border-right:1px solid var(--line); text-align:left; overflow:hidden; }
+  .board td.gc { text-align:center; }
+  .board tr:last-child td.c, .board tr:last-child .rh { padding-bottom:12px; }
+  .board tr:first-child td.c, .board tr:first-child .rh { padding-top:12px; }
+  .board tr:hover td.c { background:var(--g1-soft); }
+
+  /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
+  .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
+  .prod .ph { width:74px; height:74px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; height:2.6em;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .prod .nm { font-size:11px; font-weight:700; color:var(--ink); line-height:1.35; height:2.7em; overflow:hidden;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .rank { display:inline-block; font-size:9.5px; font-weight:800; color:#fff; background:var(--g1);
+    border-radius:100px; padding:1px 8px; }
+  .rank.top { background:var(--g2); }
+
+  /* 数値＋バー（行の高さを固定して横スキャンしやすく） */
+  .v { font-size:16px; font-weight:800; color:var(--g1); font-variant-numeric:tabular-nums; line-height:1.2; }
+  .v small { font-size:10px; font-weight:700; color:var(--ink3); margin-left:2px; }
+  .v.na { font-size:11.5px; color:var(--ink3); font-weight:600; }
+  .bar { position:relative; height:5px; border-radius:3px; background:var(--track); margin-top:5px; }
+  .bar i { position:absolute; inset:0 auto 0 0; border-radius:3px; background:var(--g1); }
+  .bar i.acc { background:var(--g2); }
+
+  /* タグ */
+  .tag { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink2); white-space:nowrap; }
+  .tag.t1 { border-color:var(--g1-line); background:var(--g1-soft); color:var(--g1); }
+  .tag.t2 { border-color:var(--g2-line); background:var(--g2-soft); color:var(--g2); }
+  .tag.t3 { border-color:var(--ok); background:var(--ok-soft); color:var(--ok); }
+  .oneline { display:block; font-size:10px; color:var(--ink3); line-height:1.35; margin-top:3px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* 群ごとの印。中身はカーソルを合わせた時だけ吹き出しで出す（行の高さを印1つ分に固定するため） */
+  .dot { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%;
+    font-size:15px; line-height:1; color:var(--g1); background:none; cursor:help; transition:background .1s; }
+  .dot.no { color:var(--line); cursor:default; font-size:13px; }
+  .dot:not(.no):hover { background:var(--g1-soft); color:var(--g2); }
+  #tip { position:fixed; z-index:60; max-width:280px; padding:7px 11px; border-radius:8px; pointer-events:none;
+    background:var(--ink); color:#fff; font-size:11.5px; font-weight:700; line-height:1.55; letter-spacing:.01em;
+    box-shadow:0 6px 20px rgba(0,0,0,.22); opacity:0; transition:opacity .08s; }
+  #tip.on { opacity:1; }
+
+  .note { max-width:1040px; margin:26px auto 0; padding:0 20px; font-size:12px; color:var(--ink3); line-height:1.95; }
+  .note a { color:var(--g1); font-weight:700; }
+  .scrollhint { max-width:1040px; margin:0 auto; padding:0 20px; font-size:12px; color:var(--ink2); }
+
+  .golink { font-size:11px; font-weight:700; color:var(--g1); text-decoration:none; }
+  .golink:hover { text-decoration:underline; }
+
+  /* ぎっしり表示 */
+  .board.dense td.c { padding:5px 6px; }
+  .board.dense .prod .ph { width:56px; height:56px; }
+  .board.dense .prod .nm { font-size:10px; }
+  .board.dense .prod .mk { font-size:9px; }
+  .board.dense .v { font-size:13.5px; }
+  .board.dense .tag { font-size:9px; padding:1px 6px; }
+  .board.dense .oneline { font-size:9px; }
+
+  @media (max-width:600px){
+    .board .rh { width:108px; min-width:108px; padding-left:14px; }
+
+  }
+  /* 商品の詳細パネル: 情報量が多く吹き出しでは収まらないため、クリックで開く重ねパネルにする。
+     ← → で隣の商品へそのまま送れるので、閉じずに読み比べられる */
+  .dlg { position:fixed; inset:0; z-index:80; display:flex; align-items:center; justify-content:center; padding:24px 16px; }
+  .dlg[hidden] { display:none; }
+  .dlgbd { position:absolute; inset:0; background:rgba(16,22,38,.42); }
+  .dlgbox { position:relative; width:100%; max-width:680px; max-height:calc(100vh - 48px); overflow:auto;
+    background:var(--bg); border:1px solid var(--line); border-radius:16px; box-shadow:0 18px 60px rgba(0,0,0,.28); }
+  .dlghd { position:sticky; top:0; z-index:2; display:flex; align-items:center; gap:12px; padding:16px 18px 14px;
+    background:var(--bg); border-bottom:1px solid var(--line); }
+  .dlghd .ph { width:56px; height:56px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
+    display:flex; align-items:center; justify-content:center; overflow:hidden; }
+  .dlghd .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .dlghd .who { flex:1; min-width:0; }
+  .dlghd .mk { font-size:11px; font-weight:800; color:var(--ink3); }
+  .dlghd h2 { font-size:16px; font-weight:900; line-height:1.4; margin-top:2px; }
+  .dlgnav { width:34px; height:34px; flex:none; border-radius:100px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink2); font-size:14px; font-weight:800; cursor:pointer; }
+  .dlgnav:hover:not(:disabled) { background:var(--g1-soft); color:var(--g1); border-color:var(--g1-line); }
+  .dlgnav:disabled { opacity:.35; cursor:default; }
+  .dlgx { width:34px; height:34px; flex:none; border-radius:100px; border:1px solid var(--line);
+    background:var(--surface); color:var(--ink2); font-size:17px; line-height:1; cursor:pointer; }
+  .dlgx:hover { background:var(--warn-soft); color:var(--warn); border-color:var(--warn); }
+  .dlgbody { padding:16px 18px 22px; font-size:13px; color:var(--ink2); line-height:1.85; }
+  .dsec { margin-top:16px; }
+  .dsec:first-child { margin-top:0; }
+  .dsec > b { display:block; font-size:11.5px; font-weight:800; color:var(--ink3); letter-spacing:.06em; margin-bottom:6px; }
+  .dnum { display:flex; flex-wrap:wrap; gap:8px; }
+  .dnum div { flex:1 1 128px; border:1px solid var(--line); border-radius:10px; padding:8px 12px; background:var(--surface); }
+  .dnum span { display:block; font-size:10.5px; font-weight:700; color:var(--ink3); }
+  .dnum strong { font-size:17px; font-weight:900; color:var(--g1); font-variant-numeric:tabular-nums; }
+  .dnum strong small { font-size:10.5px; font-weight:700; color:var(--ink3); margin-left:2px; }
+  /* 買う導線 */
+  .buy { display:flex; flex-direction:column; gap:7px; }
+  .buy a, .buy span { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding:9px 13px; border-radius:10px;
+    font-size:12.5px; text-decoration:none; font-variant-numeric:tabular-nums; }
+  .buy a { border:1px solid var(--g1-line); background:var(--g1-soft); color:var(--ink); font-weight:700; }
+  .buy a:hover { border-color:var(--g1); }
+  .buy span { border:1px dashed var(--line); background:var(--surface); color:var(--ink3); }
+  .buy .sel { font-size:10.5px; font-weight:800; color:var(--ink3); }
+  .buy .amt { font-weight:900; }
+  .buy .per { font-size:11px; color:var(--ink3); font-weight:600; }
+  .buy .go { margin-left:auto; font-size:11px; font-weight:800; color:var(--g1); }
+  .refnote { margin-top:7px; font-size:11.5px; color:var(--warn); background:var(--warn-soft);
+    border:1px solid var(--warn); border-radius:8px; padding:7px 11px; line-height:1.7; }
+  /* 公式ページ導線（買う場所ではなく、情報の出どころ） */
+  .official { margin-top:18px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3); }
+  .official a { color:var(--g1); font-weight:800; text-decoration:none; }
+  .official a:hover { text-decoration:underline; }
+  .dtxt { font-size:12.5px; }
+  .dtxt.small { font-size:11.5px; color:var(--ink3); }
+  /* 表の中の「詳しく見る」ボタン */
+  .openb { display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:800; color:var(--g1);
+    background:none; border:1px solid var(--g1-line); border-radius:100px; padding:3px 9px; cursor:pointer; }
+  .openb:hover { background:var(--g1-soft); }
+  .prod { cursor:pointer; }
+  .prod:hover .nm { text-decoration:underline; }
+  @media (max-width:600px){
+    .dlg { padding:0; }
+    .dlgbox { max-width:none; max-height:100vh; height:100vh; border-radius:0; border:none; }
+  }
+
+

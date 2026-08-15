@@ -46,7 +46,7 @@ table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
 <div class="mtxwrap">
   <a class="back" href="index.html">← トップへ戻る</a>
   <h1>飲む予定リスト</h1>
-  <div class="sub">各比較ページで<b>□にチェックした商品</b>がここに保存されています。栄養素の合計量・<b>1日の費用</b>・<b>不足に対する充足率</b>をまとめて確認できます。リストの変更は各比較ページ、または列の✕で行えます。</div>
+  <div class="sub">各比較ページで<b>＋を押して選んだ商品</b>がここに保存されています。栄養素の合計量・<b>1日の費用</b>・<b>不足に対する充足率</b>をまとめて確認できます。リストの変更は各比較ページ、または列の✕で行えます。</div>
   <div class="youline" id="youline"></div>
   <div class="mtxpages" id="mtxpages"></div>
   <div id="mtxbody"></div>
@@ -130,7 +130,7 @@ table.mtx th.ph .mtxdel:hover { background:rgba(255,255,255,.15); }
 
   var body=document.getElementById("mtxbody");
   if(cols.length===0){
-    body.innerHTML='<div class="mtxempty">まだ商品がありません。<br>各比較ページで左の□にチェックすると、ここに保存されていきます。</div>';
+    body.innerHTML='<div class="mtxempty">まだ商品がありません。<br>各比較ページで商品の＋を押すと、ここに保存されていきます。</div>';
     return;
   }
 

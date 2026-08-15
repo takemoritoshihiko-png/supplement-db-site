@@ -59,6 +59,7 @@
 <div class="wrap tablehead">
   <span class="icap"></span><b class="th-title" id="cmptitle">比較表</b>
   <button class="sharebtn" id="sharebtn" title="いま絞り込んでいる条件をURLにしてコピーします"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>この表示のリンクをコピー</button>
+  <span class="vsw" role="group" aria-label="表の見せ方"><button type="button" data-view="list" class="on">縦に並べる</button><button type="button" data-view="board">横に並べる</button></span>
   <span class="count" id="count"></span>
 </div>
 
@@ -73,14 +74,24 @@
     <label class="flt"><input type="checkbox" data-f="tr">持続型・タイムリリース</label>
     <label class="flt"><input type="checkbox" data-f="single">単一成分のみ</label>
     </span>
-    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">価格/日 ▲</button><button data-s="amt">摂れる量</button></div>
+    <div id="msort"><span class="lbl2">並び替え</span><button data-s="price" class="on">価格/日 ▲</button><button data-s="perGoal">基準値あたり</button><button data-s="amt">摂れる量</button></div>
   </div>
 </div>
 
 <main><div class="wrap">
 <div id="sharedbanner" class="sharedbanner" style="display:none"></div>
 <div id="ingnote" style="display:none;border:1px solid var(--g1-line);background:var(--g1-soft);border-radius:10px;padding:9px 14px;margin-bottom:12px;font-size:12.5px;color:var(--ink2)"></div>
-<div class="tablewrap"><table class="cmp" aria-labelledby="cmptitle"><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">ビタミンC/日</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div></main>
+<div id="listview"><div class="tablewrap"><table class="cmp" aria-labelledby="cmptitle"><thead><tr><th></th><th>メーカー / 商品名・配合成分</th><th class="num wrapok">内容量・販売価格</th><th class="num wrapok">飲む量/日</th><th class="num sortable" data-s="amt"><span class="tl">ビタミンC/日</span> <span class="arr"></span></th><th class="num sortable goalh" data-s="perGoal"><span class="tl">基準値あたり</span> <span class="arr"></span></th><th class="num sortable on" data-s="price"><span class="tl">価格/日</span> <span class="arr">▲</span></th><th></th></tr></thead><tbody id="list"></tbody></table></div><p class="note" style="margin-top:10px">行をクリックすると詳細（全容量と価格・メーカーの飲み方原文・出典）が開きます。</p></div>
+<div id="boardview" hidden>
+  <div class="bctl">
+    <span class="lbl">表示</span>
+    <button type="button" data-dense="0" class="on">ゆったり</button>
+    <button type="button" data-dense="1">ぎっしり</button>
+    <span class="legend"><span><i class="dot">●</i>入っています</span><span><i class="dot no">−</i>入っていません</span><span class="lhint">※ ● にカーソルを合わせる（スマホは押す）と、何が入っているかが出ます</span></span>
+  </div>
+  <p class="scrollhint" id="bhint"></p>
+  <div class="boardwrap"><table class="board" id="board"></table></div>
+</div></div></main>
 
 <div id="sumbar">
   <div class="inner">
@@ -94,6 +105,19 @@
   </div>
 </div>
 
+<div class="dlg" id="dlg" hidden>
+  <div class="dlgbd"></div>
+  <div class="dlgbox" role="dialog" aria-modal="true" aria-labelledby="dlgttl">
+    <div class="dlghd">
+      <div class="ph" id="dlgph"></div>
+      <div class="who"><div class="mk" id="dlgmk"></div><h2 id="dlgttl"></h2></div>
+      <button class="dlgnav" data-nav="-1" title="前の商品" aria-label="前の商品">←</button>
+      <button class="dlgnav" data-nav="1" title="次の商品" aria-label="次の商品">→</button>
+      <button class="dlgx" title="閉じる" aria-label="閉じる">×</button>
+    </div>
+    <div class="dlgbody" id="dlgbody"></div>
+  </div>
+</div>
 <footer>
   <div class="wrap legal">
 <b style="color:var(--ink)">掲載データについて</b>：流通が確認できた25商品を「1日あたり」に揃えて比較しています（2026年8月14日調査・拡充中）。価格・含有量は収集と照合を分けた二重チェックを行っていますが、一部の項目は確認中です（「未取得」「未確認」と表示）。収集方法と表示の意味の詳細は「<a href="about-data.html" style="color:var(--g1);font-weight:700">データの集め方</a>」をご覧ください。<br>
@@ -104,7 +128,8 @@
 </footer>
 
 <script src="data-vc.js"></script>
-<script>window.NUT = {"slug":"vc","name":"ビタミンC","shortLabel":"C","unit":"mg","dec":0,"goal":100,"ul":null,"goalLabel":"基準値","goalLabelFull":"栄養素等表示基準値","goalSuffix":"","confirm":"2026-08-14","diet":{"m":{"20":66,"30":67,"40":66,"50":78,"60":96,"70":113,"80":127},"f":{"20":65,"30":66,"40":71,"50":78,"60":99,"70":128,"80":126}},"chips":[{"f":"lipo","label":"リポソーム","kind":"tech","pattern":"リポソーム"},{"f":"tr","label":"持続型・タイムリリース","kind":"tech","pattern":"タイムリリース|持続型"},{"f":"single","label":"単一成分のみ","kind":"comp"}],"badges":[{"kind":"tech","pattern":"リポソーム","label":"リポソーム","cls":"k2"},{"kind":"tech","pattern":"タイムリリース|持続型","label":"持続型","cls":"k2"},{"kind":"comp","label":"単一成分","cls":"d3"},{"kind":"chew","label":"グミ","cls":""}],"ingFallbacks":[],"youUnselectedText":"未選択のときは栄養素等表示基準値 <b>100mg/日</b>（パッケージの%表示と同じ物差し）を基準に表示します。耐容上限量は設定されていません（食事摂取基準）。","youStaticText":"表の%はこの基準値（パッケージの%表示と同じ物差し）に対する割合です。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。","sumStaticNote":"ビタミンCには耐容上限量は設定されていません（食事摂取基準）。"};</script>
+<script>window.NUT = {"slug":"vc","name":"ビタミンC","shortLabel":"C","unit":"mg","dec":0,"goal":100,"ul":null,"goalLabel":"基準値","goalLabelFull":"栄養素等表示基準値","goalSuffix":"","confirm":"2026-08-14","diet":{"m":{"20":66,"30":67,"40":66,"50":78,"60":96,"70":113,"80":127},"f":{"20":65,"30":66,"40":71,"50":78,"60":99,"70":128,"80":126}},"chips":[{"f":"lipo","label":"リポソーム","kind":"tech","pattern":"リポソーム"},{"f":"tr","label":"持続型・タイムリリース","kind":"tech","pattern":"タイムリリース|持続型"},{"f":"single","label":"単一成分のみ","kind":"comp"}],"badges":[{"kind":"tech","pattern":"リポソーム","label":"リポソーム","cls":"k2"},{"kind":"tech","pattern":"タイムリリース|持続型","label":"持続型","cls":"k2"},{"kind":"comp","label":"単一成分","cls":"d3"},{"kind":"chew","label":"グミ","cls":""}],"ingFallbacks":[],"ingGroups":[{"key":"ビタミンB群","pattern":"ビタミンB|ナイアシン|パントテン酸"},{"key":"フラボノイド類","pattern":"ルチン|ヘスペリジン|バイオフラボノイド"},{"key":"天然ビタミンC源","pattern":"ローズヒップ|アセロラ"},{"key":"美容系の成分","pattern":"コラーゲン|ヒアルロン酸|セラミド|プロテオグリカン|エラスチン"},{"key":"その他の成分","pattern":"."}],"youUnselectedText":"未選択のときは栄養素等表示基準値 <b>100mg/日</b>（パッケージの%表示と同じ物差し）を基準に表示します。耐容上限量は設定されていません（食事摂取基準）。","youStaticText":"表の%はこの基準値（パッケージの%表示と同じ物差し）に対する割合です。ビタミンCには耐容上限量は設定されていません（食事摂取基準）。","sumStaticNote":"ビタミンCには耐容上限量は設定されていません（食事摂取基準）。"};</script>
+<script src="board.js"></script>
 <script src="compare.js"></script>
 </body>
 </html>
