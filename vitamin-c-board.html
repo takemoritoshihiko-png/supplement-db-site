@@ -23,66 +23,84 @@
   .ctl button.on { background:var(--g1); border-color:var(--g1); color:#fff; }
   .ctl .sep { width:14px; }
 
+  /* 凡例（同梱成分のドットの意味） */
+  .legend { display:flex; flex-wrap:wrap; gap:14px; margin-top:14px; font-size:11.5px; color:var(--ink2); }
+  .legend span { display:inline-flex; align-items:center; gap:5px; }
+  .legend i { width:9px; height:9px; border-radius:50%; display:inline-block; }
+
   /* ボード本体: 画面幅いっぱいを使って「横に一気に」並べる */
-  .boardwrap { margin-top:22px; overflow-x:auto; overflow-y:visible; padding:2px 0 10px; -webkit-overflow-scrolling:touch; }
+  .boardwrap { margin-top:18px; overflow-x:auto; overflow-y:visible; padding:2px 0 10px; -webkit-overflow-scrolling:touch; }
   .board { border-collapse:separate; border-spacing:0; font-size:12.5px; }
   .board th, .board td { padding:0; vertical-align:middle; }
 
   /* 左端の項目名列は固定 */
   .board .rh { position:sticky; left:0; z-index:3; background:var(--bg); text-align:left;
-    width:132px; min-width:132px; padding:10px 12px 10px 20px; font-size:11.5px; font-weight:800; color:var(--ink3);
+    width:128px; min-width:128px; padding:6px 12px 6px 20px; font-size:11.5px; font-weight:800; color:var(--ink3);
     letter-spacing:.04em; border-right:1px solid var(--line); }
-  .board .rh small { display:block; font-weight:600; color:var(--ink3); font-size:10.5px; letter-spacing:0; margin-top:2px; }
-  .board tr.sec .rh { color:var(--ink); font-size:12px; padding-top:16px; }
-  .board tr.sec td { padding-top:16px; }
+  .board .rh small { display:block; font-weight:600; color:var(--ink3); font-size:10px; letter-spacing:0; margin-top:1px; }
+  .board tr.sec .rh, .board tr.sec td { padding-top:14px; }
+  .board tr.sec .rh { color:var(--ink); font-size:12px; }
 
-  .board td.c { width:124px; min-width:124px; padding:8px 10px; border-right:1px solid var(--line); text-align:left; }
+  .board td.c { width:118px; min-width:118px; padding:6px 10px; border-right:1px solid var(--line); text-align:left; }
   .board tr:hover td.c { background:var(--g1-soft); }
-  .board td.c.pin { background:var(--goldbg); }
 
-  /* 商品ヘッダー */
-  .prod { display:flex; flex-direction:column; gap:6px; }
-  .prod .ph { width:100%; height:74px; border:1px solid var(--line); border-radius:12px; background:#fff;
+  /* 商品ヘッダー: 写真は正方形の固定枠で全商品そろえる */
+  .prod { display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; }
+  .prod .ph { width:56px; height:56px; flex:none; border:1px solid var(--line); border-radius:10px; background:#fff;
     display:flex; align-items:center; justify-content:center; overflow:hidden; }
-  .prod .ph img { width:100%; height:100%; object-fit:contain; }
-  .prod .mk { font-size:10px; font-weight:800; color:var(--ink3); line-height:1.3; }
-  .prod .nm { font-size:11.5px; font-weight:700; color:var(--ink); line-height:1.4; }
-  .rank { display:inline-block; font-size:10px; font-weight:800; color:#fff; background:var(--g1);
-    border-radius:100px; padding:1px 7px; margin-bottom:2px; }
+  .prod .ph img { max-width:100%; max-height:100%; width:auto; height:auto; object-fit:contain; display:block; }
+  .prod .mk { font-size:9.5px; font-weight:800; color:var(--ink3); line-height:1.3; }
+  .prod .nm { font-size:11px; font-weight:700; color:var(--ink); line-height:1.35; height:2.7em; overflow:hidden;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; }
+  .rank { display:inline-block; font-size:9.5px; font-weight:800; color:#fff; background:var(--g1);
+    border-radius:100px; padding:1px 8px; }
   .rank.top { background:var(--g2); }
 
-  /* 数値＋バー */
-  .v { font-size:17px; font-weight:800; color:var(--g1); font-variant-numeric:tabular-nums; line-height:1.2; }
-  .v small { font-size:10.5px; font-weight:700; color:var(--ink3); margin-left:2px; }
-  .v.na { font-size:12px; color:var(--ink3); font-weight:600; }
-  .bar { position:relative; height:6px; border-radius:3px; background:var(--track); margin-top:6px; }
+  /* 数値＋バー（行の高さを固定して横スキャンしやすく） */
+  .v { font-size:16px; font-weight:800; color:var(--g1); font-variant-numeric:tabular-nums; line-height:1.2; }
+  .v small { font-size:10px; font-weight:700; color:var(--ink3); margin-left:2px; }
+  .v.na { font-size:11.5px; color:var(--ink3); font-weight:600; }
+  .bar { position:relative; height:5px; border-radius:3px; background:var(--track); margin-top:5px; }
   .bar i { position:absolute; inset:0 auto 0 0; border-radius:3px; background:var(--g1); }
   .bar i.acc { background:var(--g2); }
 
   /* タグ */
-  .tag { display:inline-block; font-size:10.5px; font-weight:700; padding:2px 9px; border-radius:100px;
-    border:1px solid var(--line); background:var(--surface); color:var(--ink2); }
+  .tag { display:inline-block; font-size:10px; font-weight:700; padding:2px 8px; border-radius:100px;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink2); white-space:nowrap; }
   .tag.t1 { border-color:var(--g1-line); background:var(--g1-soft); color:var(--g1); }
   .tag.t2 { border-color:var(--g2-line); background:var(--g2-soft); color:var(--g2); }
   .tag.t3 { border-color:var(--ok); background:var(--ok-soft); color:var(--ok); }
+  .oneline { display:block; font-size:10px; color:var(--ink3); line-height:1.35; margin-top:3px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-  .dot { font-size:15px; font-weight:800; color:var(--g1); }
-  .dot.no { color:var(--line); font-weight:400; }
-  .sub { display:block; font-size:10px; color:var(--ink3); line-height:1.45; margin-top:3px; }
+  /* 同梱成分: 色つきドット1行に集約。詳細はカーソルを合わせると出る */
+  .dots { display:flex; gap:4px; align-items:center; min-height:18px; cursor:default; }
+  .dots i { width:9px; height:9px; border-radius:50%; flex:none; }
+  .dots .none { color:var(--line); font-size:12px; }
+  .d1 { background:var(--g1); }      /* ビタミン・ミネラル */
+  .d2 { background:var(--g2); }      /* ビタミンCを補う成分 */
+  .d3 { background:var(--ok); }      /* 美容・その他 */
 
   .note { max-width:1040px; margin:26px auto 0; padding:0 20px; font-size:12px; color:var(--ink3); line-height:1.95; }
   .note a { color:var(--g1); font-weight:700; }
-  .scrollhint { max-width:1040px; margin:10px auto 0; padding:0 20px; font-size:12px; color:var(--ink2); }
-  /* ぎっしり表示: 一度に見える商品数を増やす（1600px幅で12→17商品） */
-  .board.dense td.c { width:86px; min-width:86px; padding:6px 7px; }
-  .board.dense .prod .ph { height:56px; }
-  .board.dense .prod .nm { font-size:10.5px; }
-  .board.dense .v { font-size:14px; }
-  .board.dense .sub { font-size:9.5px; }
-  .board.dense .tag { font-size:9.5px; padding:2px 7px; }
+  .scrollhint { max-width:1040px; margin:0 auto; padding:0 20px; font-size:12px; color:var(--ink2); }
+
+  /* 成分名: ホバーが効かない端末でも読めるよう1行省略で併記。ぎっしり表示のみ省く */
+  .board.dense .ingnames { display:none; }
+  @media (max-width:600px){ .board.dense .ingnames { display:block; } }
+
+  /* ぎっしり表示 */
+  .board.dense td.c { width:82px; min-width:82px; padding:5px 6px; }
+  .board.dense .prod .ph { width:44px; height:44px; }
+  .board.dense .prod .nm { font-size:10px; }
+  .board.dense .prod .mk { font-size:9px; }
+  .board.dense .v { font-size:13.5px; }
+  .board.dense .tag { font-size:9px; padding:1px 6px; }
+  .board.dense .oneline { font-size:9px; }
+
   @media (max-width:600px){
-    .board .rh { width:112px; min-width:112px; padding-left:14px; }
-    .board td.c { width:108px; min-width:108px; }
+    .board .rh { width:108px; min-width:108px; padding-left:14px; }
+    .board td.c { width:104px; min-width:104px; }
   }
 </style>
 </head>
@@ -93,10 +111,10 @@
   <a class="back" href="vitamin-c.html">← ビタミンCの比較表へ戻る</a>
   <div style="margin-top:14px"><span class="lab">試作ページ</span></div>
   <h1>ビタミンC 検討ボード</h1>
-  <p class="lede">商品を<b>横に並べて</b>、上から下へ項目をたどるだけで見比べられる形にしました。中心にあるのは<b>「同じ1,000mgを摂るのにいくらかかるか」</b>——内容量も1日の粒数もバラバラな商品を、ひとつの物差しに揃えた数字です。</p>
+  <p class="lede">商品を<b>横に並べて</b>、上から下へ項目をたどるだけで見比べられる形にしました。中心にあるのは<b>「1日に必要な100mgを摂るのにいくらかかるか」</b>——内容量も1日の粒数もバラバラな商品を、ひとつの物差しに揃えた数字です。</p>
   <div class="ctl" id="ctl">
     <span class="lbl">並び替え</span>
-    <button data-sort="per1000" class="on">1,000mgあたりが安い順</button>
+    <button data-sort="perRDA" class="on">1日分あたりが安い順</button>
     <button data-sort="price">1日の費用が安い順</button>
     <button data-sort="amt">1日に摂れる量が多い順</button>
     <span class="sep"></span>
@@ -109,15 +127,22 @@
     <span class="sep"></span>
     <span class="lbl">表示</span>
     <button data-dense="0" class="on">ゆったり</button>
-    <button data-dense="1">ぎっしり（一度に多く）</button>
+    <button data-dense="1">ぎっしり</button>
   </div>
-  <p class="scrollhint" id="hint" style="padding:0;margin-top:14px"></p>
+  <div class="legend">
+    <span><i class="d1"></i>ほかのビタミン・ミネラル</span>
+    <span><i class="d2"></i>ビタミンCを補う成分</span>
+    <span><i class="d3"></i>美容・その他の成分</span>
+    <span style="color:var(--ink3)">※点の色は配合成分の種類です</span>
+  </div>
+  <p class="scrollhint" id="hint" style="padding:0;margin-top:12px"></p>
 </div>
 
 <div class="boardwrap"><table class="board" id="board"></table></div>
 
 <p class="note">
-  ※「1,000mgあたりの価格」は <b>1日の費用 ÷（1日に摂れるビタミンC量 ÷ 1000）</b> で計算した参考値です。価格は販売中の最安バリアントの1日あたり価格（税区分は商品により異なります）。
+  ※「1日分あたりの価格」は <b>1日の費用 ÷（1日に摂れるビタミンC量 ÷ 100mg）</b> で計算した参考値です。100mgは成人のビタミンCの推奨量であり、商品パッケージの%表示の基準（栄養素等表示基準値）とも同じ値です。
+  価格は販売中の最安バリアントの1日あたり価格（税区分は商品により異なります）。
   同梱成分は、その成分が配合されていることのみを示し、量や働きの優劣を示すものではありません。
   元データと出典は<a href="vitamin-c.html">ビタミンCの比較表</a>と同じです（2026年8月14日調査）。
   <br>本ページは一般的な情報の提供を目的とし、疾病の診断・治療・予防を目的とするものではありません。特定の商品の効果を保証するものではありません。
@@ -126,6 +151,8 @@
 <script src="data-vc.js"></script>
 <script>
 (function(){
+  var RDA = 100; // ビタミンCの推奨量(成人) = 栄養素等表示基準値 = 100mg/日
+
   function toArr(v){ return v==null?[]:(Array.isArray(v)?v:[v]); }
   function isDead(v){ return /販売終了|売り切れ|在庫切れ|在庫なし|取扱確認できず/.test(v.status||""); }
   function bestPrice(p){
@@ -144,89 +171,82 @@
     if(/グミ|チュアブル|粉末|パウダー|スティック|顆粒/.test(s)) return "飲みやすさ";
     return "通常";
   }
-  var GROUPS=[
-    {key:"ビタミンB群", re:/ビタミンB|ナイアシン|パントテン酸/},
-    {key:"フラボノイド類", re:/ルチン|ヘスペリジン|バイオフラボノイド/},
-    {key:"天然ビタミンC源", re:/ローズヒップ|アセロラ/},
-    {key:"美容系の成分", re:/コラーゲン|ヒアルロン酸|セラミド|プロテオグリカン|エラスチン/},
-    {key:"その他の成分", re:/./}
+  /* 同梱成分は3系統に束ねる（5分割は該当2商品の行が1行133pxを占めるなど空きが多すぎた・実測） */
+  var KIND=[
+    {cls:"d1", label:"ほかのビタミン・ミネラル", re:/ビタミンB|ナイアシン|パントテン酸|ビタミンD|カルシウム|亜鉛|鉄|マグネシウム/},
+    {cls:"d2", label:"ビタミンCを補う成分",     re:/ルチン|ヘスペリジン|バイオフラボノイド|ローズヒップ|アセロラ/},
+    {cls:"d3", label:"美容・その他の成分",       re:/./}
   ];
-  function ingGroups(p){
+  function kindsOf(p){
     var names=toArr(p.ings).map(function(g){ return (g.n||"").split("(")[0].split("（")[0].trim(); }).filter(Boolean);
-    var res={};
+    var map={};
     names.forEach(function(n){
-      for(var i=0;i<GROUPS.length;i++){
-        if(GROUPS[i].re.test(n)){ (res[GROUPS[i].key]=res[GROUPS[i].key]||[]).push(n); break; }
-      }
+      for(var i=0;i<KIND.length;i++){ if(KIND[i].re.test(n)){ (map[KIND[i].cls]=map[KIND[i].cls]||[]).push(n); break; } }
     });
-    return res;
+    return {map:map, all:names};
   }
   function fnum(x){ return x>=1000 ? x.toLocaleString() : String(x); }
+  function yen(x){ return x<10 ? (Math.round(x*10)/10).toFixed(1) : String(Math.round(x)); }
 
   var rows = PRODUCTS.map(function(p){
     var price = bestPrice(p);
     var amt = (p.amtMax!=null) ? p.amtMax : null;
+    var k = kindsOf(p);
     return {
       p:p, price:price, amt:amt,
-      per1000: (price!=null && amt) ? price/(amt/1000) : null,
-      type: typeOf(p), ig: ingGroups(p),
+      perRDA: (price!=null && amt) ? price/(amt/RDA) : null,
+      type: typeOf(p), kinds:k.map, ings:k.all,
       dose: (p.doseMin!=null) ? (p.doseMin===p.doseMax? p.doseMin : p.doseMin+"〜"+p.doseMax) : null,
       unit: p.doseUnit||"粒"
     };
   });
 
-  var state={ sort:"per1000", type:"", dense:false };
+  var state={ sort:"perRDA", type:"", dense:false };
 
   function view(){
     var list = rows.filter(function(r){ return !state.type || r.type===state.type; });
-    if(state.sort==="per1000") list.sort(function(a,b){ return (a.per1000==null?1e9:a.per1000)-(b.per1000==null?1e9:b.per1000); });
-    if(state.sort==="price")   list.sort(function(a,b){ return (a.price==null?1e9:a.price)-(b.price==null?1e9:b.price); });
-    if(state.sort==="amt")     list.sort(function(a,b){ return (b.amt==null?-1:b.amt)-(a.amt==null?-1:a.amt); });
+    if(state.sort==="perRDA") list.sort(function(a,b){ return (a.perRDA==null?1e9:a.perRDA)-(b.perRDA==null?1e9:b.perRDA); });
+    if(state.sort==="price")  list.sort(function(a,b){ return (a.price==null?1e9:a.price)-(b.price==null?1e9:b.price); });
+    if(state.sort==="amt")    list.sort(function(a,b){ return (b.amt==null?-1:b.amt)-(a.amt==null?-1:a.amt); });
     return list;
   }
 
   function render(){
     var list=view();
-    var maxPer=0,maxPrice=0,maxAmt=0;
+    var maxRDA=0,maxPrice=0,maxAmt=0,minRDA=1e9,minPrice=1e9;
     list.forEach(function(r){
-      if(r.per1000!=null) maxPer=Math.max(maxPer,r.per1000);
-      if(r.price!=null) maxPrice=Math.max(maxPrice,r.price);
+      if(r.perRDA!=null){ maxRDA=Math.max(maxRDA,r.perRDA); minRDA=Math.min(minRDA,r.perRDA); }
+      if(r.price!=null){ maxPrice=Math.max(maxPrice,r.price); minPrice=Math.min(minPrice,r.price); }
       if(r.amt!=null) maxAmt=Math.max(maxAmt,r.amt);
     });
-    // 費用は最大/最小が約100倍あり、線形バーだと安い商品が全部同じ長さに潰れる。
-    // そこで費用のバーだけ対数目盛にして、安い帯の差が見えるようにする（実測で確認）
-    var minPer=1e9,minPrice=1e9;
-    list.forEach(function(r){
-      if(r.per1000!=null) minPer=Math.min(minPer,r.per1000);
-      if(r.price!=null) minPrice=Math.min(minPrice,r.price);
-    });
+    /* 費用は最大/最小が約100倍あり、線形バーだと安い商品が全部同じ長さに潰れる（実測）ので対数目盛 */
     function logw(v,min,max){
       if(v==null||!isFinite(min)||!max||max<=min) return v==null?0:50;
       return Math.max(5,(Math.log(v)-Math.log(min))/(Math.log(max)-Math.log(min))*100);
     }
-    // 摂取量は最大/最小が30倍なので平方根で十分
     function w(v,max){ if(v==null||!max) return 0; return Math.max(4, Math.sqrt(v/max)*100); }
-
     function cells(fn){ return list.map(fn).join(""); }
+    function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
     var h="";
 
     h+='<tr><th class="rh">商品</th>'+cells(function(r,i){
-      var img=r.p.img?'<img src="'+r.p.img+'" alt="">':'';
-      var rk=(state.sort==="per1000")?'<span class="rank'+(i<3?' top':'')+'">'+(i+1)+'位</span>':'';
+      var img=r.p.img?'<img src="'+esc(r.p.img)+'" alt="">':'';
+      var rk=(state.sort==="perRDA")?'<span class="rank'+(i<3?' top':'')+'">'+(i+1)+'位</span>':'';
       return '<td class="c"><div class="prod"><div class="ph">'+img+'</div>'+rk+
-        '<span class="mk">'+(r.p.maker||"").split("(")[0].split("（")[0]+'</span>'+
-        '<span class="nm">'+r.p.name+'</span></div></td>';
+        '<span class="mk">'+esc((r.p.maker||"").split("(")[0].split("（")[0])+'</span>'+
+        '<span class="nm" title="'+esc(r.p.name)+'">'+esc(r.p.name)+'</span></div></td>';
     })+'</tr>';
 
-    h+='<tr class="sec"><th class="rh">1,000mgあたり<small>同じ量を摂る費用</small></th>'+cells(function(r){
-      if(r.per1000==null) return '<td class="c"><span class="v na">—</span></td>';
-      return '<td class="c"><span class="v">'+r.per1000.toFixed(1)+'<small>円</small></span>'+
-        '<div class="bar"><i class="acc" style="width:'+logw(r.per1000,minPer,maxPer)+'%"></i></div></td>';
+    h+='<tr class="sec"><th class="rh">1日分あたり<small>100mgの費用</small></th>'+cells(function(r){
+      if(r.perRDA==null) return '<td class="c"><span class="v na">—</span></td>';
+      return '<td class="c"><span class="v">'+yen(r.perRDA)+'<small>円</small></span>'+
+        '<div class="bar"><i class="acc" style="width:'+logw(r.perRDA,minRDA,maxRDA)+'%"></i></div></td>';
     })+'</tr>';
 
     h+='<tr><th class="rh">1日の費用</th>'+cells(function(r){
       if(r.price==null) return '<td class="c"><span class="v na">—</span></td>';
-      return '<td class="c"><span class="v">'+(Math.round(r.price*10)/10)+'<small>円</small></span>'+
+      return '<td class="c"><span class="v">'+yen(r.price)+'<small>円</small></span>'+
         '<div class="bar"><i style="width:'+logw(r.price,minPrice,maxPrice)+'%"></i></div></td>';
     })+'</tr>';
 
@@ -238,46 +258,47 @@
 
     h+='<tr class="sec"><th class="rh">タイプ</th>'+cells(function(r){
       var cls=r.type==="リポソーム"?"t2":(r.type==="持続型"?"t1":(r.type==="飲みやすさ"?"t3":""));
-      return '<td class="c"><span class="tag '+cls+'">'+r.type+'</span>'+
-        '<span class="sub">'+(r.p.form||"—")+(r.dose?' ／ 1日'+r.dose+r.unit:'')+'</span></td>';
+      return '<td class="c"><span class="tag '+cls+'">'+r.type+'</span></td>';
     })+'</tr>';
 
-    GROUPS.forEach(function(g,gi){
-      h+='<tr'+(gi===0?' class="sec"':'')+'><th class="rh">'+g.key+'</th>'+cells(function(r){
-        var v=r.ig[g.key];
-        if(!v||!v.length) return '<td class="c"><span class="dot no">−</span></td>';
-        return '<td class="c"><span class="dot">●</span><span class="sub">'+v.join("・")+'</span></td>';
-      })+'</tr>';
-    });
-
-    h+='<tr class="sec"><th class="rh">食品区分</th>'+cells(function(r){
-      var l=r.p.legal||"—";
-      return '<td class="c"><span class="sub" style="margin-top:0">'+l.split("（")[0].split("(")[0]+'</span></td>';
+    h+='<tr><th class="rh">剤形・1日の量</th>'+cells(function(r){
+      var t=(r.p.form||"—")+(r.dose?" ／ "+r.dose+r.unit:"");
+      return '<td class="c"><span class="oneline" title="'+esc(t)+'" style="margin-top:0">'+esc(t)+'</span></td>';
     })+'</tr>';
 
-    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(r){
-      return '<td class="c"><a href="vitamin-c.html" style="font-size:11.5px;font-weight:700;color:var(--g1);text-decoration:none">比較表で見る →</a></td>';
+    h+='<tr class="sec"><th class="rh">ほかの配合成分</th>'+cells(function(r){
+      if(!r.ings.length) return '<td class="c"><span class="dots"><span class="none">−</span></span></td>';
+      var d="";
+      KIND.forEach(function(k){ if(r.kinds[k.cls]) d+='<i class="'+k.cls+'"></i>'; });
+      var names=esc(r.ings.join("・"));
+      return '<td class="c"><span class="dots" title="'+names+'">'+d+'</span>'+
+        '<span class="oneline ingnames" title="'+names+'">'+names+'</span></td>';
     })+'</tr>';
 
-    var bd=document.getElementById("board"); bd.className="board"+(state.dense?" dense":""); bd.innerHTML=h;
+    h+='<tr><th class="rh">食品区分</th>'+cells(function(r){
+      var l=(r.p.legal||"—").split("（")[0].split("(")[0];
+      return '<td class="c"><span class="oneline" title="'+esc(r.p.legal||"")+'" style="margin-top:0">'+esc(l)+'</span></td>';
+    })+'</tr>';
+
+    h+='<tr><th class="rh">詳しく見る</th>'+cells(function(){
+      return '<td class="c"><a href="vitamin-c.html" style="font-size:11px;font-weight:700;color:var(--g1);text-decoration:none">比較表 →</a></td>';
+    })+'</tr>';
+
+    var bd=document.getElementById("board");
+    bd.className="board"+(state.dense?" dense":"");
+    bd.innerHTML=h;
     document.getElementById("hint").textContent =
       list.length+"商品を横に並べています。左の項目名は固定されているので、そのまま横にスクロールして見比べてください。";
   }
 
   document.getElementById("ctl").addEventListener("click", function(e){
     var b=e.target.closest("button"); if(!b) return;
-    if(b.dataset.sort!==undefined && b.dataset.sort!==""){
-      state.sort=b.dataset.sort;
-      document.querySelectorAll("#ctl button[data-sort]").forEach(function(x){ x.classList.toggle("on", x===b); });
-    }
-    if(b.dataset.type!==undefined){
-      state.type=b.dataset.type;
-      document.querySelectorAll("#ctl button[data-type]").forEach(function(x){ x.classList.toggle("on", x===b); });
-    }
-    if(b.dataset.dense!==undefined){
-      state.dense = b.dataset.dense==="1";
-      document.querySelectorAll("#ctl button[data-dense]").forEach(function(x){ x.classList.toggle("on", x===b); });
-    }
+    if(b.dataset.sort){ state.sort=b.dataset.sort;
+      document.querySelectorAll("#ctl button[data-sort]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
+    if(b.dataset.type!==undefined){ state.type=b.dataset.type;
+      document.querySelectorAll("#ctl button[data-type]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
+    if(b.dataset.dense!==undefined){ state.dense=(b.dataset.dense==="1");
+      document.querySelectorAll("#ctl button[data-dense]").forEach(function(x){ x.classList.toggle("on", x===b); }); }
     render();
   });
 
